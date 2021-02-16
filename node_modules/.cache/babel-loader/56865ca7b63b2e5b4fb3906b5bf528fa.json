@@ -1,0 +1,1 @@
+{"ast":null,"code":"import validate from './validate.js';\n\nfunction version(uuid) {\n  if (!validate(uuid)) {\n    throw TypeError('Invalid UUID');\n  }\n\n  return parseInt(uuid.substr(14, 1), 16);\n}\n\nexport default version;","map":null,"metadata":{},"sourceType":"module"}

@@ -1,0 +1,1 @@
+{"ast":null,"code":"import REGEX from './regex.js';\n\nfunction validate(uuid) {\n  return typeof uuid === 'string' && REGEX.test(uuid);\n}\n\nexport default validate;","map":null,"metadata":{},"sourceType":"module"}

@@ -1,0 +1,7 @@
+node_modules
+src
+webpack.config.js
+.babelrc
+.gitignore
+.package-lock.json
+assets

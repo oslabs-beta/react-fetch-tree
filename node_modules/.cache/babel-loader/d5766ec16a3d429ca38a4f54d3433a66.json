@@ -1,0 +1,1 @@
+{"ast":null,"code":"import v35 from './v35.js';\nimport sha1 from './sha1.js';\nvar v5 = v35('v5', 0x50, sha1);\nexport default v5;","map":null,"metadata":{},"sourceType":"module"}
