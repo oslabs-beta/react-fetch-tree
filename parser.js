@@ -11,10 +11,10 @@ const getDependencies = (filename) => {
   //Declare dataRequestObject
   const dataRequests = [];
   class DataRequestNode {
-    constructor(dataRequestType, position, variableName) {
+    constructor(dataRequestType, position, parentFunctionName) {
       this.dataRequestType = dataRequestType
       this.position =  position || null
-      this.variableName = variableName || 'Anonymous'
+      this.parentFunctionName = parentFunctionName || 'Anonymous'
     }
   }
   //Read file content
@@ -29,65 +29,71 @@ const getDependencies = (filename) => {
   //Stores the name/value of all ImportDeclaration nodes
   const dependencies = [];
 
+  //Helper function to check node existence
+  const nodeExistence = (nodePosition, reqName, parentName, exists = false) => {
+    dataRequests.forEach(existingDataRequest => {
+      if (existingDataRequest.position === nodePosition) {
+        exists = true;
+      }
+    })
+    if (!exists) {
+      const dataRequest = new DataRequestNode(reqName, nodePosition, parentName);
+      dataRequests.push(dataRequest);
+    }
+    return;
+  }
+
+  const IdentifierPath = {
+    CallExpression: ({node}) => {
+      let reqName = node.callee.name
+      if (node.callee.name === 'fetch') {
+        nodeExistence(node.loc.start, reqName)
+      };
+    },
+    MemberExpression: ({ node }) => {
+      let reqName = node.object.name;
+      if (node.object.name === 'axios') {
+        nodeExistence(node.loc.start, reqName)
+      };
+      if (node.property.name === 'ajax') {
+        reqName = node.property.name;
+        nodeExistence(node.loc.start, reqName)
+      };
+      if (node.object.name === 'http') {
+        nodeExistence(node.loc.start, reqName)
+      };
+      if (node.object.name === 'https') {
+        nodeExistence(node.loc.start, reqName)
+      };
+      if (node.object.name === 'qwest') {
+        nodeExistence(node.loc.start, reqName)
+      };
+      if (node.object.name === 'superagent') {
+        nodeExistence(node.loc.start, reqName)
+      };
+    },
+    NewExpression: ({ node }) => {
+      let reqName = node.callee.name
+      if (node.callee.name === 'XMLHttpRequest') {
+        nodeExistence(node.loc.start, reqName)
+      };
+    },
+  }
+
   //Traverse AST using babeltraverse to identify imported nodes
   traverse(raw_ast, {
     ImportDeclaration: ({ node }) => {
       if (node.source.value.indexOf('./') !== -1) dependencies.push(node.source.value);
     },
     Function(path) {
-      //Helper function to check node existence
-      const nodeExistence = (node, reqName, exists = false) => {
-        dataRequests.forEach(existingDataRequest => {
-          if (existingDataRequest.position === node) {
-            exists = true;
-          }
-        })
-        if (!exists) {
-          const dataRequest = new DataRequestNode(reqName, node);
-          dataRequests.push(dataRequest);
-        }
-        return;
-      }
-
-      const IdentifierPath = {
-        CallExpression: ({node}) => {
-          let reqName = node.callee.name
-          if (node.callee.name === 'fetch') {
-            nodeExistence(node.loc.start, reqName)
-          };
-        },
-        MemberExpression: ({ node }) => {
-          let reqName = node.object.name;
-
-          if (node.object.name === 'axios') {
-            nodeExistence(node.loc.start, reqName)
-          };
-          if (node.property.name === 'ajax') {
-            reqName = node.property.name;
-            nodeExistence(node.loc.start, reqName)
-          };
-          if (node.object.name === 'http') {
-            nodeExistence(node.loc.start, reqName)
-          };
-          if (node.object.name === 'https') {
-            nodeExistence(node.loc.start, reqName)
-          };
-          if (node.object.name === 'qwest') {
-            nodeExistence(node.loc.start, reqName)
-          };
-          if (node.object.name === 'superagent') {
-            nodeExistence(node.loc.start, reqName)
-          };
-        },
-        NewExpression: ({ node }) => {
-          let reqName = node.callee.name
-          if (node.callee.name === 'XMLHttpRequest') {
-            nodeExistence(node.loc.start, reqName)
-          };
-        },
-      }
-        path.traverse(IdentifierPath)
+      path.traverse(IdentifierPath)
     },
+    VariableDeclaration(path) {
+      path.traverse(IdentifierPath);
+    },
+    ExpressionStatement(path) {
+      path.traverse(IdentifierPath)
+    }
   })
 
   const id = ID++;
@@ -130,7 +136,7 @@ const dependenciesGraph = (entryFile) => {
     })
   }
   // console.log(queue[0].dataRequests)
-  // console.log(queue[1].dataRequests)
+  console.log(queue[1].dataRequests)
   // console.log(queue[2].dataRequests)
   return queue;
 }

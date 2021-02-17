@@ -1,3 +1,17 @@
+fetch(`https://swapi.dev/api/people/${id}/`)
+  .then((response) => response.json())
+  .then((data) => {
+    const { starships } = data;
+    return starships;
+});
+
+export const testDR = fetch(`https://swapi.dev/api/people/${id}/`)
+  .then((response) => response.json())
+  .then((data) => {
+    const { starships } = data;
+    return starships;
+});
+
 export function fetchUser(id) {
   // console.log("fetch user...");
 

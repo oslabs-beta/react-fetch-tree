@@ -1,1 +1,3 @@
-default
+    // VariableDeclaration(path) {
+    //   path.traverse(IdentifierPath);
+    // },
