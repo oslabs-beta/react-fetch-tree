@@ -86,9 +86,11 @@ const getDependencies = (filename) => {
       if (node.source.value.indexOf('./') !== -1) dependencies.push(node.source.value);
     },
     Function(path) {
+      console.log(path.node.id)
       path.traverse(IdentifierPath)
     },
-    VariableDeclaration(path) {
+    VariableDeclarator(path) {
+      // console.log(path.parent.declarations[0].id.name)
       path.traverse(IdentifierPath);
     },
     ExpressionStatement(path) {

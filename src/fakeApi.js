@@ -5,6 +5,13 @@ fetch(`https://swapi.dev/api/people/${id}/`)
     return starships;
 });
 
+const test1 = fetch(`https://swapi.dev/api/people/${id}/`)
+  .then((response) => response.json())
+  .then((data) => {
+    const { starships } = data;
+    return starships;
+});
+
 export const testDR = fetch(`https://swapi.dev/api/people/${id}/`)
   .then((response) => response.json())
   .then((data) => {
@@ -23,7 +30,7 @@ export function fetchUser(id) {
     });
 }
 
-export function fetchPosts(id) {
+export const fetchPosts = (id) => {
   // console.log("fetch posts...");
   return fetch(`https://swapi.dev/api/people/${id}/`)
     .then((response) => response.json())
