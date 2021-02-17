@@ -3,7 +3,6 @@ import ReactDOM, { render } from "react-dom";
 import { fetchUser, fetchPosts } from "./fakeApi";
 import { findNodeByComponentName, Utils } from "react-fiber-traverse";
 import Tree from "react-d3-tree";
-import { isConstructorDeclaration } from "typescript";
 
 console.log("ran");
 function Fetchtree() {
@@ -63,7 +62,9 @@ function ProfileTimeline(props) {
           <li key={idx}>{post}</li>
         ))}
       </ul>
-      <Fetchtree />
+      {
+        //<Fetchtree />
+      }
     </div>
   );
 }
@@ -82,20 +83,30 @@ render(<ProfilePage />, rootElement);
 const fiberwalker = (node, treedata = { name: "App", children: [] }) => {
   //console.log("fiberwalker node", node);
   if (node.child.sibling) {
-    treedata.children.push({
-      name: node.child.sibling.elementType.name,
-      children: [],
-    });
+    node = node.child.sibling;
+    console.log(node);
+    if (node !== null) {
+      if (node.elementType.name) {
+        treedata.children.push({
+          name: node.child.sibling.elementType.name,
+          children: [],
+        });
+      }
+    }
     //console.log("siblingtree", treedata);
-    if (node.child.sibling.child != null)
+    if (node.child.sibling.child != null) {
       fiberwalker(node.child.sibling, treedata);
+    }
   }
+
   if (node.child) {
     node = node.child;
-
-    if (node.elementType.name) {
-      //&& node.elementType.name !== "Fetchtree"
-      treedata.children.push({ name: node.elementType.name, children: [] });
+    console.log(node);
+    if (node !== null) {
+      if (node.elementType.name) {
+        //&& node.elementType.name !== "Fetchtree"
+        treedata.children.push({ name: node.elementType.name, children: [] });
+      }
     }
     //console.log("childtree", treedata);
     if (node.child != null) {
@@ -146,12 +157,16 @@ const devTools = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 //   }
 //   // React fiber (16+)
 //   if (instance && instance.version) {
+let count = 0;
 devTools.onCommitFiberRoot = (function (original) {
   return function (...args) {
-    __ReactSightFiberDOM = args[1];
-    console.log("dom: ", __ReactSightFiberDOM.current);
-    orgChart = fiberwalker(__ReactSightFiberDOM.current);
-    console.log("orgChart: ", orgChart);
+    if (count === 0) {
+      __ReactSightFiberDOM = args[1];
+      console.log("dom: ", __ReactSightFiberDOM.current);
+      orgChart = fiberwalker(__ReactSightFiberDOM.current);
+      console.log("orgChart: ", orgChart);
+      count++;
+    }
     return original(...args);
   };
 })(devTools.onCommitFiberRoot);
