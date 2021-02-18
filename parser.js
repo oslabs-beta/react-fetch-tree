@@ -89,9 +89,9 @@ const getDependencies = (filename) => {
     },
     Function(path) {
       if(path.node.id) {
-        // console.log(path.node.id.name);
+        // console.log(path.node.id);
         funcName = path.node.id.name;
-        console.log(funcName)
+        // console.log(funcName)
       }
       path.traverse(IdentifierPath);
       funcName = null;
