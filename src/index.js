@@ -62,9 +62,7 @@ function ProfileTimeline(props) {
           <li key={idx}>{post}</li>
         ))}
       </ul>
-      {
-        //<Fetchtree />
-      }
+      <Fetchtree />
     </div>
   );
 }
@@ -81,41 +79,41 @@ render(<ProfilePage />, rootElement);
 //console.log("sibling", fiberDOM.current.child.child.sibling);
 
 const fiberwalker = (node, treedata = { name: "App", children: [] }) => {
-  //console.log("fiberwalker node", node);
   if (node.child.sibling) {
     node = node.child.sibling;
-    console.log(node);
-    if (node !== null) {
+
+    if (node.elementType !== null && typeof node.elementType !== "string") {
       if (node.elementType.name) {
         treedata.children.push({
-          name: node.child.sibling.elementType.name,
+          name: node.elementType.name,
           children: [],
         });
+        if (node.child !== null) {
+          fiberwalker(node, treedata.children[treedata.children.length - 1]);
+        }
+      } else {
+        if (node.child !== null) {
+          fiberwalker(node, treedata);
+        }
       }
-    }
-    //console.log("siblingtree", treedata);
-    if (node.child.sibling.child != null) {
-      fiberwalker(node.child.sibling, treedata);
     }
   }
 
   if (node.child) {
     node = node.child;
-    console.log(node);
-    if (node !== null) {
-      if (node.elementType.name) {
-        //&& node.elementType.name !== "Fetchtree"
-        treedata.children.push({ name: node.elementType.name, children: [] });
+    if (node.elementType !== null && typeof node.elementType !== "string") {
+      treedata.children.push({ name: node.elementType.name, children: [] });
+      if (node.child != null) {
+        fiberwalker(node, treedata.children[treedata.children.length - 1]);
       }
-    }
-    //console.log("childtree", treedata);
-    if (node.child != null) {
-      fiberwalker(node, treedata.children[treedata.children.length]);
+    } else {
+      if (node.child !== null) {
+        fiberwalker(node, treedata);
+      }
     }
   }
   return treedata;
 };
-
 let orgChart;
 
 // function onCommitFiberRoot(rendererID, root, priorityLevel) {
@@ -137,7 +135,7 @@ let orgChart;
 //     rendererInterface.handleCommitFiberRoot(root, priorityLevel);
 //   }
 // }
-let __ReactSightFiberDOM;
+let __ReactFiberDOM;
 const devTools = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 
 // if (!window.__REACT_DEVTOOLS_GLOBAL_HOOK__)
@@ -157,16 +155,18 @@ const devTools = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 //   }
 //   // React fiber (16+)
 //   if (instance && instance.version) {
-let count = 0;
+
+//let count = 0;
 devTools.onCommitFiberRoot = (function (original) {
+  //root
   return function (...args) {
-    if (count === 0) {
-      __ReactSightFiberDOM = args[1];
-      console.log("dom: ", __ReactSightFiberDOM.current);
-      orgChart = fiberwalker(__ReactSightFiberDOM.current);
-      console.log("orgChart: ", orgChart);
-      count++;
-    }
+    //if (count === 0) {
+    __ReactFiberDOM = args[1];
+    console.log("dom: ", __ReactFiberDOM.current);
+    orgChart = fiberwalker(__ReactFiberDOM.current);
+    console.log("orgChart: ", orgChart);
+    // count++;
+    //}
     return original(...args);
   };
 })(devTools.onCommitFiberRoot);
