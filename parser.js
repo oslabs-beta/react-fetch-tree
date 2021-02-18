@@ -9,7 +9,7 @@ const cache = {};
 const getDependencies = (filename) => {
   //Declare dataRequestObject
   const dataRequests = [];
-
+  
   class DataRequestObject {
     constructor(dataRequestType, position, variableName) {
       this.dataRequestType = dataRequestType
