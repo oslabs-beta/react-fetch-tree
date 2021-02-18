@@ -10,6 +10,11 @@ const cache = {};
 const getDependencies = (filename) => {
   //Declare dataRequestObject
   const dataRequests = [];
+  //Stores the name/value of all ImportDeclaration nodes
+  const dependencies = [];
+  //Function name placeholder
+  let funcName = null;
+  //Data node class template
   class DataRequestNode {
     constructor(dataRequestType, position, parentFunctionName) {
       this.dataRequestType = dataRequestType
@@ -19,15 +24,11 @@ const getDependencies = (filename) => {
   }
   //Read file content
   const content = fs.readFileSync(filename, "utf8");
-
   //Parse file to convert it into an AST
   const raw_ast = babelParser.parse(content, {
     sourceType: "module",
     plugins: ["jsx"],
   });
-
-  //Stores the name/value of all ImportDeclaration nodes
-  const dependencies = [];
 
   //Helper function to check node existence
   const nodeExistence = (nodePosition, reqName, parentName, exists = false) => {
@@ -43,11 +44,12 @@ const getDependencies = (filename) => {
     return;
   }
 
+  //Node types and conditionals
   const IdentifierPath = {
     CallExpression: ({node}) => {
       let reqName = node.callee.name
       if (node.callee.name === 'fetch') {
-        nodeExistence(node.loc.start, reqName)
+        nodeExistence(node.loc.start, reqName, funcName)
       };
     },
     MemberExpression: ({ node }) => {
@@ -86,15 +88,20 @@ const getDependencies = (filename) => {
       if (node.source.value.indexOf('./') !== -1) dependencies.push(node.source.value);
     },
     Function(path) {
-      console.log(path.node.id)
-      path.traverse(IdentifierPath)
+      if(path.node.id) {
+        // console.log(path.node.id.name);
+        funcName = path.node.id.name;
+        console.log(funcName)
+      }
+      path.traverse(IdentifierPath);
+      funcName = null;
     },
     VariableDeclarator(path) {
       // console.log(path.parent.declarations[0].id.name)
       path.traverse(IdentifierPath);
     },
     ExpressionStatement(path) {
-      path.traverse(IdentifierPath)
+      path.traverse(IdentifierPath);
     }
   })
 
