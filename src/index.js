@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM, { render } from "react-dom";
 import { fetchUser, fetchPosts } from "./fakeApi";
+import obj from "./test";
 import { findNodeByComponentName, Utils } from "react-fiber-traverse";
 import Tree from "react-d3-tree";
 
@@ -298,3 +299,41 @@ devTools.onCommitFiberRoot = (function (original) {
 // ReactDOM.createRoot(rootElement).render(
 //   <ProfilePage />
 // );
+
+//ultimate goal is to associate data requests with react components names as strings
+
+let functions = {'fetchUser': true}
+let components = {'ProfilePage': [useState, fetchUser, setUser, setCharacter]}
+
+functions[parentName]=false;
+functions[dataRequests.parentName]=true;
+
+// Figure out all the ways to write a component
+
+[
+  {
+    id: 0,
+    filename: './src/index.js',
+    dependencies: [ './fakeApi', './test' ],
+    dataRequests: [],
+    functions: {Fetchtree: [], ProfilePage: [useState, fetchUser, setUser, setCharacter],}
+    mapping: { './fakeApi': 1, './test': 2 }
+  },
+  {
+    id: 1,
+    filename: '/Users/chrislung/CodesmithPTRI/react-fetch-tree/src/fakeApi.js',
+    dependencies: [],
+    dataRequests: [
+      {
+        dataRequestType: 'fetch',
+        position: Position { line: 36, column: 9 },
+        parentName: 'fetchPosts',
+      },
+      {
+        dataRequestType: 'fetch',
+        position: Position { line: 25, column: 8 },
+        parentName: 'fetchUser'
+      },]
+    mapping: {}
+  }
+]

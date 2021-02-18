@@ -13,13 +13,13 @@ const getDependencies = (filename) => {
   //Stores the name/value of all ImportDeclaration nodes
   const dependencies = [];
   //Function name placeholder
-  let funcName = null;
+  let parentName = null;
   //Data node class template
   class DataRequestNode {
-    constructor(dataRequestType, position, parentFunctionName) {
+    constructor(dataRequestType, position, parentName) {
       this.dataRequestType = dataRequestType
       this.position =  position || null
-      this.parentFunctionName = parentFunctionName || 'Anonymous'
+      this.parentName = parentName || 'Anonymous'
     }
   }
   //Read file content
@@ -49,7 +49,7 @@ const getDependencies = (filename) => {
     CallExpression: ({node}) => {
       let reqName = node.callee.name
       if (node.callee.name === 'fetch') {
-        nodeExistence(node.loc.start, reqName, funcName)
+        nodeExistence(node.loc.start, reqName, parentName)
       };
     },
     MemberExpression: ({ node }) => {
@@ -89,16 +89,20 @@ const getDependencies = (filename) => {
     },
     Function(path) {
       if(path.node.id) {
-        // console.log(path.node.id);
-        funcName = path.node.id.name;
+        console.log(path.node.id.name);
+        parentName = path.node.id.name;
         // console.log(funcName)
       }
       path.traverse(IdentifierPath);
-      funcName = null;
+      parentName = null;
     },
     VariableDeclarator(path) {
-      // console.log(path.parent.declarations[0].id.name)
+      if(path.parent.declarations[0].id.name) {
+        parentName = path.parent.declarations[0].id.name
+        // console.log(parentName)
+      }
       path.traverse(IdentifierPath);
+      parentName = null;
     },
     ExpressionStatement(path) {
       path.traverse(IdentifierPath);
