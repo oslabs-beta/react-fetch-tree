@@ -5,6 +5,8 @@ const path = require("path");
 
 let ID = 0;
 const cache = {};
+const fileFunctions = {};
+const reactComponents = {};
 
 //Obtain  target file's dependencies 
 const getDependencies = (filename) => {
@@ -80,6 +82,16 @@ const getDependencies = (filename) => {
         nodeExistence(node.loc.start, reqName)
       };
     },
+    ReturnStatement: ({ node }) => {
+      if (node.argument) {
+        if (node.argument.type === 'JSXElement' && parentName && !reactComponents.hasOwnProperty(parentName)) {
+          reactComponents[parentName] = [];
+          console.log(reactComponents);
+          // console.log(parentName, node.argument.type);
+          // console.log(node.argument.loc);
+        }
+      }
+    }
   }
 
   //Traverse AST using babeltraverse to identify imported nodes
@@ -89,23 +101,43 @@ const getDependencies = (filename) => {
     },
     Function(path) {
       if(path.node.id) {
-        console.log(path.node.id.name);
         parentName = path.node.id.name;
-        // console.log(funcName)
-      }
+      } 
+      // else {
+      //   parentName = 'function';
+      // }
       path.traverse(IdentifierPath);
       parentName = null;
     },
     VariableDeclarator(path) {
       if(path.parent.declarations[0].id.name) {
         parentName = path.parent.declarations[0].id.name
-        // console.log(parentName)
-      }
+      } 
+      // else {
+      //   parentName = 'variable'
+      // }
       path.traverse(IdentifierPath);
       parentName = null;
     },
     ExpressionStatement(path) {
+      // parentName = 'expression'
       path.traverse(IdentifierPath);
+      // parentName = null;
+    },
+    ClassDeclaration(path) {
+      if(path.node.id) {
+        parentName = path.node.id.name
+      } 
+      // else {
+      //   parentName = 'class'
+      // }
+      path.traverse(IdentifierPath);
+      parentName = null;
+    },
+    JSXExpressionContainer(path) {
+      if (path.node.expression.type === "ArrowFunctionExpression") {
+        console.log(path.node.expression.body.callee.name)
+      }
     }
   })
 

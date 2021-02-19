@@ -30,7 +30,7 @@ function ProfilePage() {
     <div>
       <h1>{user}</h1>
       <ProfileTimeline user={user} character={character} />
-      <button onClick={() => setCharacter(character + 1)}>
+      <button onClick={(x) => fetchUser(x)}>
         Change Character
       </button>
     </div>
@@ -300,6 +300,7 @@ devTools.onCommitFiberRoot = (function (original) {
 //   <ProfilePage />
 // );
 
+/*
 //ultimate goal is to associate data requests with react components names as strings
 
 let functions = {'fetchUser': true}
@@ -316,7 +317,7 @@ functions[dataRequests.parentName]=true;
     filename: './src/index.js',
     dependencies: [ './fakeApi', './test' ],
     dataRequests: [],
-    functions: {Fetchtree: [], ProfilePage: [useState, fetchUser, setUser, setCharacter],}
+    functions: {Fetchtree: [], ProfilePage: [useState, fetchUser, setUser, setCharacter]},
     mapping: { './fakeApi': 1, './test': 2 }
   },
   {
@@ -337,3 +338,4 @@ functions[dataRequests.parentName]=true;
     mapping: {}
   }
 ]
+*/
