@@ -5,7 +5,6 @@ const path = require("path");
 
 let ID = 0;
 const cache = {};
-const fileFunctions = {};
 const reactComponents = {};
 
 //Obtain  target file's dependencies 
@@ -79,7 +78,11 @@ const getDependencies = (filename) => {
     },
     ReturnStatement: ({ node }) => {
       if (node.argument) {
-        if (node.argument.type === 'JSXElement' && parentName && !reactComponents.hasOwnProperty(parentName)) {
+        if (
+          node.argument.type === 'JSXElement' && 
+          parentName && 
+          !reactComponents.hasOwnProperty(parentName)
+        ) {
           reactComponents[parentName] = [];
           // console.log(parentName, node.argument.type);
           // console.log(node.argument.loc);
@@ -88,11 +91,11 @@ const getDependencies = (filename) => {
     }
   }
 
-  const JSXPath = {
-    CallExpression: ({ node }) => {
-      console.log(node.callee.name)
-    },
-  }
+  // const JSXPath = {
+  //   CallExpression: ({ node }) => {
+  //     console.log(node.callee.name)
+  //   },
+  // }
 
   //Traverse AST using babeltraverse to identify imported nodes
   traverse(raw_ast, {
@@ -126,11 +129,11 @@ const getDependencies = (filename) => {
       path.traverse(IdentifierPath);
       parentName = null;
     },
-    JSXExpressionContainer(path) {
-      if (path.node.expression.type === "ArrowFunctionExpression") {
-        path.traverse(JSXPath);
-      }
-    }
+    // JSXExpressionContainer(path) {
+    //   if (path.node.expression.type === "ArrowFunctionExpression") {
+    //     path.traverse(JSXPath);
+    //   }
+    // }
   })
 
   const id = ID++;
@@ -174,7 +177,7 @@ const dependenciesGraph = (entryFile) => {
     })
   }
   // console.log(queue[0].dataRequests)
-  // console.log(queue[1].dataRequests)
+  console.log(queue[1].dataRequests)
   console.log(queue[0].nodeStore)
   // console.log(queue[2].dataRequests)
   // console.log(reactComponents);
@@ -185,5 +188,9 @@ const dependenciesGraph = (entryFile) => {
 console.log(dependenciesGraph('./src/index.js'));
 console.log(cache);
 
-//For each node store, check if it exists in reactComponents, if not, delete!
+// For each node store, check if it exists in reactComponents, if not, delete!
 // If it exists, check if it exists in list of dataRequest names, if not, delete!
+
+// Should we just do an array for components and another for all datarequest nodes?
+// We can then access each component's variables and filter out the noise & retrieve request type!
+// No need to store and send back file relationships if it's already being sorted out by the fiber tree...
