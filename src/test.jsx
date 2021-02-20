@@ -34,7 +34,6 @@ export const CreateClassTest = React.createClass({
      );    
   }  
     
-})   
-
+})
 
 export { ClassTest };
