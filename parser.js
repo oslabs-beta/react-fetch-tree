@@ -5,7 +5,9 @@ const path = require("path");
 
 let ID = 0;
 const cache = {};
-const reactComponents = {};
+const invocationStore = {};
+const nodeStore = {};
+const componentStore = {};
 
 //Obtain  target file's dependencies 
 const getDependencies = (filename) => {
@@ -13,8 +15,6 @@ const getDependencies = (filename) => {
   const dataRequests = [];
   //Stores the name/value of all ImportDeclaration nodes
   const dependencies = [];
-  //Stores functions/variavbles in file
-  const nodeStore = {};
   //Function/DataRequest name placeholder
   let parentName = null;
   let reqName = null;
@@ -45,6 +45,7 @@ const getDependencies = (filename) => {
     if (!exists) {
       const dataRequest = new DataRequestNode(reqName, nodePosition, parentName);
       dataRequests.push(dataRequest);
+      nodeStore[JSON.stringify(nodePosition)] = {reqType: reqName, parentName}
     }
     return;
   }
@@ -54,7 +55,7 @@ const getDependencies = (filename) => {
     CallExpression: ({node}) => {
       reqName = node.callee.name
       if (node.callee.name === 'fetch') { nodeExistence(node.loc.start, reqName, parentName) };
-      if (nodeStore[parentName]) { nodeStore[parentName].push(reqName) };
+      if (invocationStore[parentName]) { invocationStore[parentName].push(reqName) };
     },
     MemberExpression: ({ node }) => {
       reqName = node.object.name;
@@ -81,21 +82,19 @@ const getDependencies = (filename) => {
         if (
           node.argument.type === 'JSXElement' && 
           parentName && 
-          !reactComponents.hasOwnProperty(parentName)
+          !componentStore.hasOwnProperty(parentName)
         ) {
-          reactComponents[parentName] = [];
-          // console.log(parentName, node.argument.type);
-          // console.log(node.argument.loc);
+          componentStore[parentName] = {};
         }
       }
+    },
+    JSXExpressionContainer: ({ node }) => {
+      reqName = node.expression.name
+      if (node.expression.name) {
+        if (invocationStore[parentName]) { invocationStore[parentName].push(reqName) };
+      };
     }
   }
-
-  // const JSXPath = {
-  //   CallExpression: ({ node }) => {
-  //     console.log(node.callee.name)
-  //   },
-  // }
 
   //Traverse AST using babeltraverse to identify imported nodes
   traverse(raw_ast, {
@@ -105,7 +104,7 @@ const getDependencies = (filename) => {
     Function(path) {
       if(path.node.id) {
         parentName = path.node.id.name;
-        if (!nodeStore[parentName]) { nodeStore[parentName] = [] }; 
+        if (!invocationStore[parentName]) { invocationStore[parentName] = [] }; 
       } 
       path.traverse(IdentifierPath);
       parentName = null;
@@ -113,7 +112,7 @@ const getDependencies = (filename) => {
     VariableDeclarator(path) {
       if(path.parent.declarations[0].id.name) {
         parentName = path.parent.declarations[0].id.name
-        if (!nodeStore[parentName]) { nodeStore[parentName] = [] }
+        if (!invocationStore[parentName]) { invocationStore[parentName] = [] }
       } 
       path.traverse(IdentifierPath);
       parentName = null;
@@ -124,16 +123,11 @@ const getDependencies = (filename) => {
     ClassDeclaration(path) {
       if(path.node.id) {
         parentName = path.node.id.name
-        if (!nodeStore[parentName]) { nodeStore[parentName] = [] }
+        if (!invocationStore[parentName]) { invocationStore[parentName] = [] }
       } 
       path.traverse(IdentifierPath);
       parentName = null;
     },
-    // JSXExpressionContainer(path) {
-    //   if (path.node.expression.type === "ArrowFunctionExpression") {
-    //     path.traverse(JSXPath);
-    //   }
-    // }
   })
 
   const id = ID++;
@@ -143,10 +137,32 @@ const getDependencies = (filename) => {
     id,
     filename,
     dependencies,
-    dataRequests,
-    nodeStore
+    dataRequests
   };
 };
+
+// Helper function to complete componentStore
+const componentGraph = (invocationStore, nodeStore, componentStore) => {
+  const filterStore = {};
+  // Filter out for components only in invocationStore
+  for (let invocation in invocationStore) {
+    if (componentStore[invocation]) {
+      filterStore[invocation] = invocationStore[invocation]
+    }
+  }
+  console.log('FILTERED STORE => ',filterStore);
+  // Fetchtree: { pos: , type: , varName: varName || anonymous, }
+  for (let node in nodeStore){
+    let parent = node.parentName;
+    let pos = node;
+    let reqType = node.reqType;
+    if (componentStore[parent]) {
+      console.log(parent);
+      componentStore[parent] = {pos, reqType, parent}
+    }
+  }
+  console.log(componentStore)
+}
 
 const dependenciesGraph = (entryFile) => {
   const entry = getDependencies(entryFile);
@@ -177,16 +193,18 @@ const dependenciesGraph = (entryFile) => {
     })
   }
   // console.log(queue[0].dataRequests)
-  console.log(queue[1].dataRequests)
-  console.log(queue[0].nodeStore)
+  // console.log('DATAREQUESTNODES => ', queue[0].dataRequests)
   // console.log(queue[2].dataRequests)
-  // console.log(reactComponents);
-  return queue;
+  console.log('COMPONENT STORE => ', componentStore);
+  // console.log('INVOCATION STORE => ', invocationStore);
+  console.log('NODE STORE => ', nodeStore);
+  // console.log(queue)
+  // console.log(cache);
+
+  return componentGraph(invocationStore, nodeStore, componentStore)
 }
 
-
 console.log(dependenciesGraph('./src/index.js'));
-console.log(cache);
 
 // For each node store, check if it exists in reactComponents, if not, delete!
 // If it exists, check if it exists in list of dataRequest names, if not, delete!
