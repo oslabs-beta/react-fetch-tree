@@ -152,23 +152,20 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
   }
   // console.log('FILTERED STORE => ',filterStore);
   for (let node in nodeStore) {
-    let parent = nodeStore[node].parentName;
-    let pos = node;
-    let reqType = nodeStore[node].reqType;
+    let { parentName, reqType } = nodeStore[node];
     //Store raw data requests within component
-    if (componentStore[parent]) {
-      componentStore[parent][pos] = {reqType, parent}
+    if (componentStore[parentName]) {
+      componentStore[parentName][node] = {reqType, parentName}
     }
     //Check whether node gets invoked in component
     for (let component in filterStore) {
       filterStore[component].forEach((dataReq) => {
-        if (dataReq === parent) {
-          componentStore[component][pos] = {reqType, parent}
+        if (dataReq === parentName) {
+          componentStore[component][node] = {reqType, parentName}
         }
       })
     }
   }
-  console.log(componentStore)
   return;
 }
 
@@ -209,14 +206,8 @@ const dependenciesGraph = (entryFile) => {
   // console.log(queue)
   // console.log(cache);
 
-  return componentGraph(invocationStore, nodeStore, componentStore)
+  return componentGraph(invocationStore, nodeStore, componentStore);
 }
 
-console.log(dependenciesGraph('./src/index.js'));
-
-// For each node store, check if it exists in reactComponents, if not, delete!
-// If it exists, check if it exists in list of dataRequest names, if not, delete!
-
-// Should we just do an array for components and another for all datarequest nodes?
-// We can then access each component's variables and filter out the noise & retrieve request type!
-// No need to store and send back file relationships if it's already being sorted out by the fiber tree...
+dependenciesGraph('./src/index.js');
+console.log(componentStore);
