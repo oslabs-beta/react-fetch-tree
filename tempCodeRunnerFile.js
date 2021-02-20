@@ -1,6 +1,3 @@
-  // Object.entries(nodeStore).forEach(node => {
-  //   let parent = node.parentName;
-  //   // if() {
-
-  //   // }
-  // })
+    // if (componentStore[parent]) {
+    //   componentStore[parent][pos] = {reqType, parent}
+    // }

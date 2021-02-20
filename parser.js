@@ -150,18 +150,26 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
       filterStore[invocation] = invocationStore[invocation]
     }
   }
-  console.log('FILTERED STORE => ',filterStore);
-  // Fetchtree: { pos: , type: , varName: varName || anonymous, }
-  for (let node in nodeStore){
-    let parent = node.parentName;
+  // console.log('FILTERED STORE => ',filterStore);
+  for (let node in nodeStore) {
+    let parent = nodeStore[node].parentName;
     let pos = node;
-    let reqType = node.reqType;
+    let reqType = nodeStore[node].reqType;
+    //Store raw data requests within component
     if (componentStore[parent]) {
-      console.log(parent);
-      componentStore[parent] = {pos, reqType, parent}
+      componentStore[parent][pos] = {reqType, parent}
+    }
+    //Check whether node gets invoked in component
+    for (let component in filterStore) {
+      filterStore[component].forEach((dataReq) => {
+        if (dataReq === parent) {
+          componentStore[component][pos] = {reqType, parent}
+        }
+      })
     }
   }
   console.log(componentStore)
+  return;
 }
 
 const dependenciesGraph = (entryFile) => {
@@ -195,9 +203,9 @@ const dependenciesGraph = (entryFile) => {
   // console.log(queue[0].dataRequests)
   // console.log('DATAREQUESTNODES => ', queue[0].dataRequests)
   // console.log(queue[2].dataRequests)
-  console.log('COMPONENT STORE => ', componentStore);
+  // console.log('COMPONENT STORE => ', componentStore);
   // console.log('INVOCATION STORE => ', invocationStore);
-  console.log('NODE STORE => ', nodeStore);
+  // console.log('NODE STORE => ', nodeStore);
   // console.log(queue)
   // console.log(cache);
 
