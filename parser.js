@@ -14,8 +14,11 @@ const getDependencies = (filename) => {
   const dataRequests = [];
   //Stores the name/value of all ImportDeclaration nodes
   const dependencies = [];
-  //Function name placeholder
+  //Stores functions/variavbles in file
+  const nodeStore = {};
+  //Function/DataRequest name placeholder
   let parentName = null;
+  let reqName = null;
   //Data node class template
   class DataRequestNode {
     constructor(dataRequestType, position, parentName) {
@@ -24,6 +27,7 @@ const getDependencies = (filename) => {
       this.parentName = parentName || 'Anonymous'
     }
   }
+
   //Read file content
   const content = fs.readFileSync(filename, "utf8");
   //Parse file to convert it into an AST
@@ -49,49 +53,45 @@ const getDependencies = (filename) => {
   //Node types and conditionals
   const IdentifierPath = {
     CallExpression: ({node}) => {
-      let reqName = node.callee.name
-      if (node.callee.name === 'fetch') {
-        nodeExistence(node.loc.start, reqName, parentName)
-      };
+      reqName = node.callee.name
+      if (node.callee.name === 'fetch') { nodeExistence(node.loc.start, reqName, parentName) };
+      if (nodeStore[parentName]) { nodeStore[parentName].push(reqName) };
     },
     MemberExpression: ({ node }) => {
-      let reqName = node.object.name;
-      if (node.object.name === 'axios') {
-        nodeExistence(node.loc.start, reqName)
+      reqName = node.object.name;
+      if (
+        node.object.name === 'axios' || 
+        node.object.name === 'http' ||
+        node.object.name === 'https' ||
+        node.object.name === 'qwest' ||
+        node.object.name === 'superagent'
+      ) { 
+        nodeExistence(node.loc.start, reqName, parentName) 
       };
       if (node.property.name === 'ajax') {
         reqName = node.property.name;
-        nodeExistence(node.loc.start, reqName)
-      };
-      if (node.object.name === 'http') {
-        nodeExistence(node.loc.start, reqName)
-      };
-      if (node.object.name === 'https') {
-        nodeExistence(node.loc.start, reqName)
-      };
-      if (node.object.name === 'qwest') {
-        nodeExistence(node.loc.start, reqName)
-      };
-      if (node.object.name === 'superagent') {
-        nodeExistence(node.loc.start, reqName)
+        nodeExistence(node.loc.start, reqName, parentName)
       };
     },
     NewExpression: ({ node }) => {
-      let reqName = node.callee.name
-      if (node.callee.name === 'XMLHttpRequest') {
-        nodeExistence(node.loc.start, reqName)
-      };
+      reqName = node.callee.name
+      if (node.callee.name === 'XMLHttpRequest') { nodeExistence(node.loc.start, reqName, parentName) };
     },
     ReturnStatement: ({ node }) => {
       if (node.argument) {
         if (node.argument.type === 'JSXElement' && parentName && !reactComponents.hasOwnProperty(parentName)) {
           reactComponents[parentName] = [];
-          console.log(reactComponents);
           // console.log(parentName, node.argument.type);
           // console.log(node.argument.loc);
         }
       }
     }
+  }
+
+  const JSXPath = {
+    CallExpression: ({ node }) => {
+      console.log(node.callee.name)
+    },
   }
 
   //Traverse AST using babeltraverse to identify imported nodes
@@ -102,41 +102,33 @@ const getDependencies = (filename) => {
     Function(path) {
       if(path.node.id) {
         parentName = path.node.id.name;
+        if (!nodeStore[parentName]) { nodeStore[parentName] = [] }; 
       } 
-      // else {
-      //   parentName = 'function';
-      // }
       path.traverse(IdentifierPath);
       parentName = null;
     },
     VariableDeclarator(path) {
       if(path.parent.declarations[0].id.name) {
         parentName = path.parent.declarations[0].id.name
+        if (!nodeStore[parentName]) { nodeStore[parentName] = [] }
       } 
-      // else {
-      //   parentName = 'variable'
-      // }
       path.traverse(IdentifierPath);
       parentName = null;
     },
     ExpressionStatement(path) {
-      // parentName = 'expression'
       path.traverse(IdentifierPath);
-      // parentName = null;
     },
     ClassDeclaration(path) {
       if(path.node.id) {
         parentName = path.node.id.name
+        if (!nodeStore[parentName]) { nodeStore[parentName] = [] }
       } 
-      // else {
-      //   parentName = 'class'
-      // }
       path.traverse(IdentifierPath);
       parentName = null;
     },
     JSXExpressionContainer(path) {
       if (path.node.expression.type === "ArrowFunctionExpression") {
-        console.log(path.node.expression.body.callee.name)
+        path.traverse(JSXPath);
       }
     }
   })
@@ -148,7 +140,8 @@ const getDependencies = (filename) => {
     id,
     filename,
     dependencies,
-    dataRequests
+    dataRequests,
+    nodeStore
   };
 };
 
@@ -181,11 +174,16 @@ const dependenciesGraph = (entryFile) => {
     })
   }
   // console.log(queue[0].dataRequests)
-  console.log(queue[1].dataRequests)
+  // console.log(queue[1].dataRequests)
+  console.log(queue[0].nodeStore)
   // console.log(queue[2].dataRequests)
+  // console.log(reactComponents);
   return queue;
 }
 
 
 console.log(dependenciesGraph('./src/index.js'));
 console.log(cache);
+
+//For each node store, check if it exists in reactComponents, if not, delete!
+// If it exists, check if it exists in list of dataRequest names, if not, delete!
