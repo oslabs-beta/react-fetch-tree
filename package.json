@@ -5,7 +5,11 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "@babel/parser": "^7.12.16",
+    "@babel/traverse": "^7.12.13",
     "@reactfetchtree/rft": "^2.0.0",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7",
     "react": "^17.0.1",
     "react-d3-tree": "^2.0.1",
     "react-dom": "0.0.0-experimental-5faf377df",
