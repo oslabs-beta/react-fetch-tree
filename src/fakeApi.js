@@ -1,3 +1,4 @@
+const id = 1;
 fetch(`https://swapi.dev/api/people/${id}/`)
   .then((response) => response.json())
   .then((data) => {
@@ -5,7 +6,7 @@ fetch(`https://swapi.dev/api/people/${id}/`)
     return starships;
 });
 
-const test1 = fetch(`https://swapi.dev/api/people/${id}/`)
+export const test1 = fetch(`https://swapi.dev/api/people/${id}/`)
   .then((response) => response.json())
   .then((data) => {
     const { starships } = data;
@@ -19,15 +20,16 @@ export const testDR = fetch(`https://swapi.dev/api/people/${id}/`)
     return starships;
 });
 
-export function fetchUser(id) {
+export async function fetchUser(id) {
   // console.log("fetch user...");
 
-  return fetch(`https://swapi.dev/api/people/${id}/`)
+  await fetch(`https://swapi.dev/api/people/${id}/`)
     .then((response) => response.json())
     .then((data) => {
       const { name } = data;
       return name;
     });
+  return;
 }
 
 export const fetchPosts = (id) => {

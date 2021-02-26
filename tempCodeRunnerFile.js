@@ -1,3 +1,3 @@
-    // VariableDeclaration(path) {
-    //   path.traverse(IdentifierPath);
-    // },
+    // if (componentStore[parent]) {
+    //   componentStore[parent][pos] = {reqType, parent}
+    // }
