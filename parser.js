@@ -18,9 +18,9 @@ const getDependencies = (filename) => {
       this.variableName = variableName || "Anonymous";
     }
   }
+
   //Read file content
   const content = fs.readFileSync(filename, "utf8");
-
   //Parse file to convert it into an AST
   const raw_ast = babelParser.parse(content, {
     sourceType: "module",
@@ -139,7 +139,7 @@ const dependenciesGraph = (entryFile) => {
     });
   }
   // console.log(queue[0].dataRequests)
-  // console.log(queue[1].dataRequests)
+  // console.log('DATAREQUESTNODES => ', queue[0].dataRequests)
   // console.log(queue[2].dataRequests)
   return queue;
 };

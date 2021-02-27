@@ -1,15 +1,37 @@
-export function fetchUser(id) {
+fetch(`https://swapi.dev/api/people/${id}/`)
+  .then((response) => response.json())
+  .then((data) => {
+    const { starships } = data;
+    return starships;
+});
+
+const test1 = fetch(`https://swapi.dev/api/people/${id}/`)
+  .then((response) => response.json())
+  .then((data) => {
+    const { starships } = data;
+    return starships;
+});
+
+export const testDR = fetch(`https://swapi.dev/api/people/${id}/`)
+  .then((response) => response.json())
+  .then((data) => {
+    const { starships } = data;
+    return starships;
+});
+
+export async function fetchUser(id) {
   // console.log("fetch user...");
 
-  return fetch(`https://swapi.dev/api/people/${id}/`)
+  await fetch(`https://swapi.dev/api/people/${id}/`)
     .then((response) => response.json())
     .then((data) => {
       const { name } = data;
       return name;
     });
+  return;
 }
 
-export function fetchPosts(id) {
+export const fetchPosts = (id) => {
   // console.log("fetch posts...");
   return fetch(`https://swapi.dev/api/people/${id}/`)
     .then((response) => response.json())

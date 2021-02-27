@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM, { render } from "react-dom";
 import { fetchUser, fetchPosts } from "./fakeApi";
+import obj from "./test";
 import { findNodeByComponentName, Utils } from "react-fiber-traverse";
 import Tree from "react-d3-tree";
+import axios from "axios";
 
 console.log("ran");
 function Fetchtree() {
@@ -22,6 +24,9 @@ function ProfilePage() {
     fetchUser(character).then((u) => setUser(u));
   }, [character]);
 
+  fetch("/");
+  axios.get("/");
+
   if (user === null) {
     return <p>Loading profile...</p>;
   }
@@ -29,9 +34,7 @@ function ProfilePage() {
     <div>
       <h1>{user}</h1>
       <ProfileTimeline user={user} character={character} />
-      <button onClick={() => setCharacter(character + 1)}>
-        Change Character
-      </button>
+      <button onClick={fetchUser}>Change Character</button>
     </div>
   );
 }
