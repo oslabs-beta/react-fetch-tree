@@ -5,25 +5,17 @@ const path = require("path");
 
 let ID = 0;
 const cache = {};
-const invocationStore = {};
-const nodeStore = {};
-const componentStore = {};
 
-//Obtain  target file's dependencies 
+//Obtain  target file's dependencies
 const getDependencies = (filename) => {
   //Declare dataRequestObject
   const dataRequests = [];
-  //Stores the name/value of all ImportDeclaration nodes
-  const dependencies = [];
-  //Function/DataRequest name placeholder
-  let parentName = null;
-  let reqName = null;
-  //Data node class template
-  class DataRequestNode {
-    constructor(dataRequestType, position, parentName) {
-      this.dataRequestType = dataRequestType
-      this.position =  position || null
-      this.parentName = parentName || 'Anonymous'
+
+  class DataRequestObject {
+    constructor(dataRequestType, position, variableName) {
+      this.dataRequestType = dataRequestType;
+      this.position = position || null;
+      this.variableName = variableName || "Anonymous";
     }
   }
 
@@ -35,101 +27,78 @@ const getDependencies = (filename) => {
     plugins: ["jsx"],
   });
 
-  //Helper function to check node existence
-  const nodeExistence = (nodePosition, reqName, parentName, exists = false) => {
-    dataRequests.forEach(existingDataRequest => {
-      if (existingDataRequest.position === nodePosition) {
-        exists = true;
-      }
-    })
-    if (!exists) {
-      const dataRequest = new DataRequestNode(reqName, nodePosition, parentName);
-      dataRequests.push(dataRequest);
-      nodeStore[JSON.stringify(nodePosition)] = {reqType: reqName, parentName}
-    }
-    return;
-  }
-
-  //Node types and conditionals
-  const IdentifierPath = {
-    CallExpression: ({node}) => {
-      reqName = node.callee.name
-      if (node.callee.name === 'fetch') { nodeExistence(node.loc.start, reqName, parentName) };
-      if (invocationStore[parentName]) { invocationStore[parentName].push(reqName) };
-    },
-    MemberExpression: ({ node }) => {
-      reqName = node.object.name;
-      if (
-        node.object.name === 'axios' || 
-        node.object.name === 'http' ||
-        node.object.name === 'https' ||
-        node.object.name === 'qwest' ||
-        node.object.name === 'superagent'
-      ) { 
-        nodeExistence(node.loc.start, reqName, parentName) 
-      };
-      if (node.property.name === 'ajax') {
-        reqName = node.property.name;
-        nodeExistence(node.loc.start, reqName, parentName)
-      };
-    },
-    NewExpression: ({ node }) => {
-      reqName = node.callee.name
-      if (node.callee.name === 'XMLHttpRequest') { nodeExistence(node.loc.start, reqName, parentName) };
-    },
-    ReturnStatement: ({ node }) => {
-      if (node.argument) {
-        if (
-          node.argument.type === 'JSXElement' && 
-          parentName && 
-          !componentStore.hasOwnProperty(parentName)
-        ) {
-          componentStore[parentName] = {};
-        }
-      }
-    },
-    JSXExpressionContainer: ({ node }) => {
-      reqName = node.expression.name
-      if (node.expression.name) {
-        if (invocationStore[parentName]) { invocationStore[parentName].push(reqName) };
-      };
-    }
-  }
+  //Stores the name/value of all ImportDeclaration nodes
+  const dependencies = [];
 
   //Traverse AST using babeltraverse to identify imported nodes
   traverse(raw_ast, {
     ImportDeclaration: ({ node }) => {
-      if (node.source.value.indexOf('./') !== -1) dependencies.push(node.source.value);
+      if (node.source.value.indexOf("./") !== -1)
+        dependencies.push(node.source.value);
     },
     Function(path) {
-      if(path.node.id) {
-        parentName = path.node.id.name;
-        if (!invocationStore[parentName]) { invocationStore[parentName] = [] }; 
-      } 
+      const IdentifierPath = {
+        CallExpression: ({ node }) => {
+          if (node.callee.name === "fetch") {
+            const dataRequest = new DataRequestObject("fetch");
+            dataRequests.push(dataRequest);
+          }
+        },
+        MemberExpression: ({ node }) => {
+          if (node.object.name === "axios") {
+            let exists = false;
+            dataRequests.forEach((existingDataRequest) => {
+              if (existingDataRequest.position === node.loc.start) {
+                exists = true;
+              }
+            });
+            if (!exists) {
+              const dataRequest = new DataRequestObject(
+                "axios",
+                node.loc.start
+              );
+              dataRequests.push(dataRequest);
+            }
+          }
+          if (node.property.name === "ajax") {
+            const dataRequest = new DataRequestObject("ajax");
+            dataRequests.push(dataRequest);
+          }
+          if (node.object.name === "http") {
+            const dataRequest = new DataRequestObject("http");
+            dataRequests.push(dataRequest);
+          }
+          if (node.object.name === "https") {
+            const dataRequest = new DataRequestObject("https");
+            dataRequests.push(dataRequest);
+          }
+          if (node.object.name === "qwest") {
+            const dataRequest = new DataRequestObject("qwest");
+            dataRequests.push(dataRequest);
+          }
+          if (node.object.name === "superagent") {
+            const dataRequest = new DataRequestObject("superagent");
+            dataRequests.push(dataRequest);
+          }
+        },
+        NewExpression: ({ node }) => {
+          if (node.callee.name === "XMLHttpRequest") {
+            const dataRequest = new DataRequestObject("XMLHttpRequest");
+            dataRequests.push(dataRequest);
+          }
+        },
+      };
       path.traverse(IdentifierPath);
-      parentName = null;
     },
-    VariableDeclarator(path) {
-      if(path.parent.declarations[0].id.name) {
-        parentName = path.parent.declarations[0].id.name
-        if (!invocationStore[parentName]) { invocationStore[parentName] = [] }
-      } 
-      path.traverse(IdentifierPath);
-      parentName = null;
-    },
-    ExpressionStatement(path) {
-      path.traverse(IdentifierPath);
-    },
-    ClassDeclaration(path) {
-      if(path.node.id) {
-        parentName = path.node.id.name
-        if (!invocationStore[parentName]) { invocationStore[parentName] = [] }
-      } 
-      path.traverse(IdentifierPath);
-      parentName = null;
-    },
-  })
 
+    enter(path) {
+      //Check data request type
+      // if (path.isIdentifier({ name: "fetch" })) {
+      //   const dataRequest = new DataRequestObject('fetch');
+      //   dataRequests.push(dataRequest);
+      // }
+    },
+  });
   const id = ID++;
   cache[filename] = id;
 
@@ -137,37 +106,9 @@ const getDependencies = (filename) => {
     id,
     filename,
     dependencies,
-    dataRequests
+    dataRequests,
   };
 };
-
-// Helper function to complete componentStore
-const componentGraph = (invocationStore, nodeStore, componentStore) => {
-  const filterStore = {};
-  // Filter out for components only in invocationStore
-  for (let invocation in invocationStore) {
-    if (componentStore[invocation]) {
-      filterStore[invocation] = invocationStore[invocation]
-    }
-  }
-  // console.log('FILTERED STORE => ',filterStore);
-  for (let node in nodeStore) {
-    let { parentName, reqType } = nodeStore[node];
-    //Store raw data requests within component
-    if (componentStore[parentName]) {
-      componentStore[parentName][node] = {reqType, parentName}
-    }
-    //Check whether node gets invoked in component
-    for (let component in filterStore) {
-      filterStore[component].forEach((dataReq) => {
-        if (dataReq === parentName) {
-          componentStore[component][node] = {reqType, parentName}
-        }
-      })
-    }
-  }
-  return;
-}
 
 const dependenciesGraph = (entryFile) => {
   const entry = getDependencies(entryFile);
@@ -177,16 +118,16 @@ const dependenciesGraph = (entryFile) => {
     asset.mapping = {};
     const dirname = path.dirname(asset.filename);
 
-    asset.dependencies.forEach(relativePath => {
+    asset.dependencies.forEach((relativePath) => {
       //If there is no file extension, add it
       let absolutePath = path.resolve(dirname, relativePath);
-      let fileCheck = fs.existsSync(absolutePath)
+      let fileCheck = fs.existsSync(absolutePath);
       let child;
 
       if (!fileCheck) {
-        absolutePath = path.resolve(dirname, relativePath + '.js'); //Test for .js
+        absolutePath = path.resolve(dirname, relativePath + ".js"); //Test for .js
         fileCheck = fs.existsSync(absolutePath);
-        if (!fileCheck) absolutePath = absolutePath + 'x'; //Test for .jsx
+        if (!fileCheck) absolutePath = absolutePath + "x"; //Test for .jsx
       }
 
       //Check for duplicate file paths
@@ -195,19 +136,13 @@ const dependenciesGraph = (entryFile) => {
         queue.push(child);
       }
       asset.mapping[relativePath] = cache[absolutePath];
-    })
+    });
   }
   // console.log(queue[0].dataRequests)
   // console.log('DATAREQUESTNODES => ', queue[0].dataRequests)
   // console.log(queue[2].dataRequests)
-  // console.log('COMPONENT STORE => ', componentStore);
-  // console.log('INVOCATION STORE => ', invocationStore);
-  // console.log('NODE STORE => ', nodeStore);
-  // console.log(queue)
-  // console.log(cache);
+  return queue;
+};
 
-  return componentGraph(invocationStore, nodeStore, componentStore);
-}
-
-dependenciesGraph('./src/index.js');
-console.log(componentStore);
+console.log(dependenciesGraph("./src/index.js"));
+console.log(cache);
