@@ -39,8 +39,6 @@ function ProfilePage() {
       </div>
       <h1>{user}</h1>
       <ProfileTimeline user={user} character={character} />
-      <ClassTest />
-      <CreateClassTest />
       <button onClick={fetchUser}>Change Character</button>
     </div>
   );
@@ -278,52 +276,52 @@ let result = fiberwalker({
 
 
 
-const componentStore = {
-  ProfilePage: {
-    children: {
-      div: {
-        children: {
-          Friends: {children: { User }, siblings: Events, Favorites},
-          Events: {children: { Places }, siblings: Friends, Favorites},
-          Favorites: {children: { User, Places }, siblings: Events, Friends},
-        },
-        siblings: {h1, ProfileTimeLine, ClassTest, CreateClassTest, button},
-      },
-     h1: {children: null, siblings: null},
-     ProfileTimeLine: {children: null, siblings: null},
-     ClassTest: {children: null, siblings: null},
-     CreateClassTest: {children: null, siblings: null},
-     button: {children: null, siblings: null},
-    },
-    siblings:
-  }
-}
+// const componentStore = {
+//   ProfilePage: {
+//     children: {
+//       div: {
+//         children: {
+//           Friends: {children: { User }, siblings: Events, Favorites},
+//           Events: {children: { Places }, siblings: Friends, Favorites},
+//           Favorites: {children: { User, Places }, siblings: Events, Friends},
+//         },
+//         siblings: {h1, ProfileTimeLine, ClassTest, CreateClassTest, button},
+//       },
+//      h1: {children: null, siblings: null},
+//      ProfileTimeLine: {children: null, siblings: null},
+//      ClassTest: {children: null, siblings: null},
+//      CreateClassTest: {children: null, siblings: null},
+//      button: {children: null, siblings: null},
+//     },
+//     siblings:
+//   }
+// }
 
-<button onClick={fetch("GET", "/") {return data}}> Click ME </button>
+// <button onClick={fetch("GET", "/") {return data}}> Click ME </button>
 
-<JSX Identifier>name: div</JSX>
-<JSX Identifier>name: h1</JSX>
+// <JSX Identifier>name: div</JSX>
+// <JSX Identifier>name: h1</JSX>
 
- const componentStore = {
-  ProfilePage: {
-    children: {
-      Friends: {children: { User }},
-      Events: {children: { Places }},
-      Favorites: {children: { User, Places }},
-      ProfileTimeLine: {children: null},
-      ClassTest: {children: null},
-      CreateClassTest: {children: null},
-    }
-  },
+//  const componentStore = {
+//   ProfilePage: {
+//     children: {
+//       Friends: {children: { User }},
+//       Events: {children: { Places }},
+//       Favorites: {children: { User, Places }},
+//       ProfileTimeLine: {children: null},
+//       ClassTest: {children: null},
+//       CreateClassTest: {children: null},
+//     }
+//   },
 
-  NavBar: {
-    children: {
-      Friends: {children: { User }},
-      Events: {children: { Places }},
-      Favorites: {children: { User, Places }},
-    }
-  }
+//   NavBar: {
+//     children: {
+//       Friends: {children: { User }},
+//       Events: {children: { Places }},
+//       Favorites: {children: { User, Places }},
+//     }
+//   }
 
-4 lines of code
+// 4 lines of code
 
-ON
+// ON

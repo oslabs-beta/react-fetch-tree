@@ -70,11 +70,11 @@ const getDependencies = (filename) => {
     MemberExpression: ({ node }) => {
       reqName = node.object.name;
       if (
-        reqName === "axios" ||
-        reqName === "http" ||
-        reqName === "https" ||
-        reqName === "qwest" ||
-        reqName === "superagent"
+        node.object.name === "axios" ||
+        node.object.name === "http" ||
+        node.object.name === "https" ||
+        node.object.name === "qwest" ||
+        node.object.name === "superagent"
       ) {
         nodeExistence(node.loc.start, reqName, parentName);
       }
@@ -85,7 +85,7 @@ const getDependencies = (filename) => {
     },
     NewExpression: ({ node }) => {
       reqName = node.callee.name;
-      if (reqName === "XMLHttpRequest") {
+      if (node.callee.name === "XMLHttpRequest") {
         nodeExistence(node.loc.start, reqName, parentName);
       }
     },
@@ -102,7 +102,7 @@ const getDependencies = (filename) => {
     },
     JSXExpressionContainer: ({ node }) => {
       reqName = node.expression.name;
-      if (reqName) {
+      if (node.expression.name) {
         if (invocationStore[parentName]) {
           invocationStore[parentName].push(reqName);
         }
@@ -226,22 +226,18 @@ const dependenciesGraph = (entryFile) => {
 
 //TELL THE USER TO INPUT THEIR SOURCE FILE IN THE LINE BELOW
 const resultObj = JSON.stringify(
-  dependenciesGraph(path.join(__dirname, "../src/index.js"))
+  dependenciesGraph(path.join(__dirname, "../../../INSERT SOURCE FILE HERE"))
 );
-
-console.log('invocationStore', invocationStore)
-console.log('nodeStore', nodeStore)
-console.log('componentStore', componentStore)
 // console.log(typeof resultObj);
-// const componentObj = `const componentObj = ${resultObj}
-// module.exports = componentObj;`;
+const componentObj = `const componentObj = ${resultObj}
+module.exports = componentObj;`;
 
-// fs.writeFileSync(
-//   path.join(__dirname, "./componentStore.js"),
-//   componentObj,
-//   (err) => {
-//     if (err) throw err;
-//     console.log("The file has been saved");
-//   }
-// );
+fs.writeFileSync(
+  path.join(__dirname, "./componentStore.js"),
+  componentObj,
+  (err) => {
+    if (err) throw err;
+    console.log("The file has been saved");
+  }
+);
 

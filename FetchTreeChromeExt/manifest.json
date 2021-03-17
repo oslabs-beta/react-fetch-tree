@@ -1,11 +1,18 @@
 {
     "name": "React Fetch Tree",
     "version": "0.1",
+<<<<<<< HEAD
     "manifest_version": 1,
     "description": "React data request tool in the Chrome developer console.",
     "devtools_page": "devtools.html",
     "browser_action": {
       "default_popup": "./popup.html",
+=======
+    "manifest_version": 2,
+    "description": "React data request tool in the Chrome developer console.",
+    "devtools_page": "devtools.html",
+    "browser_action": {
+>>>>>>> 1f512f27fefab3c06ebd9ccb95d3e28e45423bd8
       "default_title": "React Fetch Tree"
     },
     "background": {
