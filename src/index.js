@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM, { render } from "react-dom";
 import { fetchUser, fetchPosts } from "./fakeApi";
-import obj from "./test";
+import { ClassTest, CreateClassTest } from "./test";
 import { findNodeByComponentName, Utils } from "react-fiber-traverse";
 import Tree from "react-d3-tree";
 import axios from "axios";
@@ -32,6 +32,11 @@ function ProfilePage() {
   }
   return (
     <div>
+      <div>
+        < Friends />
+        < Event />
+        < Favorites />
+      </div>
       <h1>{user}</h1>
       <ProfileTimeline user={user} character={character} />
       <button onClick={fetchUser}>Change Character</button>
@@ -65,6 +70,8 @@ function ProfileTimeline(props) {
           <li key={idx}>{post}</li>
         ))}
       </ul>
+      <ClassTest />
+      <CreateClassTest />
       <Fetchtree />
     </div>
   );
@@ -266,3 +273,55 @@ let result = fiberwalker({
   },
   sibling: null,
 });
+
+
+
+// const componentStore = {
+//   ProfilePage: {
+//     children: {
+//       div: {
+//         children: {
+//           Friends: {children: { User }, siblings: Events, Favorites},
+//           Events: {children: { Places }, siblings: Friends, Favorites},
+//           Favorites: {children: { User, Places }, siblings: Events, Friends},
+//         },
+//         siblings: {h1, ProfileTimeLine, ClassTest, CreateClassTest, button},
+//       },
+//      h1: {children: null, siblings: null},
+//      ProfileTimeLine: {children: null, siblings: null},
+//      ClassTest: {children: null, siblings: null},
+//      CreateClassTest: {children: null, siblings: null},
+//      button: {children: null, siblings: null},
+//     },
+//     siblings:
+//   }
+// }
+
+// <button onClick={fetch("GET", "/") {return data}}> Click ME </button>
+
+// <JSX Identifier>name: div</JSX>
+// <JSX Identifier>name: h1</JSX>
+
+//  const componentStore = {
+//   ProfilePage: {
+//     children: {
+//       Friends: {children: { User }},
+//       Events: {children: { Places }},
+//       Favorites: {children: { User, Places }},
+//       ProfileTimeLine: {children: null},
+//       ClassTest: {children: null},
+//       CreateClassTest: {children: null},
+//     }
+//   },
+
+//   NavBar: {
+//     children: {
+//       Friends: {children: { User }},
+//       Events: {children: { Places }},
+//       Favorites: {children: { User, Places }},
+//     }
+//   }
+
+// 4 lines of code
+
+// ON

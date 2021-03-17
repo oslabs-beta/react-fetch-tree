@@ -1,3 +1,4 @@
+const id = 1;
 fetch(`https://swapi.dev/api/people/${id}/`)
   .then((response) => response.json())
   .then((data) => {
@@ -5,7 +6,7 @@ fetch(`https://swapi.dev/api/people/${id}/`)
     return starships;
 });
 
-const test1 = fetch(`https://swapi.dev/api/people/${id}/`)
+export const test1 = fetch(`https://swapi.dev/api/people/${id}/`)
   .then((response) => response.json())
   .then((data) => {
     const { starships } = data;
