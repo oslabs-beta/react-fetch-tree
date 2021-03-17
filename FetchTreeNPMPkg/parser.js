@@ -47,7 +47,7 @@ const getDependencies = (filename) => {
         nodePosition,
         parentName
       );
-      dataRequests.push(dataRequest);
+
       nodeStore[`line: ${nodePosition['line']}, column: ${nodePosition['column']}`] = {
         reqType: reqName,
         parentName,
@@ -70,11 +70,11 @@ const getDependencies = (filename) => {
     MemberExpression: ({ node }) => {
       reqName = node.object.name;
       if (
-        node.object.name === "axios" ||
-        node.object.name === "http" ||
-        node.object.name === "https" ||
-        node.object.name === "qwest" ||
-        node.object.name === "superagent"
+        reqName === "axios" ||
+        reqName === "http" ||
+        reqName === "https" ||
+        reqName === "qwest" ||
+        reqName === "superagent"
       ) {
         nodeExistence(node.loc.start, reqName, parentName);
       }
@@ -85,7 +85,7 @@ const getDependencies = (filename) => {
     },
     NewExpression: ({ node }) => {
       reqName = node.callee.name;
-      if (node.callee.name === "XMLHttpRequest") {
+      if (reqName === "XMLHttpRequest") {
         nodeExistence(node.loc.start, reqName, parentName);
       }
     },
@@ -161,7 +161,6 @@ const getDependencies = (filename) => {
     id,
     filename,
     dependencies,
-    dataRequests,
   };
 };
 
@@ -174,7 +173,6 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
       filterStore[invocation] = invocationStore[invocation];
     }
   }
-  console.log('FILTERED STORE => ',filterStore);
   for (let node in nodeStore) {
     let { parentName, reqType } = nodeStore[node];
     //Store raw data requests within component
@@ -198,7 +196,6 @@ const dependenciesGraph = (entryFile) => {
   const queue = [entry];
 
   for (const asset of queue) {
-    asset.mapping = {};
     const dirname = path.dirname(asset.filename);
 
     asset.dependencies.forEach((relativePath) => {
@@ -218,7 +215,6 @@ const dependenciesGraph = (entryFile) => {
         child = getDependencies(absolutePath);
         queue.push(child);
       }
-      asset.mapping[relativePath] = cache[absolutePath];
     });
   }
   return componentGraph(invocationStore, nodeStore, componentStore);
@@ -226,9 +222,9 @@ const dependenciesGraph = (entryFile) => {
 
 //TELL THE USER TO INPUT THEIR SOURCE FILE IN THE LINE BELOW
 const resultObj = JSON.stringify(
-  dependenciesGraph(path.join(__dirname, "../../../INSERT SOURCE FILE HERE"))
+  dependenciesGraph(path.join(__dirname, "../src/index.js"))
 );
-// console.log(typeof resultObj);
+
 const componentObj = `const componentObj = ${resultObj}
 module.exports = componentObj;`;
 
