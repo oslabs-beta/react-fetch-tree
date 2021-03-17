@@ -3,9 +3,8 @@ import React from 'react';
 
 console.log(test1);
 console.log(testDR);
-export const obj = {};
 
-class ClassTest extends React.Component {
+export class ClassTest extends React.Component {
   componentDidMount() {
     fetchUser();
   }
@@ -35,5 +34,3 @@ export const CreateClassTest = React.createClass({
   }  
     
 })
-
-export { ClassTest };

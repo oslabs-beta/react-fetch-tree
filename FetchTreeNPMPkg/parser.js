@@ -8,7 +8,7 @@ const invocationStore = {};
 const nodeStore = {};
 const componentStore = {};
 
-//Obtain  target file's dependencies 
+//Obtain  target file's dependencies
 const getDependencies = (filename) => {
   //Declare dataRequestObject
   const dataRequests = [];
@@ -20,9 +20,9 @@ const getDependencies = (filename) => {
   //Data node class template
   class DataRequestNode {
     constructor(dataRequestType, position, parentName) {
-      this.dataRequestType = dataRequestType
-      this.position =  position || null
-      this.parentName = parentName || 'Anonymous'
+      this.dataRequestType = dataRequestType;
+      this.position = position || null;
+      this.parentName = parentName || "Anonymous";
     }
   }
 
@@ -36,51 +36,64 @@ const getDependencies = (filename) => {
 
   //Helper function to check node existence
   const nodeExistence = (nodePosition, reqName, parentName, exists = false) => {
-    dataRequests.forEach(existingDataRequest => {
+    dataRequests.forEach((existingDataRequest) => {
       if (existingDataRequest.position === nodePosition) {
         exists = true;
       }
-    })
+    });
     if (!exists) {
-      const dataRequest = new DataRequestNode(reqName, nodePosition, parentName);
+      const dataRequest = new DataRequestNode(
+        reqName,
+        nodePosition,
+        parentName
+      );
       dataRequests.push(dataRequest);
-      nodeStore[JSON.stringify(nodePosition)] = {reqType: reqName, parentName}
+      nodeStore[`line: ${nodePosition['line']}, column: ${nodePosition['column']}`] = {
+        reqType: reqName,
+        parentName,
+      };
     }
     return;
-  }
+  };
 
   //Node types and conditionals
   const IdentifierPath = {
-    CallExpression: ({node}) => {
-      reqName = node.callee.name
-      if (node.callee.name === 'fetch') { nodeExistence(node.loc.start, reqName, parentName) };
-      if (invocationStore[parentName]) { invocationStore[parentName].push(reqName) };
+    CallExpression: ({ node }) => {
+      reqName = node.callee.name;
+      if (node.callee.name === "fetch") {
+        nodeExistence(node.loc.start, reqName, parentName);
+      }
+      if (invocationStore[parentName]) {
+        invocationStore[parentName].push(reqName);
+      }
     },
     MemberExpression: ({ node }) => {
       reqName = node.object.name;
       if (
-        node.object.name === 'axios' || 
-        node.object.name === 'http' ||
-        node.object.name === 'https' ||
-        node.object.name === 'qwest' ||
-        node.object.name === 'superagent'
-      ) { 
-        nodeExistence(node.loc.start, reqName, parentName) 
-      };
-      if (node.property.name === 'ajax') {
+        reqName === "axios" ||
+        reqName === "http" ||
+        reqName === "https" ||
+        reqName === "qwest" ||
+        reqName === "superagent"
+      ) {
+        nodeExistence(node.loc.start, reqName, parentName);
+      }
+      if (node.property.name === "ajax") {
         reqName = node.property.name;
-        nodeExistence(node.loc.start, reqName, parentName)
-      };
+        nodeExistence(node.loc.start, reqName, parentName);
+      }
     },
     NewExpression: ({ node }) => {
-      reqName = node.callee.name
-      if (node.callee.name === 'XMLHttpRequest') { nodeExistence(node.loc.start, reqName, parentName) };
+      reqName = node.callee.name;
+      if (reqName === "XMLHttpRequest") {
+        nodeExistence(node.loc.start, reqName, parentName);
+      }
     },
     ReturnStatement: ({ node }) => {
       if (node.argument) {
         if (
-          node.argument.type === 'JSXElement' && 
-          parentName && 
+          node.argument.type === "JSXElement" || node.argument.type === "JSXFragment" &&
+          parentName &&
           !componentStore.hasOwnProperty(parentName)
         ) {
           componentStore[parentName] = {};
@@ -88,31 +101,41 @@ const getDependencies = (filename) => {
       }
     },
     JSXExpressionContainer: ({ node }) => {
-      reqName = node.expression.name
-      if (node.expression.name) {
-        if (invocationStore[parentName]) { invocationStore[parentName].push(reqName) };
-      };
-    }
-  }
+      reqName = node.expression.name;
+      if (reqName) {
+        if (invocationStore[parentName]) {
+          invocationStore[parentName].push(reqName);
+        }
+      }
+    },
+  };
 
   //Traverse AST using babeltraverse to identify imported nodes
   traverse(raw_ast, {
     ImportDeclaration: ({ node }) => {
-      if (node.source.value.indexOf('./') !== -1) dependencies.push(node.source.value);
+      if (node.source.value.indexOf('./') !== -1) {
+        if (node.specifiers.length !== 0) {
+          dependencies.push(node.source.value);
+        }
+      }
     },
     Function(path) {
-      if(path.node.id) {
+      if (path.node.id) {
         parentName = path.node.id.name;
-        if (!invocationStore[parentName]) { invocationStore[parentName] = [] }; 
-      } 
+        if (!invocationStore[parentName]) {
+          invocationStore[parentName] = [];
+        }
+      }
       path.traverse(IdentifierPath);
       parentName = null;
     },
     VariableDeclarator(path) {
-      if(path.parent.declarations[0].id.name) {
-        parentName = path.parent.declarations[0].id.name
-        if (!invocationStore[parentName]) { invocationStore[parentName] = [] }
-      } 
+      if (path.parent.declarations[0].id.name) {
+        parentName = path.parent.declarations[0].id.name;
+        if (!invocationStore[parentName]) {
+          invocationStore[parentName] = [];
+        }
+      }
       path.traverse(IdentifierPath);
       parentName = null;
     },
@@ -120,14 +143,16 @@ const getDependencies = (filename) => {
       path.traverse(IdentifierPath);
     },
     ClassDeclaration(path) {
-      if(path.node.id) {
-        parentName = path.node.id.name
-        if (!invocationStore[parentName]) { invocationStore[parentName] = [] }
-      } 
+      if (path.node.id) {
+        parentName = path.node.id.name;
+        if (!invocationStore[parentName]) {
+          invocationStore[parentName] = [];
+        }
+      }
       path.traverse(IdentifierPath);
       parentName = null;
     },
-  })
+  });
 
   const id = ID++;
   cache[filename] = id;
@@ -136,7 +161,7 @@ const getDependencies = (filename) => {
     id,
     filename,
     dependencies,
-    dataRequests
+    dataRequests,
   };
 };
 
@@ -146,27 +171,27 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
   // Filter out for components only in invocationStore
   for (let invocation in invocationStore) {
     if (componentStore[invocation]) {
-      filterStore[invocation] = invocationStore[invocation]
+      filterStore[invocation] = invocationStore[invocation];
     }
   }
-  // console.log('FILTERED STORE => ',filterStore);
+  console.log('FILTERED STORE => ',filterStore);
   for (let node in nodeStore) {
     let { parentName, reqType } = nodeStore[node];
     //Store raw data requests within component
     if (componentStore[parentName]) {
-      componentStore[parentName][node] = {reqType, parentName}
+      componentStore[parentName][node] = { reqType, parentName };
     }
     //Check whether node gets invoked in component
     for (let component in filterStore) {
       filterStore[component].forEach((dataReq) => {
         if (dataReq === parentName) {
-          componentStore[component][node] = {reqType, parentName}
+          componentStore[component][node] = { reqType, parentName };
         }
-      })
+      });
     }
   }
-  return;
-}
+  return componentStore;
+};
 
 const dependenciesGraph = (entryFile) => {
   const entry = getDependencies(entryFile);
@@ -176,16 +201,16 @@ const dependenciesGraph = (entryFile) => {
     asset.mapping = {};
     const dirname = path.dirname(asset.filename);
 
-    asset.dependencies.forEach(relativePath => {
+    asset.dependencies.forEach((relativePath) => {
       //If there is no file extension, add it
       let absolutePath = path.resolve(dirname, relativePath);
-      let fileCheck = fs.existsSync(absolutePath)
+      let fileCheck = fs.existsSync(absolutePath);
       let child;
 
       if (!fileCheck) {
-        absolutePath = path.resolve(dirname, relativePath + '.js'); //Test for .js
+        absolutePath = path.resolve(dirname, relativePath + ".js"); //Test for .js
         fileCheck = fs.existsSync(absolutePath);
-        if (!fileCheck) absolutePath = absolutePath + 'x'; //Test for .jsx
+        if (!fileCheck) absolutePath = absolutePath + "x"; //Test for .jsx
       }
 
       //Check for duplicate file paths
@@ -194,19 +219,29 @@ const dependenciesGraph = (entryFile) => {
         queue.push(child);
       }
       asset.mapping[relativePath] = cache[absolutePath];
-    })
+    });
   }
-  // console.log(queue[0].dataRequests)
-  // console.log('DATAREQUESTNODES => ', queue[0].dataRequests)
-  // console.log(queue[2].dataRequests)
-  // console.log('COMPONENT STORE => ', componentStore);
-  // console.log('INVOCATION STORE => ', invocationStore);
-  // console.log('NODE STORE => ', nodeStore);
-  // console.log(queue)
-  // console.log(cache);
-
   return componentGraph(invocationStore, nodeStore, componentStore);
-}
+};
 
-dependenciesGraph('./src/index.js');
-console.log(componentStore);
+//TELL THE USER TO INPUT THEIR SOURCE FILE IN THE LINE BELOW
+const resultObj = JSON.stringify(
+  dependenciesGraph(path.join(__dirname, "../src/index.js"))
+);
+
+console.log('invocationStore', invocationStore)
+console.log('nodeStore', nodeStore)
+console.log('componentStore', componentStore)
+// console.log(typeof resultObj);
+// const componentObj = `const componentObj = ${resultObj}
+// module.exports = componentObj;`;
+
+// fs.writeFileSync(
+//   path.join(__dirname, "./componentStore.js"),
+//   componentObj,
+//   (err) => {
+//     if (err) throw err;
+//     console.log("The file has been saved");
+//   }
+// );
+
