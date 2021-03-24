@@ -1,8 +1,11 @@
 const fiberwalker = (
   node,
   componentStore,
-  treedata = { name: "App", children: [] }
+  treedata = { name: "App", children: [] } //needs to be refactored since the fiber really starts at Provider
 ) => {
+
+  if (typeof node !== 'object' && typeof componentStore !== 'object') return null;
+
   const dataReqArr = [
     "fetch",
     "axios",

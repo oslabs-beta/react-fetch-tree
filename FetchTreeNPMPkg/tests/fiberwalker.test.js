@@ -20,45 +20,47 @@ describe('fiberwalker', () => {
       child: {
         child: {
           child: {
-            child: {
-              child: null,
-              sibling: {
-                child: {
-                  child: null,
-                  sibling: {
-                    child: null,
-                    sibling: null,
-                    elementType: { name: "Recommendations" },
-                  },
-                  elementType: { name: "Favorites" },
-                },
+            child: null,
+            sibling: {
+              child: {
+                child: null,
                 sibling: {
                   child: null,
                   sibling: null,
-                  elementType: { name: "Footer" },
+                  elementType: { name: "Recommendations" },
                 },
-                elementType: { name: "Body" },
+                elementType: { name: "Favorites" },
               },
-              elementType: { name: "NavBar" },
+              sibling: {
+                child: null,
+                sibling: null,
+                elementType: { name: "Footer" },
+              },
+              elementType: { name: "Body" },
             },
-            sibling: null,
-            elementType: { name: "App" },
+            elementType: { name: "NavBar" },
           },
-        sibling: null,
-        elementType: { $$typeof: "Symbol(react.provider)" },
+          sibling: null,
+          elementType: { name: "App" },
+        },
+      sibling: null,
+      elementType: { $$typeof: "Symbol(react.provider)" },
       },
       sibling: null,
       elementType: { name: "Provider" },
     },
-    sibling: null,
-    elementType: null
   }
-}
+
+  it('componentStore should be an object', () => {
+    expect(typeof componentStore).toBe('object')
+  })
 
   it('Should return an object', () => {
     const result = fiberwalker(fiberTree, componentStore);
     expect(typeof result).toBe('object');
   })
+
+
 
   // it('Should return a "containsFetch" key in Favorites with the value of "fetch"', () => {
   //   // const result = fiberwalker(fiberTree)
@@ -91,7 +93,6 @@ describe('fiberwalker', () => {
 //   },
 // ],
 
-
   // <App>
     //   <NavBar></NavBar>
     //   <Body>
@@ -100,43 +101,3 @@ describe('fiberwalker', () => {
     //   </Body>
     //   <Footer></Footer>
     // </App>
-
-  //   child: {
-  //     child: {
-  //       child: {
-  //         child: {
-  //           child: {
-  //             child: null,
-  //             sibling: {
-  //               child: { child: null, sibling: null, elementType: "div" },
-  //               sibling: {
-  //                 child: {
-  //                   child: {
-  //                     child: { child: null, sibling: null, elementType: "ul" },
-  //                     sibling: null,
-  //                     elementType: "div",
-  //                   },
-  //                   sibling: null,
-  //                   elementType: "div",
-  //                 },
-  //                 sibling: null,
-  //                 elementType: { name: "NavBar" },
-  //               },
-  //               elementType: { name: "TabsContainer" },
-  //             },
-  //             elementType: { name: "Header" },
-  //           },
-  //           sibling: null,
-  //           elementType: "div",
-  //         },
-  //         sibling: null,
-  //         elementType: { name: "App" },
-  //       },
-  //       sibling: null,
-  //       elementType: { $$typeof: "Symbol(react.provider)" },
-  //     },
-  //     sibling: null,
-  //     elementType: { name: "Provider" },
-  //   },
-  //   sibling: null,
-  // }
