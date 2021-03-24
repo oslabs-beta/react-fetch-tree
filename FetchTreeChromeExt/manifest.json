@@ -1,21 +1,20 @@
 {
-    "name": "React Fetch Tree",
-    "version": "0.1",
     "manifest_version": 2,
-    "description": "React data request tool in the Chrome developer console.",
-    "devtools_page": "devtools.html",
-    "browser_action": {
-      "default_title": "React Fetch Tree"
-    },
-    "background": {
+  "name": "React Fetch Tree",
+    "description": "Demo extension for Google Chrome browser",
+    "version": "1.0",
+    "background":{
       "scripts": ["background.js"],
       "persistent": false
     },
     "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["contentScript.js"]
-      }
+      {"matches": ["<all_urls>"],
+      "js": ["contentScript.js"]}
     ],
-    "permissions": ["storage", "activeTab", "<all_urls>", "tabs"]
+    "web_accessible_resources": ["injectScript.js"],
+  "permissions": [
+      "tabs",
+      "activeTab"
+    ],
+    "devtools_page": "devtools.html"
   }
