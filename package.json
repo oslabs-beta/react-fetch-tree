@@ -7,7 +7,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "dependencies": {
@@ -20,14 +20,15 @@
     "react-scripts": "3.0.1"
   },
   "devDependencies": {
-    "css-loader": "^5.1.3",
-    "copy-webpack-plugin": "^8.0.0",
-    "style-loader": "^2.0.0",
-    "webpack": "^5.26.0",
     "@babel/core": "^7.13.10",
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-react": "^7.10.4",
     "babel-loader": "^8.1.0",
+    "copy-webpack-plugin": "^8.0.0",
+    "css-loader": "^5.1.3",
+    "jest": "^26.6.3",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.26.0",
     "webpack-cli": "^3.3.12"
   },
   "browserslist": [

@@ -1,0 +1,136 @@
+const { null } = require("../componentStore.js");
+const { fiberwalker } = require("../fiberwalker.js");
+
+describe('fiberwalker', () => {
+  const componentStore = {
+    "NavBar": {
+      "line: 27, column: 2":{"reqType":"fetch","parentName":Logo},
+      "line: 52, column: 2":{"reqType":"axios","parentName":About},
+    },
+    "Body": {
+      "line: 27, column: 2":{"reqType":"fetch","parentName":Favorites},
+      "line: 52, column: 2":{"reqType":"axios","parentName":Friends},
+    },
+    "Footer": {
+      "line: 27, column: 2":{"reqType":"fetch","parentName":Beaver},
+    }
+  };
+  const fiberTree = {
+    child: {
+      child: {
+        child: {
+          child: {
+            child: {
+              child: null,
+              sibling: {
+                child: {
+                  child: null,
+                  sibling: {
+                    child: null,
+                    sibling: null,
+                    elementType: "Recommendations",
+                  },
+                  elementType: "Favorites",
+                },
+                sibling: {
+                  child: null,
+                  sibling: null,
+                  elementType: "Footer",
+                },
+                elementType: "Body",
+              },
+              elementType: "NavBar",
+            },
+            sibling: null,
+            elementType: "App",
+          },
+        sibling: null,
+        elementType: { $$typeof: "Symbol(react.provider)" },
+      },
+      sibling: null,
+      elementType: { name: "Provider" },
+    },
+    sibling: null,
+  }
+}
+
+    // <App>
+    //   <NavBar></NavBar>
+    //   <Body>
+    //     <Favorites></Favorites>
+    //     <Recommendations></Recommendations>
+    //   </Body>
+    //   <Footer></Footer>
+    // </App>
+
+
+  //   child: {
+  //     child: {
+  //       child: {
+  //         child: {
+  //           child: {
+  //             child: null,
+  //             sibling: {
+  //               child: { child: null, sibling: null, elementType: "div" },
+  //               sibling: {
+  //                 child: {
+  //                   child: {
+  //                     child: { child: null, sibling: null, elementType: "ul" },
+  //                     sibling: null,
+  //                     elementType: "div",
+  //                   },
+  //                   sibling: null,
+  //                   elementType: "div",
+  //                 },
+  //                 sibling: null,
+  //                 elementType: { name: "NavBar" },
+  //               },
+  //               elementType: { name: "TabsContainer" },
+  //             },
+  //             elementType: { name: "Header" },
+  //           },
+  //           sibling: null,
+  //           elementType: "div",
+  //         },
+  //         sibling: null,
+  //         elementType: { name: "App" },
+  //       },
+  //       sibling: null,
+  //       elementType: { $$typeof: "Symbol(react.provider)" },
+  //     },
+  //     sibling: null,
+  //     elementType: { name: "Provider" },
+  //   },
+  //   sibling: null,
+  // }
+
+  it('Should return a "containsFetch" key in Favorites with the value of "fetch"', () => {
+    // const result = fiberwalker(fiberTree)
+    expect(treedata.children[1].children[0].toHaveProperty('containsFetch', 'fetch'))
+  })
+});
+
+// name: App,
+// children: [
+//   {
+//     name: NavBar,
+//     children: [],
+//   },
+//   {
+//     name: Body,
+//     children: [
+//       {
+//         name: Favorites,
+//         children: [],
+//       },
+//       {
+//         name: Recommendations,
+//         children: [],
+//       },
+//     ],
+//   },
+//   {
+//     name: Footer,
+//     children: [],
+//   },
+// ],
