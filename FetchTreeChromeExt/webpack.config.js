@@ -1,46 +1,74 @@
-const path = require('path');
-const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require("path");
+
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const destination = path.resolve(__dirname, "build");
 
 module.exports = {
-  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
-
-  devtool: 'cheap-source-map',
-
+  mode: "development",
   entry: {
-    bundle: './extension/frontend/devtools.js',
-    installHook: './extension/backend/installHook.js',
+    app: "./src/components/index.jsx",
+    injectScript: "./injectScript.js",
+    contentScript: "./contentScript.js",
   },
-
   output: {
-    filename: '[name].js',
-    path: `${__dirname}/build/extension`,
+    path: path.resolve("./build/"),
+    filename: "[name].js",
+    publicPath: ".",
   },
-
+  devtool: "cheap-module-source-map",
   module: {
     rules: [
       {
-        test: /\.sass$|\.scss$|\.css$/,
-        loaders: ['style-loader', 'css-loader', 'sass-loader'],
+        test: /\.(svg|png|jpg|gif)$/,
+        use: {
+          loader: "file-loader",
+          options: {
+            name: "[name].[hash].[ext]",
+            outputPath: "imgs",
+          },
+        },
       },
       {
-        test: /\.(gif|png|jpe?g|svg|webp)$/i,
-        loaders: [
-          'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
-          'image-webpack-loader',
+        test: /\.jsx?$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: "babel-loader",
+          options: { presets: ["@babel/preset-env", "@babel/preset-react"] },
+        },
+      },
+      {
+        test: /\.tsx?$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
+      { test: /\.(css)$/, use: ["style-loader", "css-loader"] },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          // Creates `style` nodes from JS strings
+          "style-loader",
+          // Translates CSS into CommonJS
+          "css-loader",
+          // Compiles Sass to CSS
+          "sass-loader",
         ],
       },
     ],
   },
-
+  resolve: {
+    extensions: [".js", ".jsx", ".scss", ".css"],
+  },
   plugins: [
-    new CopyWebpackPlugin([
-      // {output}/to/file.txt
-      { from: 'extension/manifest.json', to: '../extension/manifest.json' },
-      { from: 'extension/content-script.js', to: '../extension/content-script.js' },
-      { from: 'extension/background.js', to: '../extension/background.js' },
-      { from: 'extension/devtools.html', to: '../extension/devtools.html' },
-      { from: 'extension/asset/', to: '../extension/asset/' },
-    ]),
+    new CleanWebpackPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: `./manifest.json`, to: destination },
+        { from: `./src/devtools/devtools.html`, to: destination },
+        { from: `./src/devtools/devtools.js`, to: destination },
+        { from: `./src/index.html`, to: destination },
+        { from: `./background.js`, to: destination },
+      ],
+    }),
   ],
 };
