@@ -4,7 +4,12 @@ const fiberwalker = (
   treedata = { name: "App", children: [] } //needs to be refactored since the fiber really starts at Provider
 ) => {
 
-  if (typeof node !== 'object' && typeof componentStore !== 'object') return null;
+  if (typeof node !== 'object' ||
+      typeof componentStore !== 'object' ||
+      Array.isArray(node) || 
+      Array.isArray(componentStore)) {
+        return null;
+      } 
 
   const dataReqArr = [
     "fetch",

@@ -52,7 +52,8 @@ describe('fiberwalker', () => {
   }
 
   it('componentStore should be an object', () => {
-    expect(typeof componentStore).toBe('object')
+    // const result = fiberwalker(fiberTree, []);
+    expect(fiberwalker([], [])).toBeNull();
   })
 
   it('Should return an object', () => {
