@@ -1,20 +1,20 @@
-const { null } = require("../componentStore.js");
-const { fiberwalker } = require("../fiberwalker.js");
+const fiberwalker = require("../fiberwalker.js");
 
 describe('fiberwalker', () => {
   const componentStore = {
     "NavBar": {
-      "line: 27, column: 2":{"reqType":"fetch","parentName":Logo},
-      "line: 52, column: 2":{"reqType":"axios","parentName":About},
+      "line: 27, column: 2":{"reqType":"fetch","parentName":null},
+      "line: 52, column: 2":{"reqType":"axios","parentName":"About"},
     },
     "Body": {
-      "line: 27, column: 2":{"reqType":"fetch","parentName":Favorites},
-      "line: 52, column: 2":{"reqType":"axios","parentName":Friends},
+      "line: 27, column: 2":{"reqType":"fetch","parentName":"Favorites"},
+      "line: 52, column: 2":{"reqType":"axios","parentName":"Friends"},
     },
     "Footer": {
-      "line: 27, column: 2":{"reqType":"fetch","parentName":Beaver},
+      "line: 27, column: 2":{"reqType":"fetch","parentName":null},
     }
   };
+
   const fiberTree = {
     child: {
       child: {
@@ -28,21 +28,21 @@ describe('fiberwalker', () => {
                   sibling: {
                     child: null,
                     sibling: null,
-                    elementType: "Recommendations",
+                    elementType: { name: "Recommendations" },
                   },
-                  elementType: "Favorites",
+                  elementType: { name: "Favorites" },
                 },
                 sibling: {
                   child: null,
                   sibling: null,
-                  elementType: "Footer",
+                  elementType: { name: "Footer" },
                 },
-                elementType: "Body",
+                elementType: { name: "Body" },
               },
-              elementType: "NavBar",
+              elementType: { name: "NavBar" },
             },
             sibling: null,
-            elementType: "App",
+            elementType: { name: "App" },
           },
         sibling: null,
         elementType: { $$typeof: "Symbol(react.provider)" },
@@ -51,10 +51,48 @@ describe('fiberwalker', () => {
       elementType: { name: "Provider" },
     },
     sibling: null,
+    elementType: null
   }
 }
 
-    // <App>
+  it('Should return an object', () => {
+    const result = fiberwalker(fiberTree, componentStore);
+    expect(typeof result).toBe('object');
+  })
+
+  // it('Should return a "containsFetch" key in Favorites with the value of "fetch"', () => {
+  //   // const result = fiberwalker(fiberTree)
+  //   expect(treedata.children[1].children[0].toHaveProperty('containsFetch', 'fetch'))
+  // })
+});
+
+// name: App,
+// children: [
+//   {
+//     name: NavBar,
+//     children: [],
+//   },
+//   {
+//     name: Body,
+//     children: [
+//       {
+//         name: Favorites,
+//         children: [],
+//       },
+//       {
+//         name: Recommendations,
+//         children: [],
+//       },
+//     ],
+//   },
+//   {
+//     name: Footer,
+//     children: [],
+//   },
+// ],
+
+
+  // <App>
     //   <NavBar></NavBar>
     //   <Body>
     //     <Favorites></Favorites>
@@ -62,7 +100,6 @@ describe('fiberwalker', () => {
     //   </Body>
     //   <Footer></Footer>
     // </App>
-
 
   //   child: {
   //     child: {
@@ -103,34 +140,3 @@ describe('fiberwalker', () => {
   //   },
   //   sibling: null,
   // }
-
-  it('Should return a "containsFetch" key in Favorites with the value of "fetch"', () => {
-    // const result = fiberwalker(fiberTree)
-    expect(treedata.children[1].children[0].toHaveProperty('containsFetch', 'fetch'))
-  })
-});
-
-// name: App,
-// children: [
-//   {
-//     name: NavBar,
-//     children: [],
-//   },
-//   {
-//     name: Body,
-//     children: [
-//       {
-//         name: Favorites,
-//         children: [],
-//       },
-//       {
-//         name: Recommendations,
-//         children: [],
-//       },
-//     ],
-//   },
-//   {
-//     name: Footer,
-//     children: [],
-//   },
-// ],

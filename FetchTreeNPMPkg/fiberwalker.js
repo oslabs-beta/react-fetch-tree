@@ -17,7 +17,6 @@ const fiberwalker = (
     this.name = name;
     this.children = [];
   }
-  console.log("component store", componentStore);
   if (node.child.sibling) {
     node = node.child.sibling;
     let name;
@@ -122,6 +121,7 @@ const fiberwalker = (
       );
     }
   }
+  console.log(treedata.children[0])
   return treedata;
 };
 
