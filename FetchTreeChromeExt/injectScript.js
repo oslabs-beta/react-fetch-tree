@@ -1,5 +1,37 @@
 console.log("<----- Injected script started running ----->");
+//declare object to be consumed by fiberwalker
+let componentObj;
 
+//send message to client side notifying that inject script has been initialized
+window.postMessage({ type: 'message', payload: "InjectScriptInitialized" }, '*');
+
+//set up listener for messages coming from client side
+window.addEventListener(
+  "message",
+  function (event) {
+    console.log('event received in injectScript', event.data);
+    // only accept messages from the current tab
+    if (event.source != window) return;
+
+    //receiving essential info from page
+    if (
+      event.data.type &&
+      event.data.type == "FROM_PAGE" &&
+      typeof chrome.app.isInstalled !== "undefined"
+    ) {
+      chrome.runtime.sendMessage({ essential: event.data.essential });
+    }
+
+    //conditional check to see if componentObj has been received from client side FetchTreeHook
+    if (event.data.type && event.data.type === 'componentObj') {
+      console.log('componentObj received in injectScript', event.data);
+      componentObj = event.data.payload;
+    }
+  },
+  false
+);
+
+//is this necessary?
 function parseEssentialDetails() {
   let main = {};
 
@@ -8,7 +40,7 @@ function parseEssentialDetails() {
   return main;
 }
 
-//FIBERWALKER NEEDS COMPONENT STORE 
+//fiberwalker function 
 const fiberwalker = (
   node,
   componentStore,
@@ -28,7 +60,6 @@ const fiberwalker = (
     this.name = name;
     this.children = [];
   }
-  console.log("component store", componentStore);
   if (node.child.sibling) {
     node = node.child.sibling;
     let name;
@@ -136,27 +167,18 @@ const fiberwalker = (
   return treedata;
 };
 
+//declaring variables needed for onCommitFiberRoot function
 let __ReactFiberDOM;
 const devTools = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 let orgChart;
-// let componentObj = {'App' : 'Hello', }
-const componentObj = { "ProfileTimeline": {}, "ClassTest": {}, "TestComponent": { "line: 27, column: 2": { "reqType": "fetch", "parentName": null }, "line: 28, column: 2": { "reqType": "axios", "parentName": null }, "line: 2, column: 0": { "reqType": "fetch", "parentName": null }, "line: 26, column: 8": { "reqType": "fetch", "parentName": null }, "line: 37, column: 9": { "reqType": "fetch", "parentName": null } }, "CreateClassTest": {} }
 
-// const orgChartCreator = () => {
 devTools.onCommitFiberRoot = (function (original) {
   return function (...args) {
     __ReactFiberDOM = args[1];
     console.log("dom: ", __ReactFiberDOM.current);
-    // console.log("inside onCommit", componentObj);
-    //this was here previously
-    // orgChart["renderTree"] = fiberwalker(
-    //   __ReactFiberDOM.current,
-    //   //pass in empty object instead of componentObj
-    //   componentObj;
-    // );
+    console.log("componentObj in onCommitFiberRoot", componentObj);
     orgChart = fiberwalker(
       __ReactFiberDOM.current,
-      //pass in empty object instead of componentObj
       componentObj
     );
     console.log("orgChart: ", orgChart);
@@ -164,9 +186,9 @@ devTools.onCommitFiberRoot = (function (original) {
     return original(...args);
   };
 })(devTools.onCommitFiberRoot);
-// };
 
+//is this necessary?
 setInterval(() => {
   let essential = parseEssentialDetails();
   window.postMessage({ type: "FROM_PAGE", essential });
-}, 500);
+}, 10000000);

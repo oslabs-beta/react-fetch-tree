@@ -1,18 +1,16 @@
 {
   "name": "reactfetchtree",
-  "version": "0.0.1",
-  "description": "Example of using React for developing Google Chrome DevTools Extension",
+  "version": "1.0",
+  "description": "React Fetch Tree Google Chrome DevTools Extension",
   "scripts": {
-    "build": "webpack",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:yurist38/chromeDevToolsReactBoilerplate.git"
+    "url": "git+https://github.com/oslabs-beta/react-fetch-tree"
   },
-  "author": "Yuri Drabik <yurist38@mail.ru>",
+  "author": "React Fetch Tree",
   "dependencies": {
-    "@reactfetchtree/rft": "^2.1.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
