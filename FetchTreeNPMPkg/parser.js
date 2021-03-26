@@ -188,6 +188,7 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
       });
     }
   }
+  // console.log(componentStore)
   return componentStore;
 };
 
@@ -217,23 +218,25 @@ const dependenciesGraph = (entryFile) => {
       }
     });
   }
+  // console.log(nodeStore)
+  console.log('invocationStore', invocationStore)
   return componentGraph(invocationStore, nodeStore, componentStore);
 };
 
 //TELL THE USER TO INPUT THEIR SOURCE FILE IN THE LINE BELOW
 const resultObj = JSON.stringify(
-  dependenciesGraph(path.join(__dirname, "../src/index.js"))
+  dependenciesGraph(path.join(__dirname, "./testData/index.js"))
 );
 
-const componentObj = `const componentObj = ${resultObj}
-module.exports = componentObj;`;
+// const componentObj = `const componentObj = ${resultObj}
+// module.exports = componentObj;`;
 
-fs.writeFileSync(
-  path.join(__dirname, "./componentStore.js"),
-  componentObj,
-  (err) => {
-    if (err) throw err;
-    console.log("The file has been saved");
-  }
-);
+// fs.writeFileSync(
+//   path.join(__dirname, "./componentStore.js"),
+//   componentObj,
+//   (err) => {
+//     if (err) throw err;
+//     console.log("The file has been saved");
+//   }
+// );
 
