@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { testVarExp, testFuncExp, testArrowExp } from './mockDataReq.js'
+import { testVarExp } from './mockDataReq.js'
 
 
 const Body = () => {
@@ -22,10 +22,3 @@ const Body = () => {
 }
 
 export default Body;
-
-
-
-
-
-
-

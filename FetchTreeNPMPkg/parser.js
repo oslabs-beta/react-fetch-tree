@@ -188,7 +188,7 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
       });
     }
   }
-  // console.log(componentStore)
+  console.log(componentStore)
   return componentStore;
 };
 
@@ -219,7 +219,7 @@ const dependenciesGraph = (entryFile) => {
     });
   }
   // console.log(nodeStore)
-  console.log('invocationStore', invocationStore)
+  // console.log('invocationStore', invocationStore)
   return componentGraph(invocationStore, nodeStore, componentStore);
 };
 
@@ -240,3 +240,4 @@ const resultObj = JSON.stringify(
 //   }
 // );
 
+module.exports = { dependenciesGraph, componentGraph, getDependencies };

@@ -6,9 +6,9 @@ import Footer from './Footer.jsx';
 const App = () => {
   return (
     <div>
-      <Nav></Nav>
-      <Body></Body>
-      <Footer></Footer>
+      <Nav />
+      <Body />
+      <Footer />
     </div>
   )
 }

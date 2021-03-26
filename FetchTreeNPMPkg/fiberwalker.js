@@ -129,7 +129,7 @@ const fiberwalker = (
       );
     }
   }
-  console.log(treedata.children[0])
+  // console.log(treedata.children[0])
   return treedata;
 };
 
