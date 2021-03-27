@@ -10,14 +10,9 @@ const componentStore = {};
 
 //Obtain  target file's dependencies
 const getDependencies = (filename) => {
-  //Declare dataRequestObject
-  const dataRequests = [];
-  //Stores the name/value of all ImportDeclaration nodes
   const dependencies = [];
-  //Function/DataRequest name placeholder
   let parentName = null;
   let reqName = null;
-  //Data node class template
   class DataRequestNode {
     constructor(dataRequestType, position, parentName, fileName) {
       this.dataRequestType = dataRequestType;
@@ -27,9 +22,7 @@ const getDependencies = (filename) => {
     }
   }
 
-  //Read file content
   const content = fs.readFileSync(filename, "utf8");
-  //Parse file to convert it into an AST
   const raw_ast = babelParser.parse(content, {
     sourceType: "module",
     plugins: ["jsx"],
@@ -37,19 +30,19 @@ const getDependencies = (filename) => {
 
   //Helper function to check node existence
   const nodeExistence = (nodePosition, reqName, parentName, exists = false) => {
-    if (parentName === null) parentName = 'Anonymous';
-    dataRequests.forEach((existingDataRequest) => {
-      if (existingDataRequest.position === nodePosition) {
+    if (parentName === null) parentName = "Anonymous";
+      if (nodeStore[`line: ${nodePosition["line"]}, column: ${nodePosition["column"]}`]) {
         exists = true;
       }
-    });
+        
     if (!exists) {
       nodeFileName = filename;
-      nodeFileName = nodeFileName.split('/');
-      nodeFileName = nodeFileName[nodeFileName.length - 1].split('.')[0]
-      console.log(nodeFileName);
+      nodeFileName = nodeFileName.split("/");
+      nodeFileName = nodeFileName[nodeFileName.length - 1].split(".")[0];
 
-      nodeStore[`line: ${nodePosition['line']}, column: ${nodePosition['column']}`] = {
+      nodeStore[
+        `line: ${nodePosition["line"]}, column: ${nodePosition["column"]}`
+      ] = {
         reqType: reqName,
         parentName,
         fileName: nodeFileName,
@@ -62,7 +55,7 @@ const getDependencies = (filename) => {
   const IdentifierPath = {
     CallExpression: ({ node }) => {
       reqName = node.callee.name;
-      if (node.callee.name === "fetch") {
+      if (node.callee.name) {
         nodeExistence(node.loc.start, reqName, parentName);
       }
       if (invocationStore[parentName]) {
@@ -97,9 +90,10 @@ const getDependencies = (filename) => {
         //   console.log(node.argument.openingElement)
         // }
         if (
-          node.argument.type === "JSXElement" || node.argument.type === "JSXFragment" &&
-          parentName &&
-          !componentStore.hasOwnProperty(parentName)
+          node.argument.type === "JSXElement" ||
+          (node.argument.type === "JSXFragment" &&
+            parentName &&
+            !componentStore.hasOwnProperty(parentName))
         ) {
           componentStore[parentName] = {};
         }
@@ -118,7 +112,7 @@ const getDependencies = (filename) => {
   //Traverse AST using babeltraverse to identify imported nodes
   traverse(raw_ast, {
     ImportDeclaration: ({ node }) => {
-      if (node.source.value.indexOf('./') !== -1) {
+      if (node.source.value.indexOf("./") !== -1) {
         if (node.specifiers.length !== 0) {
           dependencies.push(node.source.value);
         }
@@ -172,9 +166,9 @@ const getDependencies = (filename) => {
 // Helper function to complete componentStore
 const componentGraph = (invocationStore, nodeStore, componentStore) => {
   const filterStore = {};
-  // console.log('invocationStore', invocationStore);
-  console.log('nodeStore', nodeStore);
-  
+  console.log("invocationStore", invocationStore);
+  console.log("nodeStore", nodeStore);
+
   // Filter out for components only in invocationStore
   for (let invocation in invocationStore) {
     if (componentStore[invocation]) {
@@ -192,15 +186,22 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
     }
     //Check whether node gets invoked in component
     for (let component in filterStore) {
+      // console.log('COMPONENT =>', component)
       filterStore[component].forEach((dataReq) => {
-        if (dataReq === parentName) {
+        // console.log('NODESTORE PARENTNAME => ', parentName)
+        // console.log('DATAREQ =>', dataReq)
+        // console.log(nodeStore[node]);
+        if (
+          componentStore[component] &&
+          filterStore[component].includes(parentName)
+        ) {
           componentStore[component][node] = { reqType, parentName };
         }
       });
     }
   }
-  console.log('filterStore', filterStore);
-  console.log('componentStore', componentStore);
+  // console.log("filterStore", filterStore);
+  console.log("componentStore", componentStore);
   return componentStore;
 };
 
