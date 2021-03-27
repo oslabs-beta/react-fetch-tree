@@ -19,10 +19,11 @@ const getDependencies = (filename) => {
   let reqName = null;
   //Data node class template
   class DataRequestNode {
-    constructor(dataRequestType, position, parentName) {
+    constructor(dataRequestType, position, parentName, fileName) {
       this.dataRequestType = dataRequestType;
       this.position = position || null;
       this.parentName = parentName || "Anonymous";
+      this.fileName = fileName || null;
     }
   }
 
@@ -36,21 +37,22 @@ const getDependencies = (filename) => {
 
   //Helper function to check node existence
   const nodeExistence = (nodePosition, reqName, parentName, exists = false) => {
+    if (parentName === null) parentName = 'Anonymous';
     dataRequests.forEach((existingDataRequest) => {
       if (existingDataRequest.position === nodePosition) {
         exists = true;
       }
     });
     if (!exists) {
-      const dataRequest = new DataRequestNode(
-        reqName,
-        nodePosition,
-        parentName
-      );
+      nodeFileName = filename;
+      nodeFileName = nodeFileName.split('/');
+      nodeFileName = nodeFileName[nodeFileName.length - 1].split('.')[0]
+      console.log(nodeFileName);
 
       nodeStore[`line: ${nodePosition['line']}, column: ${nodePosition['column']}`] = {
         reqType: reqName,
         parentName,
+        fileName: nodeFileName,
       };
     }
     return;
@@ -91,6 +93,9 @@ const getDependencies = (filename) => {
     },
     ReturnStatement: ({ node }) => {
       if (node.argument) {
+        // if (node.argument.openingElement) {
+        //   console.log(node.argument.openingElement)
+        // }
         if (
           node.argument.type === "JSXElement" || node.argument.type === "JSXFragment" &&
           parentName &&
@@ -167,6 +172,9 @@ const getDependencies = (filename) => {
 // Helper function to complete componentStore
 const componentGraph = (invocationStore, nodeStore, componentStore) => {
   const filterStore = {};
+  // console.log('invocationStore', invocationStore);
+  console.log('nodeStore', nodeStore);
+  
   // Filter out for components only in invocationStore
   for (let invocation in invocationStore) {
     if (componentStore[invocation]) {
@@ -174,10 +182,13 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
     }
   }
   for (let node in nodeStore) {
-    let { parentName, reqType } = nodeStore[node];
+    let { parentName, reqType, fileName } = nodeStore[node];
     //Store raw data requests within component
     if (componentStore[parentName]) {
       componentStore[parentName][node] = { reqType, parentName };
+    }
+    if (componentStore[fileName]) {
+      componentStore[fileName][node] = { reqType, parentName: fileName };
     }
     //Check whether node gets invoked in component
     for (let component in filterStore) {
@@ -188,7 +199,8 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
       });
     }
   }
-  console.log(componentStore)
+  console.log('filterStore', filterStore);
+  console.log('componentStore', componentStore);
   return componentStore;
 };
 
