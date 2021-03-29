@@ -197,6 +197,8 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
 };
 
 const dependenciesGraph = (entryFile) => {
+  let extension = entryFile.match(/\.[0-9a-z]+$/i)[0];
+  if (extension !== ".js" || extension !== ".jsx") return "Entry file must be .js or .jsx";
   const entry = getDependencies(entryFile);
   const queue = [entry];
 
@@ -206,6 +208,7 @@ const dependenciesGraph = (entryFile) => {
     asset.dependencies.forEach((relativePath) => {
       //If there is no file extension, add it
       let absolutePath = path.resolve(dirname, relativePath);
+      // console.log(absolutePath)
       let fileCheck = fs.existsSync(absolutePath);
       let child;
 
@@ -227,7 +230,7 @@ const dependenciesGraph = (entryFile) => {
 
 //Please enter the path for entry file as the argument in dependenciesGraph
 const resultObj = JSON.stringify(
-  dependenciesGraph(path.join(__dirname, "./testData/index.js"))
+  dependenciesGraph(path.join(__dirname, "./testData/style.css"))
 );
 
 // const componentObj = `const componentObj = ${resultObj}
