@@ -162,7 +162,6 @@ const getDependencies = (filename) => {
 
 // Helper function to complete componentStore
 const componentGraph = (invocationStore, nodeStore, componentStore) => {
-  console.log(invocationStore)
   for (let node in nodeStore) {
     let { parentName, reqType, fileName } = nodeStore[node];
     if (
@@ -223,12 +222,10 @@ const dependenciesGraph = (entryFile) => {
       }
     });
   }
-  // console.log(nodeStore)
-  // console.log('invocationStore', invocationStore)
   return componentGraph(invocationStore, nodeStore, componentStore);
 };
 
-//TELL THE USER TO INPUT THEIR SOURCE FILE IN THE LINE BELOW
+//Please enter the path for entry file as the argument in dependenciesGraph
 const resultObj = JSON.stringify(
   dependenciesGraph(path.join(__dirname, "./testData/index.js"))
 );
