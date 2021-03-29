@@ -193,38 +193,43 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
 
 const dependenciesGraph = (entryFile) => {
   const extension = entryFile.match(/\.[0-9a-z]+$/i)[0];
-  if (extension !== ".js" || extension !== ".jsx") return "Entry file must be .js or .jsx";
-  const entry = getDependencies(entryFile);
-  const queue = [entry];
-
-  for (const asset of queue) {
-    const dirname = path.dirname(asset.filename);
-
-    asset.dependencies.forEach((relativePath) => {
-      //If there is no file extension, add it
-      let absolutePath = path.resolve(dirname, relativePath);
-      let fileCheck = fs.existsSync(absolutePath);
-      let child;
-
-      if (!fileCheck) {
-        absolutePath = path.resolve(dirname, relativePath + ".js"); //Test for .js
-        fileCheck = fs.existsSync(absolutePath);
-        if (!fileCheck) absolutePath = absolutePath + "x"; //Test for .jsx
-      }
-
-      //Check for duplicate file paths
-      if (!cache[absolutePath]) {
-        child = getDependencies(absolutePath);
-        queue.push(child);
-      }
-    });
+  
+  if (extension === ".js" || extension === ".jsx") {
+    const entry = getDependencies(entryFile);
+    const queue = [entry];
+  
+    for (const asset of queue) {
+      const dirname = path.dirname(asset.filename);
+  
+      asset.dependencies.forEach((relativePath) => {
+        //If there is no file extension, add it
+        let absolutePath = path.resolve(dirname, relativePath);
+        let fileCheck = fs.existsSync(absolutePath);
+        let child;
+  
+        if (!fileCheck) {
+          absolutePath = path.resolve(dirname, relativePath + ".js"); //Test for .js
+          fileCheck = fs.existsSync(absolutePath);
+          if (!fileCheck) absolutePath = absolutePath + "x"; //Test for .jsx
+        }
+  
+        //Check for duplicate file paths
+        if (!cache[absolutePath]) {
+          child = getDependencies(absolutePath);
+          queue.push(child);
+        }
+      });
+    }
+    return componentGraph(invocationStore, nodeStore, componentStore);
   }
-  return componentGraph(invocationStore, nodeStore, componentStore);
+  else {
+    return ("Entry file must be .js or .jsx");
+  }
 };
 
 //Please enter the path for entry file as the argument in dependenciesGraph
 const resultObj = JSON.stringify(
-  dependenciesGraph(path.join(__dirname, "../_testData/index.js"))
+  dependenciesGraph(path.join(__dirname, "./testData/index.js"))
 );
 
 // const componentObj = `const componentObj = ${resultObj}

@@ -1,4 +1,4 @@
-const { fiberwalker, fiberTree } = require("../_testData/fiberwalkerMockData.js");
+const { fiberwalker, fiberTree } = require("../testData/fiberwalkerMockData.js");
 
 describe('fiberwalker', () => {
   const componentStore = {
