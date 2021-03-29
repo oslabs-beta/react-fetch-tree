@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { testVarExp } from './mockDataReq.js'
+import { testVarExp } from './mockDataReq.js.js.js'
 
 
 const Body = () => {

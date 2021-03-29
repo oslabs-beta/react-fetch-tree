@@ -165,8 +165,8 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
   for (let node in nodeStore) {
     let { parentName, reqType, fileName } = nodeStore[node];
     if (
-      reqType === 'fetch' || 
-      reqType === 'axios' ||
+      reqType === "fetch" || 
+      reqType === "axios" ||
       reqType === "http" ||
       reqType === "https" ||
       reqType === "qwest" ||
@@ -197,7 +197,7 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
 };
 
 const dependenciesGraph = (entryFile) => {
-  let extension = entryFile.match(/\.[0-9a-z]+$/i)[0];
+  const extension = entryFile.match(/\.[0-9a-z]+$/i)[0];
   if (extension !== ".js" || extension !== ".jsx") return "Entry file must be .js or .jsx";
   const entry = getDependencies(entryFile);
   const queue = [entry];
@@ -230,7 +230,7 @@ const dependenciesGraph = (entryFile) => {
 
 //Please enter the path for entry file as the argument in dependenciesGraph
 const resultObj = JSON.stringify(
-  dependenciesGraph(path.join(__dirname, "./testData/style.css"))
+  dependenciesGraph(path.join(__dirname, "../_testData/index.js"))
 );
 
 // const componentObj = `const componentObj = ${resultObj}

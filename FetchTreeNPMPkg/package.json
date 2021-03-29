@@ -2,11 +2,15 @@
   "name": "@reactfetchtree/rft",
   "version": "3.0.0",
   "scripts": {
-    "create-component-store": "node parser.js"
+    "create-component-store": "node parser.js",
+    "test": "jest"
   },
   "dependencies": {
     "@babel/parser": "^7.13.4",
     "@babel/traverse": "^7.13.0",
     "react": "^17.0.1"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
   }
 }
