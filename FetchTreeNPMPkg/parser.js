@@ -86,9 +86,6 @@ const getDependencies = (filename) => {
     },
     ReturnStatement: ({ node }) => {
       if (node.argument) {
-        // if (node.argument.openingElement) {
-        //   console.log(node.argument.openingElement)
-        // }
         if (
           node.argument.type === "JSXElement" ||
           (node.argument.type === "JSXFragment" &&
