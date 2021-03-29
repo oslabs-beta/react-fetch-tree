@@ -30,19 +30,14 @@ const getDependencies = (filename) => {
 
   //Helper function to check node existence
   const nodeExistence = (nodePosition, reqName, parentName, exists = false) => {
+    let nodePos = `line: ${nodePosition["line"]}, column: ${nodePosition["column"]}`;
     if (parentName === null) parentName = "Anonymous";
-      if (nodeStore[`line: ${nodePosition["line"]}, column: ${nodePosition["column"]}`]) {
-        exists = true;
-      }
-        
+    if (nodeStore[nodePos]) exists = true;
     if (!exists) {
       nodeFileName = filename;
       nodeFileName = nodeFileName.split("/");
       nodeFileName = nodeFileName[nodeFileName.length - 1].split(".")[0];
-
-      nodeStore[
-        `line: ${nodePosition["line"]}, column: ${nodePosition["column"]}`
-      ] = {
+      nodeStore[nodePos] = {
         reqType: reqName,
         parentName,
         fileName: nodeFileName,
@@ -208,7 +203,6 @@ const dependenciesGraph = (entryFile) => {
     asset.dependencies.forEach((relativePath) => {
       //If there is no file extension, add it
       let absolutePath = path.resolve(dirname, relativePath);
-      // console.log(absolutePath)
       let fileCheck = fs.existsSync(absolutePath);
       let child;
 
