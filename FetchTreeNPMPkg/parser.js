@@ -165,42 +165,37 @@ const getDependencies = (filename) => {
 
 // Helper function to complete componentStore
 const componentGraph = (invocationStore, nodeStore, componentStore) => {
-  const filterStore = {};
-  console.log("invocationStore", invocationStore);
-  console.log("nodeStore", nodeStore);
 
-  // Filter out for components only in invocationStore
-  for (let invocation in invocationStore) {
-    if (componentStore[invocation]) {
-      filterStore[invocation] = invocationStore[invocation];
-    }
-  }
   for (let node in nodeStore) {
     let { parentName, reqType, fileName } = nodeStore[node];
-    //Store raw data requests within component
-    if (componentStore[parentName]) {
-      componentStore[parentName][node] = { reqType, parentName };
-    }
-    if (componentStore[fileName]) {
-      componentStore[fileName][node] = { reqType, parentName: fileName };
-    }
-    //Check whether node gets invoked in component
-    for (let component in filterStore) {
-      // console.log('COMPONENT =>', component)
-      filterStore[component].forEach((dataReq) => {
-        // console.log('NODESTORE PARENTNAME => ', parentName)
-        // console.log('DATAREQ =>', dataReq)
-        // console.log(nodeStore[node]);
-        if (
-          componentStore[component] &&
-          filterStore[component].includes(parentName)
-        ) {
-          componentStore[component][node] = { reqType, parentName };
-        }
-      });
+    if (
+      reqType === 'fetch' || 
+      reqType === 'axios' ||
+      reqType === "http" ||
+      reqType === "https" ||
+      reqType === "qwest" ||
+      reqType === "superagent" ||
+      reqType === "ajax" ||
+      reqType === "XMLHttpRequest"
+    ) {
+      if (componentStore[parentName]) {
+        componentStore[parentName][node] = { reqType, parentName };
+      }
+      if (componentStore[fileName]) {
+        componentStore[fileName][node] = { reqType, parentName: fileName };
+      }
+      for (let component in invocationStore) {
+        invocationStore[component].forEach((dataReq) => {
+          if (
+            componentStore[component] &&
+            invocationStore[component].includes(parentName)
+          ) {
+            componentStore[component][node] = { reqType, parentName };
+          }
+        });
+      }
     }
   }
-  // console.log("filterStore", filterStore);
   console.log("componentStore", componentStore);
   return componentStore;
 };
