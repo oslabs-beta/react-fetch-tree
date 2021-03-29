@@ -162,7 +162,7 @@ const getDependencies = (filename) => {
 
 // Helper function to complete componentStore
 const componentGraph = (invocationStore, nodeStore, componentStore) => {
-
+  console.log(invocationStore)
   for (let node in nodeStore) {
     let { parentName, reqType, fileName } = nodeStore[node];
     if (
