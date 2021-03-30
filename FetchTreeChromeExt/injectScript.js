@@ -3,13 +3,16 @@ console.log("<----- Injected script started running ----->");
 let componentObj;
 
 //send message to client side notifying that inject script has been initialized
-window.postMessage({ type: 'message', payload: "InjectScriptInitialized" }, '*');
+window.postMessage(
+  { type: "message", payload: "InjectScriptInitialized" },
+  "*"
+);
 
 //set up listener for messages coming from client side
 window.addEventListener(
   "message",
   function (event) {
-    console.log('event received in injectScript', event.data);
+    console.log("event received in injectScript", event.data);
     // only accept messages from the current tab
     if (event.source != window) return;
 
@@ -23,8 +26,8 @@ window.addEventListener(
     }
 
     //conditional check to see if componentObj has been received from client side FetchTreeHook
-    if (event.data.type && event.data.type === 'componentObj') {
-      console.log('componentObj received in injectScript', event.data);
+    if (event.data.type && event.data.type === "componentObj") {
+      console.log("componentObj received in injectScript", event.data);
       componentObj = event.data.payload;
     }
   },
@@ -40,11 +43,11 @@ function parseEssentialDetails() {
   return main;
 }
 
-//fiberwalker function 
+//fiberwalker function
 const fiberwalker = (
   node,
   componentStore,
-  treedata = { name: "App", children: [] }
+  treedata = { name: "Fiber Root", children: [] }
 ) => {
   const dataReqArr = [
     "fetch",
@@ -60,78 +63,10 @@ const fiberwalker = (
     this.name = name;
     this.children = [];
   }
-  if (node.child.sibling) {
-    node = node.child.sibling;
-    let name;
-    if (typeof node.elementType == "string") {
-      name = node.elementType;
-    } else if (node.elementType.name) {
-      name = node.elementType.name;
-    } else {
-      name = "anon.";
-    }
-    const currentNode = { name, children: [] };
 
-    if (componentStore !== undefined) {
-      if (componentStore[name]) {
-        //iterate through every entry and check request type
-        const dataRequest = componentStore[name];
-        for (let key in dataRequest) {
-          if (dataReqArr.includes(dataRequest[key].reqType)) {
-            currentNode.attributes = {
-              containsFetch: `${dataRequest[key].reqType}`,
-            };
-          }
-        }
-      }
-    }
-    treedata.children.push(currentNode);
+  if (!node) return;
 
-    if (node.sibling !== null) {
-      node = node.sibling;
-      let name;
-      if (typeof node.elementType == "string") {
-        name = node.elementType;
-      } else if (node.elementType.name) {
-        name = node.elementType.name;
-      } else {
-        name = "anon.";
-      }
-      const currentNode = { name, children: [] };
-      if (componentStore !== undefined) {
-        if (componentStore[name]) {
-          //iterate through every entry and check request type
-          const dataRequest = componentStore[name];
-          for (let key in dataRequest) {
-            if (dataReqArr.includes(dataRequest[key].reqType)) {
-              currentNode.attributes = {
-                containsFetch: `${dataRequest[key].reqType}`,
-              };
-            }
-          }
-        }
-      }
-      treedata.children.push(currentNode);
-      if (node.child != null) {
-        fiberwalker(
-          node,
-          componentStore,
-          treedata.children[treedata.children.length - 1]
-        );
-      }
-    }
-
-    if (node.child != null) {
-      fiberwalker(
-        node,
-        componentStore,
-        treedata.children[treedata.children.length - 1]
-      );
-    }
-  }
-
-  if (node.child) {
-    node = node.child;
+  while (node) {
     let name;
     if (typeof node.elementType == "string") {
       name = node.elementType;
@@ -154,15 +89,17 @@ const fiberwalker = (
         }
       }
     }
-    //iterate through every entry and check request type
     treedata.children.push(currentNode);
-    if (node.child != null) {
+
+    if (node.child) {
       fiberwalker(
-        node,
+        node.child,
         componentStore,
         treedata.children[treedata.children.length - 1]
       );
     }
+
+    node = node.sibling;
   }
   return treedata;
 };
@@ -170,19 +107,19 @@ const fiberwalker = (
 //declaring variables needed for onCommitFiberRoot function
 let __ReactFiberDOM;
 const devTools = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
-let orgChart;
+let orgChart = { name: "Component", children: ["div"] };
 
 devTools.onCommitFiberRoot = (function (original) {
   return function (...args) {
     __ReactFiberDOM = args[1];
-    console.log("dom: ", __ReactFiberDOM.current);
-    console.log("componentObj in onCommitFiberRoot", componentObj);
-    orgChart = fiberwalker(
-      __ReactFiberDOM.current,
-      componentObj
-    );
+    //console.log("dom: ", __ReactFiberDOM.current);
+    //console.log("componentObj in onCommitFiberRoot", componentObj);
+    //orgChart = fiberwalker(__ReactFiberDOM.current, componentObj);
     console.log("orgChart: ", orgChart);
-
+    window.postMessage({
+      type: "orgChart",
+      payload: orgChart,
+    });
     return original(...args);
   };
 })(devTools.onCommitFiberRoot);
