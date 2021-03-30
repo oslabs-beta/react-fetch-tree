@@ -1,22 +1,25 @@
-const { fiberwalker, fiberTree } = require("../testData/fiberwalkerMockData.js");
+const {
+  fiberwalker,
+  fiberTree,
+} = require("../testData/mockDataFiberWalker.js");
 
-describe('fiberwalker', () => {
+describe("fiberwalker", () => {
   const componentStore = {
-    "NavBar": {
-      "line: 27, column: 2":{"reqType":"fetch","parentName":null},
-      "line: 52, column: 2":{"reqType":"axios","parentName":"Profile"},
+    NavBar: {
+      "line: 27, column: 2": { reqType: "fetch", parentName: null },
+      "line: 52, column: 2": { reqType: "axios", parentName: "Profile" },
     },
-    "Body": {
-      "line: 27, column: 2":{"reqType":"fetch","parentName":"null"},
-      "line: 52, column: 2":{"reqType":"axios","parentName":"testVarExp"},
+    Body: {
+      "line: 27, column: 2": { reqType: "fetch", parentName: "null" },
+      "line: 52, column: 2": { reqType: "axios", parentName: "testVarExp" },
     },
-    "Footer": {
-      "line: 27, column: 2":{"reqType":"fetch","parentName":"testFuncExp"},
-    }
+    Footer: {
+      "line: 27, column: 2": { reqType: "fetch", parentName: "testFuncExp" },
+    },
   };
 
-  it('Should return an object', () => {
+  it("Should return an object", () => {
     const result = fiberwalker(fiberTree, componentStore);
-    expect(typeof result).toBe('object');
-  })
+    expect(typeof result).toBe("object");
+  });
 });

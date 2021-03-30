@@ -20,8 +20,7 @@ const nodeExistence = (
   if (parentName === null) parentName = "Anonymous";
   if (nodeStore[nodePos]) exists = true;
   if (!exists) {
-    nodeFileName = filename;
-    nodeFileName = nodeFileName.split("/");
+    let nodeFileName = filename.split("/");
     nodeFileName = nodeFileName[nodeFileName.length - 1].split(".")[0];
     nodeStore[nodePos] = {
       reqType: reqName,
@@ -193,7 +192,7 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
       }
     }
   }
-  // console.log("componentStore", componentStore);
+  console.log("componentStore", componentStore);
   return componentStore;
 };
 
@@ -232,7 +231,10 @@ const dependenciesGraph = (entryFile) => {
   }
 };
 
-//Please enter the path for entry file as the argument in dependenciesGraph
+/*
+Please enter the path for entry file as the argument in dependenciesGraph. 
+Must be a .js/.jsx file or parser will not run.
+*/
 const resultObj = JSON.stringify(
   dependenciesGraph(path.join(__dirname, "./testData/index.js"))
 );
