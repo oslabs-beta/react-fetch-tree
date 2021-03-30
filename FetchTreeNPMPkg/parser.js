@@ -8,6 +8,30 @@ const invocationStore = {};
 const nodeStore = {};
 const componentStore = {};
 
+//Helper function to check node existence
+const nodeExistence = (
+  nodePosition,
+  reqName,
+  parentName,
+  filename,
+  exists = false
+) => {
+  let nodePos = `line: ${nodePosition["line"]}, column: ${nodePosition["column"]}`;
+  if (parentName === null) parentName = "Anonymous";
+  if (nodeStore[nodePos]) exists = true;
+  if (!exists) {
+    nodeFileName = filename;
+    nodeFileName = nodeFileName.split("/");
+    nodeFileName = nodeFileName[nodeFileName.length - 1].split(".")[0];
+    nodeStore[nodePos] = {
+      reqType: reqName,
+      parentName,
+      fileName: nodeFileName,
+    };
+  }
+  return;
+};
+
 //Obtain  target file's dependencies
 const getDependencies = (filename) => {
   const dependencies = [];
@@ -28,30 +52,12 @@ const getDependencies = (filename) => {
     plugins: ["jsx"],
   });
 
-  //Helper function to check node existence
-  const nodeExistence = (nodePosition, reqName, parentName, exists = false) => {
-    let nodePos = `line: ${nodePosition["line"]}, column: ${nodePosition["column"]}`;
-    if (parentName === null) parentName = "Anonymous";
-    if (nodeStore[nodePos]) exists = true;
-    if (!exists) {
-      nodeFileName = filename;
-      nodeFileName = nodeFileName.split("/");
-      nodeFileName = nodeFileName[nodeFileName.length - 1].split(".")[0];
-      nodeStore[nodePos] = {
-        reqType: reqName,
-        parentName,
-        fileName: nodeFileName,
-      };
-    }
-    return;
-  };
-
   //Node types and conditionals
   const IdentifierPath = {
     CallExpression: ({ node }) => {
       reqName = node.callee.name;
       if (node.callee.name) {
-        nodeExistence(node.loc.start, reqName, parentName);
+        nodeExistence(node.loc.start, reqName, parentName, filename);
       }
       if (invocationStore[parentName]) {
         invocationStore[parentName].push(reqName);
@@ -66,17 +72,17 @@ const getDependencies = (filename) => {
         reqName === "qwest" ||
         reqName === "superagent"
       ) {
-        nodeExistence(node.loc.start, reqName, parentName);
+        nodeExistence(node.loc.start, reqName, parentName, filename);
       }
       if (node.property.name === "ajax") {
         reqName = node.property.name;
-        nodeExistence(node.loc.start, reqName, parentName);
+        nodeExistence(node.loc.start, reqName, parentName, filename);
       }
     },
     NewExpression: ({ node }) => {
       reqName = node.callee.name;
       if (reqName === "XMLHttpRequest") {
-        nodeExistence(node.loc.start, reqName, parentName);
+        nodeExistence(node.loc.start, reqName, parentName, filename);
       }
     },
     ReturnStatement: ({ node }) => {
@@ -160,7 +166,7 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
   for (let node in nodeStore) {
     let { parentName, reqType, fileName } = nodeStore[node];
     if (
-      reqType === "fetch" || 
+      reqType === "fetch" ||
       reqType === "axios" ||
       reqType === "http" ||
       reqType === "https" ||
@@ -187,32 +193,32 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
       }
     }
   }
-  console.log("componentStore", componentStore);
+  // console.log("componentStore", componentStore);
   return componentStore;
 };
 
 const dependenciesGraph = (entryFile) => {
   const extension = entryFile.match(/\.[0-9a-z]+$/i)[0];
-  
+
   if (extension === ".js" || extension === ".jsx") {
     const entry = getDependencies(entryFile);
     const queue = [entry];
-  
+
     for (const asset of queue) {
       const dirname = path.dirname(asset.filename);
-  
+
       asset.dependencies.forEach((relativePath) => {
         //If there is no file extension, add it
         let absolutePath = path.resolve(dirname, relativePath);
         let fileCheck = fs.existsSync(absolutePath);
         let child;
-  
+
         if (!fileCheck) {
           absolutePath = path.resolve(dirname, relativePath + ".js"); //Test for .js
           fileCheck = fs.existsSync(absolutePath);
           if (!fileCheck) absolutePath = absolutePath + "x"; //Test for .jsx
         }
-  
+
         //Check for duplicate file paths
         if (!cache[absolutePath]) {
           child = getDependencies(absolutePath);
@@ -221,9 +227,8 @@ const dependenciesGraph = (entryFile) => {
       });
     }
     return componentGraph(invocationStore, nodeStore, componentStore);
-  }
-  else {
-    return ("Entry file must be .js or .jsx");
+  } else {
+    return "Entry file must be .js or .jsx";
   }
 };
 
@@ -244,4 +249,9 @@ const resultObj = JSON.stringify(
 //   }
 // );
 
-module.exports = { dependenciesGraph, componentGraph, getDependencies };
+module.exports = {
+  dependenciesGraph,
+  componentGraph,
+  getDependencies,
+  nodeExistence,
+};
