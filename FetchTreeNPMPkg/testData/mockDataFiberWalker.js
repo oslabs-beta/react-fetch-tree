@@ -34,11 +34,26 @@ const fiberTree = {
   },
 };
 
+const componentStore = {
+  NavBar: {
+    "line: 27, column: 2": { reqType: "fetch", parentName: null },
+    "line: 52, column: 2": { reqType: "axios", parentName: "Profile" },
+  },
+  Body: {
+    "line: 27, column: 2": { reqType: "fetch", parentName: "null" },
+    "line: 52, column: 2": { reqType: "axios", parentName: "testVarExp" },
+  },
+  Footer: {
+    "line: 27, column: 2": { reqType: "fetch", parentName: "testFuncExp" },
+  },
+};
+
 const fiberwalker = (
   node,
   componentStore,
   treedata = { name: "Fiber Root", children: [] }
 ) => {
+
   const dataTypeCheck = [node, componentStore, treedata];
   if (dataTypeCheck.some(arg => Array.isArray(arg) || !arg || typeof arg !== "object")) {
     throw new TypeError("Arguments passed in must be of an object data type");
@@ -63,10 +78,14 @@ const fiberwalker = (
 
   while (node) {
     let name;
-    if (typeof node.elementType == "string") {
-      name = node.elementType;
-    } else if (node.elementType && node.elementType.name) {
-      name = node.elementType.name;
+    if (node.elementType) {
+      if (typeof node.elementType == "string") {
+        name = node.elementType;
+      } else if (node.elementType.name !== undefined) {
+        name = node.elementType.name;
+      } else {
+        name = "anon.";
+      }
     } else {
       name = "anon.";
     }
@@ -97,20 +116,6 @@ const fiberwalker = (
     node = node.sibling;
   }
   return treedata;
-};
-
-const componentStore = {
-  NavBar: {
-    "line: 27, column: 2": { reqType: "fetch", parentName: null },
-    "line: 52, column: 2": { reqType: "axios", parentName: "Profile" },
-  },
-  Body: {
-    "line: 27, column: 2": { reqType: "fetch", parentName: "null" },
-    "line: 52, column: 2": { reqType: "axios", parentName: "testVarExp" },
-  },
-  Footer: {
-    "line: 27, column: 2": { reqType: "fetch", parentName: "testFuncExp" },
-  },
 };
 
 module.exports = { fiberTree, fiberwalker, componentStore };
