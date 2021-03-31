@@ -37,8 +37,13 @@ const fiberTree = {
 const fiberwalker = (
   node,
   componentStore,
-  treedata = { name: "App", children: [] }
+  treedata = { name: "Fiber Root", children: [] }
 ) => {
+  const dataTypeCheck = [node, componentStore, treedata];
+  if (dataTypeCheck.some(arg => Array.isArray(arg) || !arg || typeof arg !== "object")) {
+    throw new TypeError("Arguments passed in must be of an object data type");
+  };
+
   const dataReqArr = [
     "fetch",
     "axios",
@@ -53,82 +58,14 @@ const fiberwalker = (
     this.name = name;
     this.children = [];
   }
-  if (node.child.sibling) {
-    node = node.child.sibling;
+
+  if (!node) return;
+
+  while (node) {
     let name;
     if (typeof node.elementType == "string") {
       name = node.elementType;
-    } else if (node.elementType.name) {
-      name = node.elementType.name;
-    } else {
-      name = "anon.";
-    }
-    const currentNode = { name, children: [] };
-
-    if (componentStore !== undefined) {
-      if (componentStore[name]) {
-        //iterate through every entry and check request type
-        const dataRequest = componentStore[name];
-        for (let key in dataRequest) {
-          if (dataReqArr.includes(dataRequest[key].reqType)) {
-            currentNode.attributes = {
-              containsFetch: `${dataRequest[key].reqType}`,
-            };
-          }
-        }
-      }
-    }
-    treedata.children.push(currentNode);
-
-    if (node.sibling !== null) {
-      node = node.sibling;
-      let name;
-      if (typeof node.elementType == "string") {
-        name = node.elementType;
-      } else if (node.elementType.name) {
-        name = node.elementType.name;
-      } else {
-        name = "anon.";
-      }
-      const currentNode = { name, children: [] };
-      if (componentStore !== undefined) {
-        if (componentStore[name]) {
-          //iterate through every entry and check request type
-          const dataRequest = componentStore[name];
-          for (let key in dataRequest) {
-            if (dataReqArr.includes(dataRequest[key].reqType)) {
-              currentNode.attributes = {
-                containsFetch: `${dataRequest[key].reqType}`,
-              };
-            }
-          }
-        }
-      }
-      treedata.children.push(currentNode);
-      if (node.child != null) {
-        fiberwalker(
-          node,
-          componentStore,
-          treedata.children[treedata.children.length - 1]
-        );
-      }
-    }
-
-    if (node.child != null) {
-      fiberwalker(
-        node,
-        componentStore,
-        treedata.children[treedata.children.length - 1]
-      );
-    }
-  }
-
-  if (node.child) {
-    node = node.child;
-    let name;
-    if (typeof node.elementType == "string") {
-      name = node.elementType;
-    } else if (node.elementType.name) {
+    } else if (node.elementType && node.elementType.name) {
       name = node.elementType.name;
     } else {
       name = "anon.";
@@ -147,20 +84,33 @@ const fiberwalker = (
         }
       }
     }
-    //iterate through every entry and check request type
     treedata.children.push(currentNode);
-    if (node.child != null) {
+
+    if (node.child) {
       fiberwalker(
-        node,
+        node.child,
         componentStore,
         treedata.children[treedata.children.length - 1]
       );
     }
+
+    node = node.sibling;
   }
   return treedata;
 };
 
+const componentStore = {
+  NavBar: {
+    "line: 27, column: 2": { reqType: "fetch", parentName: null },
+    "line: 52, column: 2": { reqType: "axios", parentName: "Profile" },
+  },
+  Body: {
+    "line: 27, column: 2": { reqType: "fetch", parentName: "null" },
+    "line: 52, column: 2": { reqType: "axios", parentName: "testVarExp" },
+  },
+  Footer: {
+    "line: 27, column: 2": { reqType: "fetch", parentName: "testFuncExp" },
+  },
+};
 
-module.exports = { fiberTree, fiberwalker };
-
-// console.log(result.children[0].children[0].children[0].children[0])
+module.exports = { fiberTree, fiberwalker, componentStore };
