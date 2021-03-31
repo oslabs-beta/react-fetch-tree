@@ -1,6 +1,6 @@
 console.log("<----- Injected script started running ----->");
 //declare object to be consumed by fiberwalker
-let componentObj;
+let componentObj = {};
 
 //send message to client side notifying that inject script has been initialized
 window.postMessage(
@@ -68,10 +68,14 @@ const fiberwalker = (
 
   while (node) {
     let name;
-    if (typeof node.elementType == "string") {
-      name = node.elementType;
-    } else if (node.elementType.name) {
-      name = node.elementType.name;
+    if (node.elementType) {
+      if (typeof node.elementType == "string") {
+        name = node.elementType;
+      } else if (node.elementType.name !== undefined) {
+        name = node.elementType.name;
+      } else {
+        name = "anon.";
+      }
     } else {
       name = "anon.";
     }
@@ -107,15 +111,19 @@ const fiberwalker = (
 //declaring variables needed for onCommitFiberRoot function
 let __ReactFiberDOM;
 const devTools = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
-let orgChart = { name: "Component", children: ["div"] };
+let orgChart;
+//= {
+//   name: "Component",
+//   children: [{ name: "div", children: null }],
+// };
 
 devTools.onCommitFiberRoot = (function (original) {
   return function (...args) {
     __ReactFiberDOM = args[1];
-    //console.log("dom: ", __ReactFiberDOM.current);
+    console.log("dom: ", __ReactFiberDOM.current);
     //console.log("componentObj in onCommitFiberRoot", componentObj);
-    //orgChart = fiberwalker(__ReactFiberDOM.current, componentObj);
-    console.log("orgChart: ", orgChart);
+    orgChart = fiberwalker(__ReactFiberDOM.current, componentObj);
+    console.log("orgChart in onCommit FiberRoot: ", orgChart);
     window.postMessage({
       type: "orgChart",
       payload: orgChart,
@@ -129,3 +137,5 @@ setInterval(() => {
   let essential = parseEssentialDetails();
   window.postMessage({ type: "FROM_PAGE", essential });
 }, 10000000);
+
+export default orgChart;

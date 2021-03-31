@@ -11,6 +11,10 @@
   },
   "author": "React Fetch Tree",
   "dependencies": {
+    "@visx/gradient": "^1.7.0",
+    "@visx/group": "^1.7.0",
+    "@visx/hierarchy": "^1.7.0",
+    "@visx/shape": "^1.7.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },

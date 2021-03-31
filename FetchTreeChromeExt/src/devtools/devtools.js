@@ -1,3 +1,4 @@
+let orgChart;
 chrome.devtools.panels.create(
   "React Fetch Tree", // title for the panel tab
   null, // you can specify here path to an icon
@@ -14,11 +15,12 @@ chrome.devtools.panels.create(
 
     // Listens for posts sent in specific ports and redraws tree
     port.onMessage.addListener((message) => {
-      if (!message.data) return; // abort if data not present, or if not of type object
+      // if (!message.data) return; // abort if data not present, or if not of type object
       // if (typeof msg !== 'object') return;
       // curData = msg; // assign global data object
       // throttledDraw();
-      console.log("in panel", message.data, message);
+      console.log("in panel", message);
+      orgChart = message.payload;
     });
   }
 );

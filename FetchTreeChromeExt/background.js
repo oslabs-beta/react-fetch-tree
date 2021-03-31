@@ -9,19 +9,45 @@ chrome.runtime.onConnect.addListener((port) => {
     // creates a new key/value pair of current window & devtools tab when a new devtools tab is opened
     if (message.name === "connect" && message.tabId) {
       connections[message.tabId] = port;
-
       return;
     }
     if (message.name === "orgChart") {
-      console.log("OrgChart Received", message.payload);
-      connections[message.tabId].postMessage({
-        name: message.name,
-        payload: message.payload,
-      });
+      // console.log("OrgChart Received", message.payload);
+      const portID = sender.sender.tab.id;
+
+      // console.log(portID);
+      if (connections[portID]) {
+        connections[portID].postMessage({
+          name: message.name,
+          payload: message.payload,
+        });
+      }
+      // console.log("portID", portID);
+      // connections[port] = "contentScript";
+      // connections[message.tabId].postMessage({
+      //   name: message.name,
+      //   payload: message.payload,
+      // });
+      console.log(
+        "message",
+        message,
+        "sender.sender",
+        sender.sender.tab.id,
+        "sender",
+        sender,
+        //sender.tab.id,
+        "sendResponse",
+        sendResponse
+      );
     }
     // may not be necessary, this is an attempt to keep the port alive
     return true;
   };
+
+  //creates contentScript listener
+  // const contentScriptListener = (message, sender, sendResponse) => {
+
+  // }
 
   if (port.name === "React Fetch Tree")
     port.onMessage.addListener(devToolsListener);

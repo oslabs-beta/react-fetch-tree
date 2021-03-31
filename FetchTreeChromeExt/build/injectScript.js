@@ -1,11 +1,49 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	// The require scope
+/******/ 	var __webpack_require__ = {};
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
 var __webpack_exports__ = {};
 /*!*************************!*\
   !*** ./injectScript.js ***!
   \*************************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 console.log("<----- Injected script started running ----->"); //declare object to be consumed by fiberwalker
 
-var componentObj; //send message to client side notifying that inject script has been initialized
+var componentObj = {}; //send message to client side notifying that inject script has been initialized
 
 window.postMessage({
   type: "message",
@@ -54,10 +92,14 @@ var fiberwalker = function fiberwalker(node, componentStore) {
   while (node) {
     var name = void 0;
 
-    if (typeof node.elementType == "string") {
-      name = node.elementType;
-    } else if (node.elementType.name) {
-      name = node.elementType.name;
+    if (node.elementType) {
+      if (typeof node.elementType == "string") {
+        name = node.elementType;
+      } else if (node.elementType.name !== undefined) {
+        name = node.elementType.name;
+      } else {
+        name = "anon.";
+      }
     } else {
       name = "anon.";
     }
@@ -98,18 +140,18 @@ var fiberwalker = function fiberwalker(node, componentStore) {
 var __ReactFiberDOM;
 
 var devTools = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
-var orgChart = {
-  name: "Component",
-  children: ["div"]
-};
+var orgChart; //= {
+//   name: "Component",
+//   children: [{ name: "div", children: null }],
+// };
 
 devTools.onCommitFiberRoot = function (original) {
   return function () {
-    __ReactFiberDOM = arguments.length <= 1 ? undefined : arguments[1]; //console.log("dom: ", __ReactFiberDOM.current);
-    //console.log("componentObj in onCommitFiberRoot", componentObj);
-    //orgChart = fiberwalker(__ReactFiberDOM.current, componentObj);
+    __ReactFiberDOM = arguments.length <= 1 ? undefined : arguments[1];
+    console.log("dom: ", __ReactFiberDOM.current); //console.log("componentObj in onCommitFiberRoot", componentObj);
 
-    console.log("orgChart: ", orgChart);
+    orgChart = fiberwalker(__ReactFiberDOM.current, componentObj);
+    console.log("orgChart in onCommit FiberRoot: ", orgChart);
     window.postMessage({
       type: "orgChart",
       payload: orgChart
@@ -126,6 +168,7 @@ setInterval(function () {
     essential: essential
   });
 }, 10000000);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (orgChart);
 /******/ })()
 ;
 //# sourceMappingURL=injectScript.js.map
