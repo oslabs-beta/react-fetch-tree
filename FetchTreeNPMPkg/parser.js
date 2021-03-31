@@ -57,7 +57,7 @@ const getDependencies = (filename) => {
       reqName = node.callee.name;
       if (node.callee.name) {
         nodeExistence(node.loc.start, reqName, parentName, filename);
-      }
+      }[]
       if (invocationStore[parentName]) {
         invocationStore[parentName].push(reqName);
       }
@@ -162,6 +162,11 @@ const getDependencies = (filename) => {
 
 // Helper function to complete componentStore
 const componentGraph = (invocationStore, nodeStore, componentStore) => {
+  const dataTypeCheck = [invocationStore, nodeStore, componentStore];
+  if (dataTypeCheck.some(arg => Array.isArray(arg) || !arg || typeof arg !== "object")) {
+    throw new TypeError("Arguments passed in must be of an object data type");
+  };
+  
   for (let node in nodeStore) {
     let { parentName, reqType, fileName } = nodeStore[node];
     if (
@@ -192,7 +197,7 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
       }
     }
   }
-  console.log("componentStore", componentStore);
+  // console.log("componentStore", componentStore);
   return componentStore;
 };
 
@@ -207,18 +212,16 @@ const dependenciesGraph = (entryFile) => {
       const dirname = path.dirname(asset.filename);
 
       asset.dependencies.forEach((relativePath) => {
-        //If there is no file extension, add it
         let absolutePath = path.resolve(dirname, relativePath);
         let fileCheck = fs.existsSync(absolutePath);
         let child;
 
         if (!fileCheck) {
-          absolutePath = path.resolve(dirname, relativePath + ".js"); //Test for .js
+          absolutePath = path.resolve(dirname, relativePath + ".js");
           fileCheck = fs.existsSync(absolutePath);
-          if (!fileCheck) absolutePath = absolutePath + "x"; //Test for .jsx
+          if (!fileCheck) absolutePath = absolutePath + "x";
         }
 
-        //Check for duplicate file paths
         if (!cache[absolutePath]) {
           child = getDependencies(absolutePath);
           queue.push(child);
@@ -227,7 +230,7 @@ const dependenciesGraph = (entryFile) => {
     }
     return componentGraph(invocationStore, nodeStore, componentStore);
   } else {
-    return "Entry file must be .js or .jsx";
+    throw new Error("Entry file must be .js or .jsx")
   }
 };
 
