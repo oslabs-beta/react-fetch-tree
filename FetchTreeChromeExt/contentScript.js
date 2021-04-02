@@ -13,7 +13,7 @@ function injectScript(file_path, tag) {
 injectScript(chrome.runtime.getURL("injectScript.js"), "body");
 
 //set up port for communication between background.js and contentscript
-const port = chrome.runtime.connect("clpdflcelpcimgnoilbniccopcnnheni", {
+const port = chrome.runtime.connect("aphknndpggkkofehkipimignemgnmead", {
   name: "contentScript",
 });
 port.postMessage({
