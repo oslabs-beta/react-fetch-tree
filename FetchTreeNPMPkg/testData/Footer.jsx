@@ -8,6 +8,8 @@ const Footer = () => {
     fetchResult = testArrowExp();
   })
 
+  fetch('/')
+
   return (
     <div>
       <h2>I am the footer {fetchResult}</h2>
