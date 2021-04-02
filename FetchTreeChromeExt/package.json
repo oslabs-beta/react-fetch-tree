@@ -19,6 +19,7 @@
     "@visx/responsive": "^1.7.0",
     "@visx/shape": "^1.7.0",
     "d3-shape": "^2.1.0",
+    "mini-css-extract-plugin": "^1.4.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "ts-loader": "^8.1.0",

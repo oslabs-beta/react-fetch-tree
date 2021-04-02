@@ -19,13 +19,19 @@
 import React from 'react';
 import { render } from 'react-dom';
 import ParentSize from '@visx/responsive/lib/components/ParentSize';
+import NavBar from './Nav';
 
 import Viz from './treeViz.tsx';
 import './sandbox-styles.css';
 
-function ProfileTimeline() {
+
+//function ProfileTimeline() {
   render(
-    <ParentSize>{({ width, height }) => <Viz width={width} height={height} />}</ParentSize>,
+    <div>
+      <NavBar/>
+      {/* <ParentSize>{({ width, height }) => <Viz width={width} height={height} />}</ParentSize> */}
+    </div>
+   ,
     document.getElementById('app'),
   );
-};
+//};
