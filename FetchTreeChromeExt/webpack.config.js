@@ -7,7 +7,7 @@ const destination = path.resolve(__dirname, "build");
 module.exports = {
   mode: "development",
   entry: {
-    app: "./src/components/index.jsx",
+    app: "./src/components/index.tsx",
     injectScript: "./injectScript.js",
     contentScript: "./contentScript.js",
   },
@@ -57,7 +57,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [".js", ".jsx", ".scss", ".css"],
+    extensions: [".js", ".jsx", ".scss", ".css", ".ts", ".tsx"],
   },
   plugins: [
     new CleanWebpackPlugin(),
