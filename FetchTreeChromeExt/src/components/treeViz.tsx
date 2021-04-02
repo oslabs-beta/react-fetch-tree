@@ -227,7 +227,6 @@ export default function Viz({
   height: totalHeight,
   margin = defaultMargin,
 }: LinkTypesProps) {
-  const [orgChart, setOrgChart] = useState({ name: "App", children: [] });
   const [layout, setLayout] = useState<string>('cartesian');
   const [orientation, setOrientation] = useState<string>('horizontal');
   const [linkType, setLinkType] = useState<string>('diagonal');
