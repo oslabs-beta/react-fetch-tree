@@ -1,3 +1,14 @@
+import React, { useState } from 'react';
+import { Group } from '@visx/group';
+import { hierarchy, Tree } from '@visx/hierarchy';
+import { LinearGradient } from '@visx/gradient';
+import { pointRadial } from 'd3-shape';
+import useForceUpdate from './useForceUpdate';
+import LinkControls from './LinkControls';
+import getLinkComponent from './getLinkComponent';
+import { Zoom } from '@visx/zoom';
+import { localPoint } from '@visx/event';
+
 // import React, { useMemo, useState, useEffect } from "react";
 // import { Group } from "@visx/group";
 // import { Cluster, hierarchy } from "@visx/hierarchy";
@@ -158,14 +169,7 @@
 //   );
 // }
 
-import React, { useState } from 'react';
-import { Group } from '@visx/group';
-import { hierarchy, Tree } from '@visx/hierarchy';
-import { LinearGradient } from '@visx/gradient';
-import { pointRadial } from 'd3-shape';
-import useForceUpdate from './useForceUpdate';
-import LinkControls from './LinkControls';
-import getLinkComponent from './getLinkComponent';
+
 
 interface TreeNode {
   name: string;
@@ -260,6 +264,16 @@ export default function Viz({
 
   const LinkComponent = getLinkComponent({ layout, linkType, orientation });
 
+  const initialTransform = {
+    scaleX: 1,
+    scaleY: 1,
+    translateX: 0,
+    translateY: 0,
+    skewX: 0,
+    skewY: 0,
+  };
+  
+  
   return totalWidth < 10 ? null : (
     <div>
       <LinkControls
@@ -272,10 +286,22 @@ export default function Viz({
         setLinkType={setLinkType}
         setStepPercent={setStepPercent}
       />
-      <svg width={totalWidth} height={totalHeight}>
+      
+      <Zoom
+        width={totalWidth-20}
+        height={totalHeight}
+        scaleXMin={1/2}
+        scaleXMax={4}
+        scaleYMin={1/2}
+        scaleYMax={4}
+        transformMatrix={initialTransform}
+      >
+        {zoom => (
+        <div className="relative">
+      <svg width={totalWidth} height={totalHeight} style={{ cursor: zoom.isDragging ? 'grabbing' : 'grab' }}>
         <LinearGradient id="links-gradient" from="#fd9b93" to="#fe6e9e" />
         <rect width={totalWidth} height={totalHeight} rx={14} fill="#272b4d" />
-        <Group top={margin.top} left={margin.left}>
+        <Group top={margin.top} left={margin.left} transform={zoom.toString()}>
           <Tree
             root={hierarchy(data, d => (d.isExpanded ? null : d.children))}
             size={[sizeWidth, sizeHeight]}
@@ -360,8 +386,102 @@ export default function Viz({
               </Group>
             )}
           </Tree>
+          <rect
+                width={totalWidth}
+                height={totalHeight}
+                rx={14}
+                fill="transparent"
+                onTouchStart={zoom.dragStart}
+                onTouchMove={zoom.dragMove}
+                onTouchEnd={zoom.dragEnd}
+                onMouseDown={zoom.dragStart}
+                onMouseMove={zoom.dragMove}
+                onMouseUp={zoom.dragEnd}
+                onMouseLeave={() => {
+                  if (zoom.isDragging) zoom.dragEnd();
+                }}
+                onDoubleClick={event => {
+                  const point = localPoint(event) || { x: 0, y: 0 };
+                  zoom.scale({ scaleX: 1.1, scaleY: 1.1, point });
+                }}
+              />
         </Group>
+
       </svg>
+      <div className="controls">
+      <button
+        type="button"
+        className="btn btn-zoom"
+        onClick={() => zoom.scale({ scaleX: 1.2, scaleY: 1.2 })}
+      >
+        +
+      </button>
+      <button
+        type="button"
+        className="btn btn-zoom btn-bottom"
+        onClick={() => zoom.scale({ scaleX: 0.8, scaleY: 0.8 })}
+      >
+        -
+      </button>
+      <button type="button" className="btn btn-lg" onClick={zoom.center}>
+        Center
+      </button>
+      <button type="button" className="btn btn-lg" onClick={zoom.reset}>
+        Reset
+      </button>
+      <button type="button" className="btn btn-lg" onClick={zoom.clear}>
+        Clear
+      </button>
+    </div>
+
+     </div> )}
+      </Zoom>
+      <style jsx>{`
+        .btn {
+          margin: 0;
+          text-align: center;
+          border: none;
+          background: #2f2f2f;
+          color: #888;
+          padding: 0 4px;
+          border-top: 1px solid #0a0a0a;
+        }
+        .btn-lg {
+          font-size: 12px;
+          line-height: 1;
+          padding: 4px;
+        }
+        .btn-zoom {
+          width: 26px;
+          font-size: 22px;
+        }
+        .btn-bottom {
+          margin-bottom: 1rem;
+        }
+        .description {
+          font-size: 12px;
+          margin-right: 0.25rem;
+        }
+        .controls {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+        }
+        .mini-map {
+          position: absolute;
+          bottom: 25px;
+          right: 15px;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+        }
+        .relative {
+          position: relative;
+        }
+      `}</style>
     </div>
   );
 }

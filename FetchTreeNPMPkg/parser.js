@@ -29,6 +29,29 @@ const nodeExistence = (
   return;
 };
 
+//Helper function to check node existence
+const nodeExistence = (
+  nodePosition,
+  reqName,
+  parentName,
+  filename,
+  exists = false
+) => {
+  let nodePos = `line: ${nodePosition["line"]}, column: ${nodePosition["column"]}`;
+  if (parentName === null) parentName = "Anonymous";
+  if (nodeStore[nodePos]) exists = true;
+  if (!exists) {
+    let nodeFileName = filename.split("/");
+    nodeFileName = nodeFileName[nodeFileName.length - 1].split(".")[0];
+    nodeStore[nodePos] = {
+      reqType: reqName,
+      parentName,
+      fileName: nodeFileName,
+    };
+  }
+  return;
+};
+
 //Obtain  target file's dependencies
 const getDependencies = (filename) => {
   const dependencies = [];
@@ -186,7 +209,7 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
       }
     }
   }
-  console.log("componentStore", componentStore);
+  // console.log("componentStore", componentStore);
   return componentStore;
 };
 

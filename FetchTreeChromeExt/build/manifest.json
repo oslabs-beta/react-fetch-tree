@@ -1,5 +1,5 @@
 {
-    "manifest_version": 2,
+  "manifest_version": 2,
   "name": "React Fetch Tree",
     "description": "Demo extension for Google Chrome browser",
     "version": "1.0",
@@ -8,7 +8,7 @@
       "persistent": false
     },
     "content_scripts": [
-      {"matches": ["<all_urls>"],
+      {"matches": ["http://localhost/*"],
       "js": ["contentScript.js"]}
     ],
     "web_accessible_resources": ["injectScript.js"],
