@@ -4,21 +4,22 @@ const fs = require("fs");
 const path = require("path");
 
 let ID = 0;
-const [cache, invocationStore, nodeStore, componentStore] = [{}, {}, {}, {}]
+
+const [cache, invocationStore, nodeStore, componentStore]: [{}, {}, {}, {}] = [{}, {}, {}, {}]
 
 //Helper function to check node existence
 const nodeExistence = (
-  nodePosition,
-  reqType,
-  parentName,
-  filename,
-  exists = false
+  nodePosition: string,
+  reqType: string,
+  parentName: string,
+  filename: string,
+  exists: boolean = false
 ) => {
-  let nodePos = `line: ${nodePosition["line"]}, column: ${nodePosition["column"]}`;
+  let nodePos: string = `line: ${nodePosition["line"]}, column: ${nodePosition["column"]}`;
   if (parentName === null) parentName = "Anonymous";
   if (nodeStore[nodePos]) exists = true;
   if (!exists) {
-    let nodeFileName = filename.split("/");
+    let nodeFileName: string[] | string = filename.split("/");
     nodeFileName = nodeFileName[nodeFileName.length - 1].split(".")[0];
     nodeStore[nodePos] = {
       reqType,
