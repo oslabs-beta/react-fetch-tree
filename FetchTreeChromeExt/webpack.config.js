@@ -2,6 +2,7 @@ const path = require("path");
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const destination = path.resolve(__dirname, "build");
 
 module.exports = {
@@ -17,6 +18,7 @@ module.exports = {
     publicPath: ".",
   },
   devtool: "cheap-module-source-map",
+  plugins: [new MiniCssExtractPlugin()],
   module: {
     rules: [
       {
@@ -47,7 +49,7 @@ module.exports = {
         test: /\.s[ac]ss$/i,
         use: [
           // Creates `style` nodes from JS strings
-          "style-loader",
+          MiniCssExtractPlugin.loader,
           // Translates CSS into CommonJS
           "css-loader",
           // Compiles Sass to CSS
@@ -68,6 +70,7 @@ module.exports = {
         { from: `./src/devtools/devtools.js`, to: destination },
         { from: `./src/index.html`, to: destination },
         { from: `./background.js`, to: destination },
+        { from: `./src/style.css`, to: destination },
       ],
     }),
   ],

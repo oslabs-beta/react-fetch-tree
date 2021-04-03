@@ -3,12 +3,15 @@
   "version": "3.0.0",
   "scripts": {
     "create-component-store": "node parser.js",
-    "test": "jest"
+    "test": "jest",
+    "parser": "ts-node /Users/chrislung/CodesmithPTRI/react-fetch-tree/FetchTreeNPMPkg/parser.ts"
   },
   "dependencies": {
     "@babel/parser": "^7.13.4",
     "@babel/traverse": "^7.13.0",
-    "react": "^17.0.1"
+    "react": "^17.0.1",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
   },
   "devDependencies": {
     "jest": "^26.6.3"
