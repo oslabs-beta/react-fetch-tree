@@ -4,7 +4,13 @@ const fs = require("fs");
 const path = require("path");
 
 let ID: number = 0;
-const [cache, invocationStore, nodeStore, componentStore]: [{}, {}, {}, {}] = [{}, {}, {}, {}]
+
+type CacheStore = { [key: string]: number } | {};
+type InvocationStore = { [key: string]:  [] | string[] } | {};
+type NodeStore = { [key: string]:  {reqType: string, parentName: string, filename: string } } | {};
+type ComponentStore = { [key: string]:  {reqType: string, parentName: string } } | {};
+
+const [cache, invocationStore, nodeStore, componentStore]: [CacheStore, InvocationStore, NodeStore, ComponentStore] = [{}, {}, {}, {}];
 
 //Helper function to check node existence
 const nodeExistence = (
