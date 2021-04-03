@@ -33,14 +33,6 @@ const nodeExistence = (
 const getDependencies = (filename) => {
   const dependencies = [];
   let [reqType, parentName] = [null, null];
-  class DataRequestNode {
-    constructor(dataRequestType, position, parentName, fileName) {
-      this.dataRequestType = dataRequestType;
-      this.position = position || null;
-      this.parentName = parentName || "Anonymous";
-      this.fileName = fileName || null;
-    }
-  }
 
   const content = fs.readFileSync(filename, "utf8");
   const raw_ast = babelParser.parse(content, {
