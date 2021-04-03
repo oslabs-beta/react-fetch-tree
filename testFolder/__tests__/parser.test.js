@@ -1,11 +1,10 @@
 const path = require("path");
-const { node } = require("webpack");
 const testPath = path.join(__dirname, "../testData/index.js");
 const {
   dependenciesGraph,
   componentGraph,
   getDependencies,
-} = require("../parser.js");
+} = require("../../FetchTreeNPMPkg/parser.js");
 const {
   invocationStore,
   nodeStore,
