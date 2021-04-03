@@ -3,6 +3,7 @@ const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const ExtensionReloader = require("webpack-extension-reloader");
 const destination = path.resolve(__dirname, "build");
 
 module.exports = {
@@ -18,11 +19,10 @@ module.exports = {
     publicPath: ".",
   },
   devtool: "cheap-module-source-map",
-  plugins: [new MiniCssExtractPlugin()],
   module: {
     rules: [
       {
-        test: /\.(svg|png|jpg|gif)$/,
+        test: /\.(svg|png|jpg|gif|jpeg)$/,
         use: {
           loader: "file-loader",
           options: {
@@ -59,9 +59,11 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [".js", ".jsx", ".scss", ".css", ".ts", ".tsx"],
+    extensions: [".js", ".jsx", ".scss", ".css", ".ts", ".tsx", ".jpg"],
   },
   plugins: [
+    new MiniCssExtractPlugin(),
+    new ExtensionReloader(),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
@@ -71,6 +73,7 @@ module.exports = {
         { from: `./src/index.html`, to: destination },
         { from: `./background.js`, to: destination },
         { from: `./src/style.css`, to: destination },
+        { from: `./src/assets/`, to: destination },
       ],
     }),
   ],

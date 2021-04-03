@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "React Fetch Tree Google Chrome DevTools Extension",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack --watch"
   },
   "repository": {
     "type": "git",

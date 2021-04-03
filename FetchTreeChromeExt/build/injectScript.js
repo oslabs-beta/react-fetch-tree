@@ -148,6 +148,7 @@ var orgChart; //= {
 devTools.onCommitFiberRoot = function (original) {
   return function () {
     __ReactFiberDOM = arguments.length <= 1 ? undefined : arguments[1];
+    console.log('domElements', __ReactFiberDOM);
     console.log("dom: ", __ReactFiberDOM.current); //console.log("componentObj in onCommitFiberRoot", componentObj);
 
     orgChart = fiberwalker(__ReactFiberDOM.current, componentObj);
