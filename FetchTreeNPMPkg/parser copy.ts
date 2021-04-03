@@ -198,12 +198,16 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
   return componentStore;
 };
 
-const dependenciesGraph = (entryFile) => {
-  const extension = entryFile.match(/\.[0-9a-z]+$/i)[0];
+const dependenciesGraph = (entryFile: string) => {
+  const extension: string = entryFile.match(/\.[0-9a-z]+$/i)[0];
 
   if (extension === ".js" || extension === ".jsx") {
-    const entry = getDependencies(entryFile);
-    const queue = [entry];
+    const entry: { id: number; filename: any; dependencies: any[]; } = getDependencies(entryFile);
+    const queue: {
+      id: number;
+      filename: any;
+      dependencies: any[];
+    }[] = [entry];
 
     for (const asset of queue) {
       const dirname = path.dirname(asset.filename);
