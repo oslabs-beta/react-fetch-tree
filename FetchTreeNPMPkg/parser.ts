@@ -3,8 +3,7 @@ const traverse = require("@babel/traverse").default;
 const fs = require("fs");
 const path = require("path");
 
-let ID = 0;
-
+let ID: number = 0;
 const [cache, invocationStore, nodeStore, componentStore]: [{}, {}, {}, {}] = [{}, {}, {}, {}]
 
 //Helper function to check node existence
@@ -31,15 +30,16 @@ const nodeExistence = (
 };
 
 //Obtain  target file's dependencies
-const getDependencies = (filename) => {
-  const dependencies = [];
-  let [reqType, parentName] = [null, null];
-
-  const content = fs.readFileSync(filename, "utf8");
-  const raw_ast = babelParser.parse(content, {
+const getDependencies = (filename: string) => {
+  const dependencies: string[] = [];
+  let [reqType, parentName]: [string | null, string | null] = [null, null];
+  let parserConfig: {sourceType: string, plugins: string[]} = {
     sourceType: "module",
     plugins: ["jsx"],
-  });
+  } 
+
+  const content: string = fs.readFileSync(filename, "utf8");
+  const raw_ast: {} = babelParser.parse(content, parserConfig);
 
   //Node types and conditionals
   const IdentifierPath = {
@@ -140,7 +140,7 @@ const getDependencies = (filename) => {
     },
   });
 
-  const id = ID++;
+  const id: number = ID++;
   cache[filename] = id;
 
   return {
@@ -151,14 +151,14 @@ const getDependencies = (filename) => {
 };
 
 // Helper function to complete componentStore
-const componentGraph = (invocationStore, nodeStore, componentStore) => {
-  const dataTypeCheck = [invocationStore, nodeStore, componentStore];
+const componentGraph = (invocationStore: {}, nodeStore: {}, componentStore: {}) => {
+  const dataTypeCheck: {}[] = [invocationStore, nodeStore, componentStore];
   if (dataTypeCheck.some(arg => Array.isArray(arg) || !arg || typeof arg !== "object")) {
     throw new TypeError("Arguments passed in must be of an object data type");
   };
   
   for (let node in nodeStore) {
-    let { parentName, reqType, fileName } = nodeStore[node];
+    let { parentName, reqType, fileName }: { parentName: string, reqType: string, fileName: string } = nodeStore[node];
     if (
       reqType === "fetch" ||
       reqType === "axios" ||
@@ -232,11 +232,11 @@ const dependenciesGraph = (entryFile: string) => {
 Please enter the path for entry file as the argument in dependenciesGraph. 
 Must be a .js/.jsx file or parser will not run.
 */
-const resultObj = JSON.stringify(
+const resultObj: string = JSON.stringify(
   dependenciesGraph(path.join(__dirname, "./testData/index.js"))
 );
 
-// const componentObj = `const componentObj = ${resultObj}
+// const componentObj: string = `const componentObj = ${resultObj}
 // module.exports = componentObj;`;
 
 // fs.writeFileSync(
