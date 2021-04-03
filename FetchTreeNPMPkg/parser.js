@@ -3,15 +3,12 @@ const fs = require("fs");
 const traverse = require("@babel/traverse").default;
 const path = require("path");
 let ID = 0;
-const cache = {};
-const invocationStore = {};
-const nodeStore = {};
-const componentStore = {};
+const [cache, invocationStore, nodeStore, componentStore] = [{}, {}, {}, {}]
 
 //Helper function to check node existence
 const nodeExistence = (
   nodePosition,
-  reqName,
+  reqType,
   parentName,
   filename,
   exists = false
@@ -23,7 +20,7 @@ const nodeExistence = (
     let nodeFileName = filename.split("/");
     nodeFileName = nodeFileName[nodeFileName.length - 1].split(".")[0];
     nodeStore[nodePos] = {
-      reqType: reqName,
+      reqType,
       parentName,
       fileName: nodeFileName,
     };
@@ -34,8 +31,7 @@ const nodeExistence = (
 //Obtain  target file's dependencies
 const getDependencies = (filename) => {
   const dependencies = [];
-  let parentName = null;
-  let reqName = null;
+  let [reqType, parentName] = [null, null];
   class DataRequestNode {
     constructor(dataRequestType, position, parentName, fileName) {
       this.dataRequestType = dataRequestType;
@@ -54,34 +50,34 @@ const getDependencies = (filename) => {
   //Node types and conditionals
   const IdentifierPath = {
     CallExpression: ({ node }) => {
-      reqName = node.callee.name;
+      reqType = node.callee.name;
       if (node.callee.name) {
-        nodeExistence(node.loc.start, reqName, parentName, filename);
+        nodeExistence(node.loc.start, reqType, parentName, filename);
       }[]
       if (invocationStore[parentName]) {
-        invocationStore[parentName].push(reqName);
+        invocationStore[parentName].push(reqType);
       }
     },
     MemberExpression: ({ node }) => {
-      reqName = node.object.name;
+      reqType = node.object.name;
       if (
-        reqName === "axios" ||
-        reqName === "http" ||
-        reqName === "https" ||
-        reqName === "qwest" ||
-        reqName === "superagent"
+        reqType === "axios" ||
+        reqType === "http" ||
+        reqType === "https" ||
+        reqType === "qwest" ||
+        reqType === "superagent"
       ) {
-        nodeExistence(node.loc.start, reqName, parentName, filename);
+        nodeExistence(node.loc.start, reqType, parentName, filename);
       }
       if (node.property.name === "ajax") {
-        reqName = node.property.name;
-        nodeExistence(node.loc.start, reqName, parentName, filename);
+        reqType = node.property.name;
+        nodeExistence(node.loc.start, reqType, parentName, filename);
       }
     },
     NewExpression: ({ node }) => {
-      reqName = node.callee.name;
-      if (reqName === "XMLHttpRequest") {
-        nodeExistence(node.loc.start, reqName, parentName, filename);
+      reqType = node.callee.name;
+      if (reqType === "XMLHttpRequest") {
+        nodeExistence(node.loc.start, reqType, parentName, filename);
       }
     },
     ReturnStatement: ({ node }) => {
@@ -97,10 +93,10 @@ const getDependencies = (filename) => {
       }
     },
     JSXExpressionContainer: ({ node }) => {
-      reqName = node.expression.name;
+      reqType = node.expression.name;
       if (node.expression.name) {
         if (invocationStore[parentName]) {
-          invocationStore[parentName].push(reqName);
+          invocationStore[parentName].push(reqType);
         }
       }
     },
@@ -197,7 +193,7 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
       }
     }
   }
-  // console.log("componentStore", componentStore);
+  console.log("componentStore", componentStore);
   return componentStore;
 };
 
