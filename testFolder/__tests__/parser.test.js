@@ -10,7 +10,6 @@ const {
   nodeStore,
   componentStore,
 } = require("../testData/mockDataParser.js");
-
 describe("dependenciesGraph", () => {
   const result = dependenciesGraph(testPath);
 
