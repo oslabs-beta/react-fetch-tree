@@ -1,0 +1,6 @@
+{
+  "name": "reactfetchtree",
+  "scripts": {
+    "test": "jest --coverage"
+  }
+}
