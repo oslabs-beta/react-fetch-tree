@@ -1,0 +1,10 @@
+language: node_js
+node_js: "stable"
+script:
+  - npm test
+deploy: 
+  provider: script
+  skip_cleanup: true
+  on: 
+    branch: main 
+  script: sh $TRAVIS_BUILD_DIR/scripts/deploy.sh
