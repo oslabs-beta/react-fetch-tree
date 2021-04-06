@@ -73,7 +73,7 @@ module.exports = {
         { from: `./src/index.html`, to: destination },
         { from: `./background.js`, to: destination },
         { from: `./src/style.css`, to: destination },
-        { from: `./src/assets/`, to: destination },
+        { from: `./src/assets/Logo.jpg`, to: destination },
       ],
     }),
   ],

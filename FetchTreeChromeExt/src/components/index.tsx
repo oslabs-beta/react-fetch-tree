@@ -28,7 +28,7 @@ import './sandbox-styles.css';
 //function ProfileTimeline() {
   render(
     <div>
-      <NavBar/>
+      <NavBar />
       {/* <ParentSize>{({ width, height }) => <Viz width={width} height={height} />}</ParentSize> */}
     </div>
    ,

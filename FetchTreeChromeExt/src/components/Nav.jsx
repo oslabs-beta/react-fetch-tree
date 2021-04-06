@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import logo from "../assets/Logo.jpg";
-const NavBar = () => {
+
+
+const NavBar = (props) => {
   const [display, setDisplay] = useState("visualization");
   const toggle = (e) => {
     e.target.value === "visualization"
@@ -9,10 +10,6 @@ const NavBar = () => {
   };
   return (
     <div className="nav">
-      <div className="logo-box">
-        <h2>React Fetch Tree</h2>
-        <img src={logo} alt="logo for react fetch tree" />
-      </div>
       <div className="allOptions">
         <input
           type="radio"
