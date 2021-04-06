@@ -1,3 +1,9 @@
+import React from 'react';
+import { render } from 'react-dom';
+import ParentSize from '@visx/responsive/lib/components/ParentSize';
+import Viz from './treeViz';
+import './sandbox-styles.css';
+
 // import React from "react";
 // import ReactDOM from "react-dom";
 // import ParentSize from '@visx/responsive/lib/components/ParentSize';
@@ -16,22 +22,9 @@
 
 // ReactDOM.render(<ProfileTimeline />, document.getElementById("app"));
 
-import React from 'react';
-import { render } from 'react-dom';
-import ParentSize from '@visx/responsive/lib/components/ParentSize';
-import NavBar from './Nav';
-
-import Viz from './treeViz.tsx';
-import './sandbox-styles.css';
 
 
-//function ProfileTimeline() {
   render(
-    <div>
-      <NavBar />
-      {/* <ParentSize>{({ width, height }) => <Viz width={width} height={height} />}</ParentSize> */}
-    </div>
-   ,
+    <ParentSize>{({ width, height }) => <Viz width={width} height={height * 0.9} />}</ParentSize>,
     document.getElementById('app'),
   );
-//};
