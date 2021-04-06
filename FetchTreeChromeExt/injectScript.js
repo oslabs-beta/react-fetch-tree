@@ -81,16 +81,31 @@ const fiberwalker = (
     }
     const currentNode = { name, children: [] };
     if (componentStore !== undefined) {
+      let requests = [];
+      let str = "";
       if (componentStore[name]) {
         //iterate through every entry and check request type
-        const dataRequest = componentStore[name];
-        for (let key in dataRequest) {
-          if (dataReqArr.includes(dataRequest[key].reqType)) {
-            currentNode.attributes = {
-              containsFetch: `${dataRequest[key].reqType}`,
-            };
+        const dataRequest = Object.values(componentStore[name]);
+        //console.log("dataRequest", dataRequest);
+        dataRequest.forEach((el) => {
+          if (dataReqArr.includes(el.reqType)) {
+            requests.push(`${el.reqType}`);
           }
+        });
+    
+        while (requests.length) {
+          let temp = requests.splice(0, 1);
+          let number = requests.reduce((acc, cur) => {
+            if (cur == temp) acc += 1;
+            return acc;
+          }, 1);
+          requests = requests.filter((el) => el != temp);
+          str += !str.length
+            ? `${number} ${temp} request${number > 1 ? "s" : ""}`
+            : `, ${number} ${temp} request${number > 1 ? "s" : ""}`;
         }
+      }
+      currentNode.label=str;
       }
     }
     treedata.children.push(currentNode);
@@ -120,7 +135,7 @@ let orgChart;
 devTools.onCommitFiberRoot = (function (original) {
   return function (...args) {
     __ReactFiberDOM = args[1];
-    console.log('domElements', __ReactFiberDOM);
+    console.log("domElements", __ReactFiberDOM);
     console.log("dom: ", __ReactFiberDOM.current);
     //console.log("componentObj in onCommitFiberRoot", componentObj);
     orgChart = fiberwalker(__ReactFiberDOM.current, componentObj);
