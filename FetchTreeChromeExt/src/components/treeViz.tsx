@@ -175,6 +175,7 @@ interface TreeNode {
   name: string;
   isExpanded?: boolean;
   children?: TreeNode[];
+  label?: string;
 }
 
 const data: TreeNode = {
