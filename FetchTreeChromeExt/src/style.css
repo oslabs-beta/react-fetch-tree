@@ -1,16 +1,24 @@
-.nav {
-  background-color: greenyellow;
-  color: purple;
+body {
+  background:white;
+  color:black;
 }
-.allOptions{
-  display: grid;
-  grid-template-columns: 5% 15% 60% 15% 5%;
+h2 {
+  margin: 0;
+  padding: 0;
 }
-#b1{
-  grid-column-start: 2;
-  grid-column-end: 3;
+img{
+  width: 50px;
+  height:25px;
 }
-#b2{
-  grid-column-start: 4;
-  grid-column-end: 5;
+.logo-box {
+  padding: 10px 10px;
+  text-align: center;
+  border-bottom: 2px solid blue;
+  display: flex;
+  background:white;
+  color:black;
+}
+.visualization-box {
+  margin: auto auto;
+  border: 2px solid black;
 }
