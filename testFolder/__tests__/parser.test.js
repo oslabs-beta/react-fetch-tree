@@ -10,12 +10,11 @@ const {
   nodeStore,
   componentStore,
 } = require("../testData/mockDataParser.js");
-
 describe("dependenciesGraph", () => {
   const result = dependenciesGraph(testPath);
 
   it("Output should return an error if empty string", () => {
-    expect(() => {dependenciesGraph('')}).toThrow(TypeError);
+    expect(() => { dependenciesGraph('') }).toThrow(TypeError);
   });
 
   it("Output should return an object", () => {
@@ -23,7 +22,7 @@ describe("dependenciesGraph", () => {
   });
 
   it('Output should return an error if file extension is not .jsx or .jsx', () => {
-    expect(() => {dependenciesGraph(__dirname, "../testData/style.css")}).toThrow();
+    expect(() => { dependenciesGraph(__dirname, "../testData/style.css") }).toThrow();
   });
 });
 
@@ -39,7 +38,7 @@ describe("getDependencies", () => {
   });
 
   it("Output should return an error if empty string", () => {
-    expect(() => {getDependencies('')}).toThrow();
+    expect(() => { getDependencies('') }).toThrow();
   });
 });
 
