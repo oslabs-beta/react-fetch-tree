@@ -40,6 +40,7 @@ const componentStore = {
   App: {},
   Body: {
     "line: 1, column: 26": { reqType: "fetch", parentName: "testVarExp" },
+    "line: 2, column: 26": { reqType: "http", parentName: "testVarExp" },
   },
   Footer: {
     "line: 11, column: 2": { reqType: "fetch", parentName: "Footer" },
