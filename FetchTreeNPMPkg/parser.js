@@ -7,27 +7,27 @@ let ID = 0;
 const [cache, invocationStore, nodeStore, componentStore] = [{}, {}, {}, {}]
 
 //Helper function to check node existence
-const nodeExistence = (
-  nodePosition,
-  reqType,
-  parentName,
-  filename,
-  exists = false
-) => {
-  let nodePos = `line: ${nodePosition["line"]}, column: ${nodePosition["column"]}`;
-  if (parentName === null) parentName = "Anonymous";
-  if (nodeStore[nodePos]) exists = true;
-  if (!exists) {
-    let nodeFileName = filename.split("/");
-    nodeFileName = nodeFileName[nodeFileName.length - 1].split(".")[0];
-    nodeStore[nodePos] = {
-      reqType,
-      parentName,
-      fileName: nodeFileName,
-    };
-  }
-  return;
-};
+// const nodeExistence = (
+//   nodePosition,
+//   reqType,
+//   parentName,
+//   filename,
+//   exists = false
+// ) => {
+//   let nodePos = `line: ${nodePosition["line"]}, column: ${nodePosition["column"]}`;
+//   if (parentName === null) parentName = "Anonymous";
+//   if (nodeStore[nodePos]) exists = true;
+//   if (!exists) {
+//     let nodeFileName = filename.split("/");
+//     nodeFileName = nodeFileName[nodeFileName.length - 1].split(".")[0];
+//     nodeStore[nodePos] = {
+//       reqType,
+//       parentName,
+//       fileName: nodeFileName,
+//     };
+//   }
+//   return;
+// };
 
 //Helper function to check node existence
 const nodeExistence = (
@@ -69,7 +69,7 @@ const getDependencies = (filename) => {
       reqType = node.callee.name;
       if (node.callee.name) {
         nodeExistence(node.loc.start, reqType, parentName, filename);
-      }[]
+      } []
       if (invocationStore[parentName]) {
         invocationStore[parentName].push(reqType);
       }
@@ -178,7 +178,7 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
   if (dataTypeCheck.some(arg => Array.isArray(arg) || !arg || typeof arg !== "object")) {
     throw new TypeError("Arguments passed in must be of an object data type");
   };
-  
+
   for (let node in nodeStore) {
     let { parentName, reqType, fileName } = nodeStore[node];
     if (
@@ -251,20 +251,20 @@ Please enter the path for entry file as the argument in dependenciesGraph.
 Must be a .js/.jsx file or parser will not run.
 */
 const resultObj = JSON.stringify(
-  dependenciesGraph(path.join(__dirname, "./testData/index.js"))
+  dependenciesGraph(path.join(__dirname, "../testFolder/testData/index.js"))
 );
 
-// const componentObj = `const componentObj = ${resultObj}
-// module.exports = componentObj;`;
+const componentObj = `const componentObj = ${resultObj}
+module.exports = componentObj;`;
 
-// fs.writeFileSync(
-//   path.join(__dirname, "./componentStore.js"),
-//   componentObj,
-//   (err) => {
-//     if (err) throw err;
-//     console.log("The file has been saved");
-//   }
-// );
+fs.writeFileSync(
+  path.join(__dirname, "./componentStore.js"),
+  componentObj,
+  (err) => {
+    if (err) throw err;
+    console.log("The file has been saved");
+  }
+);
 
 module.exports = {
   dependenciesGraph,
