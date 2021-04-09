@@ -239,20 +239,20 @@ Please enter the path for entry file as the argument in dependenciesGraph.
 Must be a .js/.jsx file or parser will not run.
 */
 const resultObj: string = JSON.stringify(
-  dependenciesGraph(path.join(__dirname, "./testData/index.js"))
+  dependenciesGraph(path.join(__dirname, "../testFolder/testData/index.js"))
 );
 
-// const componentObj: string = `const componentObj = ${resultObj}
-// module.exports = componentObj;`;
+const componentObj: string = `const componentObj = ${resultObj}
+module.exports = componentObj;`;
 
-// fs.writeFileSync(
-//   path.join(__dirname, "./componentStore.js"),
-//   componentObj,
-//   (err) => {
-//     if (err) throw err;
-//     console.log("The file has been saved");
-//   }
-// );
+fs.writeFileSync(
+  path.join(__dirname, "./componentStore.js"),
+  componentObj,
+  (err) => {
+    if (err) throw err;
+    console.log("The file has been saved");
+  }
+);
 
 module.exports = {
   dependenciesGraph,
