@@ -1,8 +1,8 @@
-// interface Store {
-  
-const 
+import React from 'react';
+
 const ComponentStorePanel = () => {
   return (
+    
     <>
       <h1>hello</h1>
     </>
@@ -11,4 +11,4 @@ const ComponentStorePanel = () => {
 
 
 
-module.exports = ComponentStorePanel;
+export default ComponentStorePanel;

@@ -3,11 +3,10 @@ import ParentSize from '@visx/responsive/lib/components/ParentSize';
 import Viz from './treeViz';
 import ComponentStorePanel from './ComponentStorePanel';
 
-
 const Panel = () => {
   const [displayStore, setDisplayStore] = useState(false);
   const toggle = (e) => {
-    e.target.value === false ? setDisplayStore(true) : setDisplay(false);
+    e.target.value === 'component store' ? setDisplayStore(true) : setDisplayStore(false);
   };
 
   return (
@@ -26,10 +25,10 @@ const Panel = () => {
             type="radio"
             name="choices"
             id="b2"
-            value="visualization"
+            value="tree"
             onClick={toggle}
           />
-          <label htmlFor="b2">View Visualization</label>
+          <label htmlFor="b2">View Tree</label>
         </div>
       </div>
       <div id="visualization-box">
