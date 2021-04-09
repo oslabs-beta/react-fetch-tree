@@ -5,10 +5,11 @@
 }
 
 :root {
-  --main-bg: #0a090c;
+  --main-bg: white;
   --secondary-bg-hover: #a487de61;
   --secondary-bg: #2c2240;
-  --text-color: #f0edee;
+  /* --text-color: #f0edee; */
+  --text-color: black;
   --light-border: #90ddf0;
   --dark-border: #08637a;
   --nav-buttons: #20909f;
@@ -20,6 +21,11 @@ body {
   color: var(--text-color);
   font-family: "Roboto", sans-serif;
 }
+
+/* div:nth-of-type(1) {
+  background:limegreen;
+  margin-bottom:10px;
+} */
 
 .info-container,
 .history-view,
@@ -216,3 +222,26 @@ body {
   text-align: center;
   padding-left: 10px;
 }
+
+.panelNav {
+  background-color: white;
+  color: black;
+}
+
+.allOptions {
+  padding-left: 15px;
+  display: flex;
+  margin-left: -8px;
+}
+
+.allOptions input {
+  align-self: center;
+}
+
+.allOptions label {
+  padding: 0px 5px;
+}
+
+/* #visualization-box{
+
+} */
