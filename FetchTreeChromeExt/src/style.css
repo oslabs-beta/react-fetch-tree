@@ -194,6 +194,10 @@ body {
 .btn-bottom {
   margin-bottom: 1rem;
 }
+.description {
+  font-size: 12px;
+  margin-right: 0.25rem;
+}
 .controls {
   position: absolute;
   top: 15px;
@@ -204,4 +208,11 @@ body {
 }
 .relative {
   position: relative;
+}
+.fetchBox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  padding-left: 10px;
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useDebugValue, useState } from "react";
 import { Group } from "@visx/group";
 import { hierarchy, Tree } from "@visx/hierarchy";
 import { LinearGradient } from "@visx/gradient";
@@ -7,11 +7,18 @@ import LinkControls from "./LinkControls";
 import getLinkComponent from "./getLinkComponent";
 import { Zoom } from "@visx/zoom";
 import { localPoint } from "@visx/event";
+
+
 interface TreeNode {
   name: string;
   isExpanded?: boolean;
   children?: TreeNode[];
   dataRequest?: string;
+}
+
+interface DataRequest {
+  name: string;
+  dataRequest: string;
 }
 
 const data: TreeNode = {
@@ -74,6 +81,8 @@ export default function Viz({
   const [linkType, setLinkType] = useState<string>("diagonal");
   const [stepPercent, setStepPercent] = useState<number>(0.5);
   const forceUpdate = useForceUpdate();
+  const [displayFetch, setDisplayFetch] = useState<boolean>(false);
+  const [fetchComponent, setFetchComponent] = useState<DataRequest>({name: "", dataRequest: ""})
 
   const innerWidth = totalWidth - margin.left - margin.right;
   const innerHeight = totalHeight - margin.top - margin.bottom;
@@ -104,17 +113,13 @@ export default function Viz({
 
   return totalWidth < 10 ? null : (
     <div>
-      <LinkControls
-        layout={layout}
+      <div className="fetchBox">
+      {displayFetch? <p>{`Name: ${fetchComponent.name}, Data Request: ${fetchComponent.dataRequest}`}</p>:<p></p>}
+       <LinkControls
         orientation={orientation}
-        linkType={linkType}
-        stepPercent={stepPercent}
-        setLayout={setLayout}
         setOrientation={setOrientation}
-        setLinkType={setLinkType}
-        setStepPercent={setStepPercent}
       />
-
+</div>
       <Zoom
         width={totalWidth - 20}
         height={totalHeight}
@@ -129,7 +134,7 @@ export default function Viz({
             <svg
               width={totalWidth}
               height={totalHeight}
-              style={{ cursor: zoom.isDragging ? "grabbing" : "grab" }}
+              //style={{ cursor: zoom.isDragging ? "grabbing" : "grab" }}
             >
               <LinearGradient id="links-gradient" from="#fd9b93" to="#fe6e9e" />
               <rect
@@ -143,8 +148,28 @@ export default function Viz({
                 left={margin.left}
                 transform={zoom.toString()}
               >
+                 <rect
+                  width={totalWidth}
+                  height={totalHeight}
+                  rx={14}
+                  fill="transparent"
+                  onTouchStart={zoom.dragStart}
+                  onTouchMove={zoom.dragMove}
+                  onTouchEnd={zoom.dragEnd}
+                  onMouseDown={zoom.dragStart}
+                  onMouseMove={zoom.dragMove}
+                  onMouseUp={zoom.dragEnd}
+                  onMouseLeave={() => {
+                    if (zoom.isDragging) zoom.dragEnd();
+                  }}
+                  onDoubleClick={(event) => {
+                    const point = localPoint(event) || { x: 0, y: 0 };
+                    zoom.scale({ scaleX: 1.1, scaleY: 1.1, point });
+                  }}
+                />
+                
                 <Tree
-                  root={hierarchy(data, (d) =>
+                  root ={hierarchy(data, (d) =>
                     d.isExpanded ? null : d.children
                   )}
                   size={[sizeWidth, sizeHeight]}
@@ -186,23 +211,25 @@ export default function Viz({
                                 r={12}
                                 fill="url('#links-gradient')"
                                 onClick={() => {
+                                  console.log(node, node.data.isExpanded);
                                   node.data.isExpanded = !node.data.isExpanded;
-                                  console.log(node);
                                   forceUpdate();
                                 }}
                               />
                             )}
                             {node.depth !== 0 && (
+                              
                               <rect
                                 height={30}
-                                width={node.data.name.length * 9}
-                                y={-height / 2}
-                                x={-width / 2}
+                                width={node.data.name.length>5 ? node.data.name.length * 5.5 : 25}
+                                
+                                y={-height / 2.8}
+                                x={node.data.name.length>12 ? -width*1.6 : node.data.name.length<5 ? -width/4.5 : -width / 2}
                                 fill={
-                                  node.data.dataRequest ? "#fee12b" : "#272b4d"
+                                  node.data.dataRequest ? "yellow" : "#272b4d"
                                 }
                                 stroke={
-                                  node.data.children ? "#03c0dc" : "#26deb0"
+                                  node.data.children ? "pink" : "white"
                                 }
                                 strokeWidth={1}
                                 strokeDasharray={
@@ -210,9 +237,15 @@ export default function Viz({
                                 }
                                 strokeOpacity={node.data.children ? 1 : 0.6}
                                 rx={node.data.children ? 0 : 10}
+                              
                                 onClick={() => {
-                                  node.data.isExpanded = !node.data.isExpanded;
-                                  console.log(node);
+                                  console.log("clicked");
+                                  if (node.data.dataRequest) {
+                                    setDisplayFetch(true);
+                                    setFetchComponent({name: node.data.name, dataRequest: node.data.dataRequest})
+                                  } else {
+                                    setDisplayFetch(false)
+                                  }
                                   forceUpdate();
                                 }}
                               />
@@ -226,6 +259,8 @@ export default function Viz({
                               style={{
                                 pointerEvents: "none",
                                 textAlign: "center",
+                                display: "flex",
+                                flexWrap: "wrap",
                               }}
                               fill={
                                 node.depth === 0
@@ -237,7 +272,7 @@ export default function Viz({
                             >
                               {node.data.name}
                             </text>
-                            {node.data.dataRequest ? (
+                            {/* {node.data.dataRequest ? (
                               <text
                                 dy="1em"
                                 fontSize={9}
@@ -248,32 +283,14 @@ export default function Viz({
                               >
                                 {"contains: "} {node.data.dataRequest}
                               </text>
-                            ) : null}
+                            ) : null} */}
                           </Group>
                         );
                       })}
                     </Group>
                   )}
                 </Tree>
-                <rect
-                  width={totalWidth}
-                  height={totalHeight}
-                  rx={14}
-                  fill="transparent"
-                  onTouchStart={zoom.dragStart}
-                  onTouchMove={zoom.dragMove}
-                  onTouchEnd={zoom.dragEnd}
-                  onMouseDown={zoom.dragStart}
-                  onMouseMove={zoom.dragMove}
-                  onMouseUp={zoom.dragEnd}
-                  onMouseLeave={() => {
-                    if (zoom.isDragging) zoom.dragEnd();
-                  }}
-                  onDoubleClick={(event) => {
-                    const point = localPoint(event) || { x: 0, y: 0 };
-                    zoom.scale({ scaleX: 1.1, scaleY: 1.1, point });
-                  }}
-                />
+               
               </Group>
             </svg>
             <div className="controls">
@@ -324,3 +341,4 @@ export default function Viz({
     </div>
   );
 }
+
