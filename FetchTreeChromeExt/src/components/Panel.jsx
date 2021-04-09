@@ -27,6 +27,7 @@ const Panel = () => {
             id="b2"
             value="tree"
             onClick={toggle}
+            defaultChecked
           />
           <label htmlFor="b2">View Tree</label>
         </div>
