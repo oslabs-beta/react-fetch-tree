@@ -92,7 +92,7 @@ const fiberwalker = (
             requests.push(`${el.reqType}`);
           }
         });
-    
+
         while (requests.length) {
           let temp = requests.splice(0, 1);
           let number = requests.reduce((acc, cur) => {
@@ -105,8 +105,7 @@ const fiberwalker = (
             : `, ${number} ${temp} request${number > 1 ? "s" : ""}`;
         }
       }
-      currentNode.label=str;
-      }
+      currentNode.label = str;
     }
     treedata.children.push(currentNode);
 
@@ -135,7 +134,7 @@ let orgChart;
 devTools.onCommitFiberRoot = (function (original) {
   return function (...args) {
     __ReactFiberDOM = args[1];
-    console.log("domElements", __ReactFiberDOM);
+    //console.log("domElements", __ReactFiberDOM);
     console.log("dom: ", __ReactFiberDOM.current);
     //console.log("componentObj in onCommitFiberRoot", componentObj);
     orgChart = fiberwalker(__ReactFiberDOM.current, componentObj);
