@@ -22,6 +22,7 @@ port.postMessage({
 });
 
 //send message to client side notifying that content script has been initialized
+//do we need this?
 window.postMessage(
   { type: "message", payload: "ContentScriptInitialized" },
   "*"

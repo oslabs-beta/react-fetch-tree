@@ -244,6 +244,7 @@ export default function Viz({
   const [displayFetch, setDisplayFetch] = useState<boolean>(false);
   const [fetchComponent, setFetchComponent] = useState<DataRequest>({name: "", dataRequest: ""})
   const [orgChart, setOrgChart] = useState<TreeNode>({name:"App"});
+
 const port = chrome.runtime.connect({ name: "React Fetch Tree" });
 
     // establishes a connection between devtools and background page
