@@ -224,8 +224,12 @@ body {
 }
 
 .panelNav {
-  background-color: white;
-  color: black;
+  background-color: #131724;
+  border-bottom: 1px #171b2b;
+  color: white;
+  height: 30px;
+  display: flex;
+  align-items: center;
 }
 
 .allOptions {
@@ -240,4 +244,27 @@ body {
 
 .allOptions label {
   padding: 0px 5px;
+}
+
+#componentStore {
+  height: 1000px;
+  padding: 10px;
+  background-color: #24283b;
+}
+
+.componentName {
+  font-size: 1.5em;
+  color: #68d1f5;
+}
+
+.componentDetails {
+  font-size: 1em;
+}
+
+.details {
+  color: #e39763;
+}
+
+.detailsLabel {
+  color: #81daca;
 }
