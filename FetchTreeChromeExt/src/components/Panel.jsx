@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-
+import ParentSize from '@visx/responsive/lib/components/ParentSize';
+import Viz from './treeViz';
+import ComponentStorePanel from './ComponentStorePanel';
 
 const Panel = () => {
-  const [display, setDisplay] = useState("visualization");
+  const [displayStore, setDisplayStore] = useState(false);
   const toggle = (e) => {
-    e.target.value === "visualization"
-      ? setDisplay("visualization")
-      : setDisplay("componentStore");
+    e.target.value === 'component store' ? setDisplayStore(true) : setDisplayStore(false);
   };
+
   return (
     <div>
       <div className="panelNav">
@@ -24,19 +25,20 @@ const Panel = () => {
             type="radio"
             name="choices"
             id="b2"
-            value="visualization"
+            value="tree"
             onClick={toggle}
+            defaultChecked
           />
-          <label htmlFor="b2">View Visualization</label>
+          <label htmlFor="b2">View Tree</label>
         </div>
       </div>
-      {/* <div id="visualization-box">
-        {display === "visualization" ? (
-          <div>Visualization</div>
+      <div id="visualization-box">
+        {displayStore === false ? (
+            <ParentSize>{({ width, height }) => <Viz width={width} height={height * 0.9} />}</ParentSize>
         ) : (
-            <div>Component store</div>
+            <ComponentStorePanel />
           )}
-      </div> */}
+      </div>
     </div >
   );
 };
