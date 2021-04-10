@@ -106,7 +106,6 @@ const fiberwalker = (
         }
       }
       currentNode.label=str;
-      }
     }
     treedata.children.push(currentNode);
 

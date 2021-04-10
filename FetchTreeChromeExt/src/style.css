@@ -224,8 +224,16 @@ body {
 }
 
 .panelNav {
-  background-color: white;
-  color: black;
+  /* overflow: hidden;
+  position: fixed;
+  top: 20;
+  width: 100%; */
+  background-color: #131724;
+  border-bottom: 1px solid #252c46;
+  color: #f3f3f3;
+  height: 30px;
+  display: flex;
+  align-items: center;
 }
 
 .allOptions {
@@ -241,3 +249,27 @@ body {
 .allOptions label {
   padding: 0px 5px;
 }
+
+#componentStore {
+  height: 1000px;
+  padding: 10px;
+  background-color: #272b4d;
+}
+
+.componentName {
+  font-size: 1.5em;
+  color: #68d1f5;
+}
+
+.componentDetails {
+  font-size: 1em;
+}
+
+.detailsLabel {
+  color: #b998f4;
+}
+
+.details {
+  color: #26deb0;
+}
+
