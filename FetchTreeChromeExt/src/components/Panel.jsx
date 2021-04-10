@@ -5,6 +5,17 @@ import ComponentStorePanel from './ComponentStorePanel';
 
 const Panel = () => {
   const [displayStore, setDisplayStore] = useState(false);
+  const [componentArr, setComponentArr] = useState([['App', {}]]);
+
+  window.addEventListener('message', (event) => {
+    if (event.data) {
+      if (event.data.type === 'componentObj') {
+        console.log(event.data.payload)
+        setComponentArr(Object.entries(event.data.payload));
+      }
+    }
+  }) 
+
   const toggle = (e) => {
     e.target.value === 'component store' ? setDisplayStore(true) : setDisplayStore(false);
   };
@@ -18,7 +29,7 @@ const Panel = () => {
             name="choices"
             id="b1"
             value="component store"
-            onClick={toggle}
+            onClick={toggle}     
           />
           <label htmlFor="b1">View Component Store</label>
           <input
@@ -36,7 +47,7 @@ const Panel = () => {
         {displayStore === false ? (
             <ParentSize>{({ width, height }) => <Viz width={width} height={height * 0.9} />}</ParentSize>
         ) : (
-            <ComponentStorePanel />
+            <ComponentStorePanel componentArr = { componentArr }/>
           )}
       </div>
     </div >
