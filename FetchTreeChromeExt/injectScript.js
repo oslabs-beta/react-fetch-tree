@@ -3,6 +3,7 @@ console.log("<----- Injected script started running ----->");
 let componentObj = {};
 
 //send message to client side notifying that inject script has been initialized
+//do we need this?
 window.postMessage(
   { type: "message", payload: "InjectScriptInitialized" },
   "*"
@@ -16,14 +17,14 @@ window.addEventListener(
     // only accept messages from the current tab
     if (event.source != window) return;
 
-    //receiving essential info from page
-    if (
-      event.data.type &&
-      event.data.type == "FROM_PAGE" &&
-      typeof chrome.app.isInstalled !== "undefined"
-    ) {
-      chrome.runtime.sendMessage({ essential: event.data.essential });
-    }
+    // //receiving essential info from page
+    // if (
+    //   event.data.type &&
+    //   event.data.type == "FROM_PAGE" &&
+    //   typeof chrome.app.isInstalled !== "undefined"
+    // ) {
+    //   chrome.runtime.sendMessage({ essential: event.data.essential });
+    // }
 
     //conditional check to see if componentObj has been received from client side FetchTreeHook
     if (event.data.type && event.data.type === "componentObj") {
@@ -35,13 +36,13 @@ window.addEventListener(
 );
 
 //is this necessary?
-function parseEssentialDetails() {
-  let main = {};
+// function parseEssentialDetails() {
+//   let main = {};
 
-  main.performance = JSON.parse(JSON.stringify(window.performance)) || null;
+//   main.performance = JSON.parse(JSON.stringify(window.performance)) || null;
 
-  return main;
-}
+//   return main;
+// }
 
 //fiberwalker function
 const fiberwalker = (
@@ -92,7 +93,7 @@ const fiberwalker = (
             requests.push(`${el.reqType}`);
           }
         });
-    
+
         while (requests.length) {
           let temp = requests.splice(0, 1);
           let number = requests.reduce((acc, cur) => {
@@ -105,7 +106,7 @@ const fiberwalker = (
             : `, ${number} ${temp} request${number > 1 ? "s" : ""}`;
         }
       }
-      currentNode.label=str;
+      currentNode.label = str;
     }
     treedata.children.push(currentNode);
 
@@ -134,7 +135,7 @@ let orgChart;
 devTools.onCommitFiberRoot = (function (original) {
   return function (...args) {
     __ReactFiberDOM = args[1];
-    console.log("domElements", __ReactFiberDOM);
+    //console.log("domElements", __ReactFiberDOM);
     console.log("dom: ", __ReactFiberDOM.current);
     //console.log("componentObj in onCommitFiberRoot", componentObj);
     orgChart = fiberwalker(__ReactFiberDOM.current, componentObj);
@@ -146,11 +147,5 @@ devTools.onCommitFiberRoot = (function (original) {
     return original(...args);
   };
 })(devTools.onCommitFiberRoot);
-
-//is this necessary?
-setInterval(() => {
-  let essential = parseEssentialDetails();
-  window.postMessage({ type: "FROM_PAGE", essential });
-}, 10000000);
 
 export default orgChart;

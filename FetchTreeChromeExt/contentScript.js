@@ -13,7 +13,7 @@ function injectScript(file_path, tag) {
 injectScript(chrome.runtime.getURL("injectScript.js"), "body");
 
 //set up port for communication between background.js and contentscript
-const port = chrome.runtime.connect("ohalcbgpbdnbaejhiaemlhdpjlidkjom", {
+const port = chrome.runtime.connect("clpdflcelpcimgnoilbniccopcnnheni", {
   name: "contentScript",
 });
 port.postMessage({
@@ -22,6 +22,7 @@ port.postMessage({
 });
 
 //send message to client side notifying that content script has been initialized
+//do we need this?
 window.postMessage(
   { type: "message", payload: "ContentScriptInitialized" },
   "*"
