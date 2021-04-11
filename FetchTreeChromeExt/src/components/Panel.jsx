@@ -1,23 +1,26 @@
 import React, { useState } from "react";
-import ParentSize from '@visx/responsive/lib/components/ParentSize';
-import Viz from './treeViz';
-import ComponentStorePanel from './ComponentStorePanel';
+import ParentSize from "@visx/responsive/lib/components/ParentSize";
+import Viz from "./treeViz";
+import ComponentStorePanel from "./ComponentStorePanel";
 
 const Panel = () => {
-  const [displayStore, setDisplayStore] = useState(false);
-  const [componentArr, setComponentArr] = useState([['App', {}]]);
+  const [displayStore, setDisplayStore] = useState(true);
+  const [componentArr, setComponentArr] = useState([["App", {}]]);
 
-  window.addEventListener('message', (event) => {
+  window.addEventListener("message", (event) => {
+    console.log("message received in panel");
     if (event.data) {
-      if (event.data.type === 'componentObj') {
-        console.log(event.data.payload)
+      if (event.data.type === "componentObj") {
+        console.log(event.data.payload);
         setComponentArr(Object.entries(event.data.payload));
       }
     }
-  }) 
+  });
 
   const toggle = (e) => {
-    e.target.value === 'component store' ? setDisplayStore(true) : setDisplayStore(false);
+    e.target.value === "component store"
+      ? setDisplayStore(true)
+      : setDisplayStore(false);
   };
 
   return (
@@ -29,7 +32,8 @@ const Panel = () => {
             name="choices"
             id="b1"
             value="component store"
-            onClick={toggle}     
+            onClick={toggle}
+            defaultChecked
           />
           <label htmlFor="b1">View Component Store</label>
           <input
@@ -38,19 +42,22 @@ const Panel = () => {
             id="b2"
             value="tree"
             onClick={toggle}
-            defaultChecked
           />
           <label htmlFor="b2">View Tree</label>
         </div>
       </div>
       <div id="visualization-box">
         {displayStore === false ? (
-            <ParentSize>{({ width, height }) => <Viz width={width} height={height * 0.9} />}</ParentSize>
+          <ParentSize>
+            {({ width, height }) => (
+              <Viz width={width} height={height * 0.94} />
+            )}
+          </ParentSize>
         ) : (
-            <ComponentStorePanel componentArr = { componentArr }/>
-          )}
+          <ComponentStorePanel componentArr={componentArr} />
+        )}
       </div>
-    </div >
+    </div>
   );
 };
 
