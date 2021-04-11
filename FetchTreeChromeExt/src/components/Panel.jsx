@@ -50,7 +50,7 @@ const Panel = () => {
         {displayStore === false ? (
           <ParentSize>
             {({ width, height }) => (
-              <Viz width={width} height={height * 0.94} />
+              <Viz width={width} height={height * 0.96} />
             )}
           </ParentSize>
         ) : (
