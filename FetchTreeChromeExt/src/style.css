@@ -2,6 +2,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: Roboto, system-ui, sans-serif;
 }
 
 :root {
@@ -19,7 +20,6 @@
 body {
   background-color: var(--main-bg);
   color: var(--text-color);
-  font-family: "Roboto", sans-serif;
 }
 
 /* div:nth-of-type(1) {
@@ -174,7 +174,6 @@ body {
     grid-template-areas:
       "history-view"
       "info-container";
-
     width: 100vw;
   }
 }
@@ -224,14 +223,10 @@ body {
 }
 
 .panelNav {
-  /* overflow: hidden;
-  position: fixed;
-  top: 20;
-  width: 100%; */
-  background-color: #131724;
-  border-bottom: 1px solid #252c46;
-  color: #f3f3f3;
-  height: 30px;
+  background-color: #f3f3f3;
+  color: #282828;
+  border-bottom: 1px solid #d8d8d8;
+  height: 40px;
   display: flex;
   align-items: center;
 }
@@ -240,14 +235,33 @@ body {
   padding-left: 15px;
   display: flex;
   margin-left: -8px;
+  margin-top: 15px;
+  margin-bottom: 10px;
 }
 
-.allOptions input {
+.allOptions button {
   align-self: center;
+  display: inline-block;
+  padding: 0.35em 1.2em;
+  border: 0.1em solid #282828;
+  margin: 0 0.3em 0.3em 0;
+  border-radius: 0.12em;
+  box-sizing: border-box;
+  text-align: center;
+  transition: all 0.2s;
+  color: #fdfdfd;
+  font-weight: 500;
+  text-decoration: none;
 }
 
-.allOptions label {
-  padding: 0px 5px;
+.allOptions button:hover {
+  color: #282828 !important;
+  background-color: #b998f4 !important;
+  border: 1px solid #282828 !important;
+}
+
+.allOptions button:focus {
+  outline: none;
 }
 
 #componentStore {

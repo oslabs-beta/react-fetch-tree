@@ -1,6 +1,6 @@
 import React from 'react';
 
-const controlStyles = { fontSize: 10 };
+const controlStyles = { fontSize: 14, fontWeight: 500, color: '#282828'};
 
 type Props = {
   orientation: string;
@@ -14,7 +14,7 @@ export default function LinkControls({
   return (
     <div style={controlStyles}>
       &nbsp;&nbsp;
-      <label>orientation:</label>&nbsp;
+      <label>Orientation:</label>&nbsp;
       <select
         onClick={e => e.stopPropagation()}
         onChange={e => setOrientation(e.target.value)}
