@@ -227,7 +227,7 @@ Please enter the path for entry file as the argument in dependenciesGraph.
 Must be a .js/.jsx file or parser will not run.
 */
 
-//USER NEEDS TO ENTER PATH TO APP ELEMENT
+//Enter path to entry file
 const resultObj = JSON.stringify(
   dependenciesGraph(path.join(__dirname, "../../../ENTER PATH HERE"))
 );
