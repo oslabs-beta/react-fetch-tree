@@ -193,7 +193,6 @@ const componentGraph = (invocationStore: {}, nodeStore: {}, componentStore: {}) 
       }
     }
   }
-  console.log("componentStore", componentStore);
   return componentStore;
 };
 
