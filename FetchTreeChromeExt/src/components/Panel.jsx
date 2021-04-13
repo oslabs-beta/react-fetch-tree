@@ -17,30 +17,29 @@ const Panel = () => {
   }) 
 
   const toggle = (e) => {
-    e.target.value === 'component store' ? setDisplayStore(true) : setDisplayStore(false);
+    e.target.value === 'Component Store' ? setDisplayStore(true) : setDisplayStore(false);
   };
 
   return (
     <div>
       <div className="panelNav">
         <div className="allOptions">
-          <input
-            type="radio"
+          <button
             name="choices"
             id="b1"
-            value="component store"
-            onClick={toggle}     
-          />
-          <label htmlFor="b1">View Component Store</label>
-          <input
-            type="radio"
+            value="Component Store"
+            onClick={toggle}
+            style={!displayStore ? { backgroundColor: '#fdfdfd', color: '#272b4d' } : { backgroundColor: '#272b4d', color: '#fdfdfd', border: '1px solid #272b4d' }}
+          >Component Store</button>
+          {/* <label htmlFor="b1">View Component Store</label> */}
+          <button
             name="choices"
             id="b2"
-            value="tree"
+            value="View Tree"
             onClick={toggle}
-            defaultChecked
-          />
-          <label htmlFor="b2">View Tree</label>
+            style={!displayStore ? { backgroundColor: '#272b4d', color: '#fdfdfd', border:'1px solid #272b4d'} : { backgroundColor: '#fdfdfd', color: '#272b4d' }}
+          >View Tree</button>
+          {/* <label htmlFor="b2">View Tree</label> */}
         </div>
       </div>
       <div id="visualization-box">
