@@ -24,7 +24,8 @@
     "react-dom": "^16.14.0",
     "style-loader": "^2.0.0",
     "ts-loader": "^8.1.0",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "webpack-extension-reloader": "^1.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
