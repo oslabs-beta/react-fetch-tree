@@ -27,12 +27,14 @@ export type LinkTypesProps = {
   width: number;
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
+  orgChart: TreeNode;
 };
 
 export default function Viz({
   width: totalWidth,
   height: totalHeight,
   margin = defaultMargin,
+  orgChart: orgChart,
 }: LinkTypesProps) {
   const [layout, setLayout] = useState<string>("cartesian");
   const [orientation, setOrientation] = useState<string>("vertical");
@@ -41,26 +43,9 @@ export default function Viz({
   const forceUpdate = useForceUpdate();
   const [displayFetch, setDisplayFetch] = useState<boolean>(false);
   const [fetchComponent, setFetchComponent] = useState<DataRequest>({ name: "", dataRequest: "" })
-  const [orgChart, setOrgChart] = useState<TreeNode>({ name: "App" });
+  // const [orgChart, setOrgChart] = useState<TreeNode>({ name: "App" });
 
-  //THIS PORT WILL NOW LIVE IN PANEL
-  // const port = chrome.runtime.connect({ name: "Tree Viz" });
 
-  // // establishes a connection between devtools and background page
-  // port.postMessage({
-  //   name: "connect",
-  //   tabId: chrome.devtools.inspectedWindow.tabId,
-  // });
-
-  // // Listens for posts sent in specific ports and redraws tree
-  // port.onMessage.addListener((message) => {
-  //   // if (!message.data) return; // abort if data not present, or if not of type object
-  //   // if (typeof msg !== 'object') return;
-  //   // curData = msg; // assign global data object
-  //   // throttledDraw();
-  //   console.log("in tree vis", message);
-  //   if (message.name === 'orgChart') setOrgChart(message.payload);
-  // });
   const innerWidth = totalWidth - margin.left - margin.right;
   const innerHeight = totalHeight - margin.top - margin.bottom;
 
