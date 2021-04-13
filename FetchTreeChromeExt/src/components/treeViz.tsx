@@ -24,12 +24,14 @@ export type LinkTypesProps = {
   width: number;
   height: number;
   margin?: { top: number; right: number; bottom: number; left: number };
+  orgChart: TreeNode;
 };
 
 export default function Viz({
   width: totalWidth,
   height: totalHeight,
   margin = defaultMargin,
+  orgChart: orgChart,
 }: LinkTypesProps) {
   const [layout, setLayout] = useState<string>("cartesian");
   const [orientation, setOrientation] = useState<string>("vertical");
@@ -37,26 +39,10 @@ export default function Viz({
   const [stepPercent, setStepPercent] = useState<number>(0.5);
   const forceUpdate = useForceUpdate();
   const [displayFetch, setDisplayFetch] = useState<boolean>(false);
-  const [fetchComponent, setFetchComponent] = useState<DataRequest>({name: "", dataRequest: ""})
-  const [orgChart, setOrgChart] = useState<TreeNode>({name:"App"});
+  const [fetchComponent, setFetchComponent] = useState<DataRequest>({ name: "", dataRequest: "" })
+  // const [orgChart, setOrgChart] = useState<TreeNode>({ name: "App" });
 
-const port = chrome.runtime.connect({ name: "React Fetch Tree" });
 
-    // establishes a connection between devtools and background page
-    port.postMessage({
-      name: "connect",
-      tabId: chrome.devtools.inspectedWindow.tabId,
-    });
-
-    // Listens for posts sent in specific ports and redraws tree
-    port.onMessage.addListener((message) => {
-      // if (!message.data) return; // abort if data not present, or if not of type object
-      // if (typeof msg !== 'object') return;
-      // curData = msg; // assign global data object
-      // throttledDraw();
-      console.log("in tree vis", message);
-      setOrgChart(message.payload);
-    });
   const innerWidth = totalWidth - margin.left - margin.right;
   const innerHeight = totalHeight - margin.top - margin.bottom;
 
@@ -92,12 +78,12 @@ const port = chrome.runtime.connect({ name: "React Fetch Tree" });
   return totalWidth < 10 ? null : (
     <div>
       <div className="fetchBox">
-      {displayFetch? <p>{`Name: ${fetchComponent.name}, Data Request: ${fetchComponent.dataRequest}`}</p>:<p></p>}
-       <LinkControls
-        orientation={orientation}
-        setOrientation={setOrientation}
-      />
-</div>
+        {displayFetch ? <p>{`Name: ${fetchComponent.name}, Data Request: ${fetchComponent.dataRequest}`}</p> : <p></p>}
+        <LinkControls
+          orientation={orientation}
+          setOrientation={setOrientation}
+        />
+      </div>
       <Zoom
         width={totalWidth - 20}
         height={totalHeight}
@@ -125,7 +111,7 @@ const port = chrome.runtime.connect({ name: "React Fetch Tree" });
                 left={margin.left}
                 transform={zoom.toString()}
               >
-                 <rect
+                <rect
                   width={totalWidth}
                   height={totalHeight}
                   rx={14}
@@ -146,7 +132,7 @@ const port = chrome.runtime.connect({ name: "React Fetch Tree" });
                 />
 
                 <Tree
-                  root ={hierarchy(orgChart, (d) =>
+                  root={hierarchy(orgChart, (d) =>
                     d.isExpanded ? null : d.children
                   )}
                   size={[sizeWidth, sizeHeight]}
@@ -197,12 +183,12 @@ const port = chrome.runtime.connect({ name: "React Fetch Tree" });
                             {node.depth !== 0 && (
 
                               <rect
-                              height={30}
-                              width={node.data.name.length<4 ? 30 : node.data.name.length>15 ? node.data.name.length*4.5 : node.data.name.length * 6}
-                              
-                              y={-height / 2}
-                              x={node.data.name.length<4 ? -15 : node.data.name.length>15 ? -node.data.name.length*2.25 : -node.data.name.length * 3}
-                              fill={
+                                height={30}
+                                width={node.data.name.length < 4 ? 30 : node.data.name.length > 15 ? node.data.name.length * 4.5 : node.data.name.length * 6}
+
+                                y={-height / 2}
+                                x={node.data.name.length < 4 ? -15 : node.data.name.length > 15 ? -node.data.name.length * 2.25 : -node.data.name.length * 3}
+                                fill={
                                   node.data.dataRequest ? "#e8e8e8" : "#272b4d"
                                 }
                                 stroke={
@@ -219,7 +205,7 @@ const port = chrome.runtime.connect({ name: "React Fetch Tree" });
                                   console.log("clicked");
                                   if (node.data.dataRequest) {
                                     setDisplayFetch(true);
-                                    setFetchComponent({name: node.data.name, dataRequest: node.data.dataRequest})
+                                    setFetchComponent({ name: node.data.name, dataRequest: node.data.dataRequest })
                                   } else {
                                     setDisplayFetch(false)
                                   }
@@ -243,8 +229,8 @@ const port = chrome.runtime.connect({ name: "React Fetch Tree" });
                                 node.depth === 0
                                   ? "#71248e"
                                   : node.data.dataRequest
-                                  ? "black"
-                                  : "#26deb0"
+                                    ? "black"
+                                    : "#26deb0"
                               }
                             >
                               {node.data.name}

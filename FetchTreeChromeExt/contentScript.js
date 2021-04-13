@@ -13,7 +13,7 @@ function injectScript(file_path, tag) {
 injectScript(chrome.runtime.getURL("injectScript.js"), "body");
 
 //set up port for communication between background.js and contentscript
-const port = chrome.runtime.connect("clpdflcelpcimgnoilbniccopcnnheni", {
+const port = chrome.runtime.connect("oijdgmmgbopfhcafnmdinpghklmjddhp", {
   name: "contentScript",
 });
 port.postMessage({
@@ -21,12 +21,7 @@ port.postMessage({
   payload: "this is coming from contentScript",
 });
 
-//send message to client side notifying that content script has been initialized
-//do we need this?
-window.postMessage(
-  { type: "message", payload: "ContentScriptInitialized" },
-  "*"
-);
+let componentObj = {};
 
 //set up listener for messages coming from client side
 window.addEventListener(
@@ -44,6 +39,13 @@ window.addEventListener(
     ) {
       chrome.runtime.sendMessage({ essential: event.data.essential });
     }
+
+    if (event.data.type === 'componentObj') {
+      console.log('componentObj received from FetchTreeHook');
+      componentObj = event.data.payload;
+      port.postMessage({ name: 'componentObj', payload: componentObj })
+    }
+
     if (event.data.type && event.data.type === "orgChart") {
       port.postMessage({
         name: "orgChart",
@@ -54,3 +56,4 @@ window.addEventListener(
   //check to see why this is set to false
   false
 );
+
