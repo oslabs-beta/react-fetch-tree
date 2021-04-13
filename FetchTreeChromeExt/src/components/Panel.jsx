@@ -23,7 +23,7 @@ const Panel = () => {
   port.onMessage.addListener((message) => {
     if (message.name === 'componentObj') {
       console.log("componentObj in panel", message);
-      if (!count) {
+      if (!componentObjReceived) {
         setComponentArr(Object.entries(message.payload));
         componentObjReceived = true;
       }
