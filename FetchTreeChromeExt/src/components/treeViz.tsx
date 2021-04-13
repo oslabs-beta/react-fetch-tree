@@ -7,19 +7,16 @@ import LinkControls from "./LinkControls";
 import getLinkComponent from "./getLinkComponent";
 import { Zoom } from "@visx/zoom";
 import { localPoint } from "@visx/event";
-
 interface TreeNode {
   name: string;
   isExpanded?: boolean;
   children?: TreeNode[];
   dataRequest?: string;
 }
-
 interface DataRequest {
   name: string;
   dataRequest: string;
 }
-
 
 const defaultMargin = { top: 30, left: 30, right: 30, bottom: 30 };
 
@@ -101,13 +98,12 @@ export default function Viz({
             <svg
               width={totalWidth}
               height={totalHeight}
-            //style={{ cursor: zoom.isDragging ? "grabbing" : "grab" }}
             >
-              <LinearGradient id="links-gradient" from="#fd9b93" to="#fe6e9e" />
+              <LinearGradient id="links-gradient" from="#26deb0" to="#94ffe4" />
               <rect
                 width={totalWidth}
                 height={totalHeight}
-                rx={14}
+                rx={0}
                 fill="#272b4d"
               />
               <Group
@@ -141,7 +137,7 @@ export default function Viz({
                   )}
                   size={[sizeWidth, sizeHeight]}
                   separation={(a, b) =>
-                    (a.parent === b.parent ? 1 : 0.5) / a.depth
+                    (a.parent === b.parent ? 5 : 5)
                   }
                 >
                   {(tree) => (
@@ -151,7 +147,7 @@ export default function Viz({
                           key={i}
                           data={link}
                           percent={stepPercent}
-                          stroke="rgb(254,110,158,0.6)"
+                          stroke="rgb(104, 210, 245, 0.6)"
                           strokeWidth="1"
                           fill="none"
                         />
@@ -193,10 +189,10 @@ export default function Viz({
                                 y={-height / 2}
                                 x={node.data.name.length < 4 ? -15 : node.data.name.length > 15 ? -node.data.name.length * 2.25 : -node.data.name.length * 3}
                                 fill={
-                                  node.data.dataRequest ? "yellow" : "#272b4d"
+                                  node.data.dataRequest ? "#e8e8e8" : "#272b4d"
                                 }
                                 stroke={
-                                  node.data.children ? "pink" : "white"
+                                  node.data.children ? "#b998f4" : "#26deb0"
                                 }
                                 strokeWidth={1}
                                 strokeDasharray={
@@ -213,12 +209,12 @@ export default function Viz({
                                   } else {
                                     setDisplayFetch(false)
                                   }
+                                  node.data.isExpanded = !node.data.isExpanded;
                                   forceUpdate();
                                 }}
                               />
                             )}
                             <text
-                              //dy="0em"
                               dy={node.data.dataRequest ? "0em" : "0.33em"}
                               fontSize={9}
                               fontFamily="Arial"
@@ -239,18 +235,6 @@ export default function Viz({
                             >
                               {node.data.name}
                             </text>
-                            {/* {node.data.dataRequest ? (
-                              <text
-                                dy="1em"
-                                fontSize={9}
-                                fontFamily="Arial"
-                                textAnchor="middle"
-                                style={{ pointerEvents: "none" }}
-                                fill="black"
-                              >
-                                {"contains: "} {node.data.dataRequest}
-                              </text>
-                            ) : null} */}
                           </Group>
                         );
                       })}

@@ -59,7 +59,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [".js", ".jsx", ".scss", ".css", ".ts", ".tsx", ".jpg"],
+    extensions: [".js", ".jsx", ".scss", ".css", ".ts", ".tsx", ".jpg", ".png"],
   },
   plugins: [
     new MiniCssExtractPlugin(),
@@ -73,7 +73,7 @@ module.exports = {
         { from: `./src/index.html`, to: destination },
         { from: `./background.js`, to: destination },
         { from: `./src/style.css`, to: destination },
-        { from: `./src/assets/Logo.jpg`, to: destination },
+        { from: `./src/assets/Logo.png`, to: destination },
       ],
     }),
   ],
