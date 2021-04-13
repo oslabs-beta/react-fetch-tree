@@ -9,6 +9,7 @@ window.addEventListener(
     if (event.data.type && event.data.type === "componentObj") {
       console.log("componentObj received in injectScript", event.data);
       componentObj = event.data.payload;
+      //window.postMessage({ type: "componentObj", payload: componentObj });
     }
   },
   false

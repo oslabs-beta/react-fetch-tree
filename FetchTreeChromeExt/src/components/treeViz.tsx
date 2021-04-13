@@ -21,7 +21,7 @@ interface DataRequest {
 }
 
 
-const defaultMargin = { top: 30, left: 30, right: 30, bottom: 70 };
+const defaultMargin = { top: 30, left: 30, right: 30, bottom: 30 };
 
 export type LinkTypesProps = {
   width: number;
