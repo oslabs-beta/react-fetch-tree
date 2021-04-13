@@ -117,8 +117,6 @@ body {
   align-items: center;
   width: 100%;
   height: 3vh;
-
-  /* border: 4px dotted var(--dark-border); */
   text-align: center;
 }
 
