@@ -1,163 +1,3 @@
-// import React, { useMemo, useState, useEffect } from "react";
-// import { Group } from "@visx/group";
-// import { Cluster, hierarchy } from "@visx/hierarchy";
-// import { LinkVertical } from "@visx/shape";
-// import { LinearGradient } from "@visx/gradient";
-
-// const citrus = "#ddf163";
-// const white = "#ffffff";
-// const green = "#79d259";
-// const aqua = "#37ac8c";
-// const merlinsbeard = "#f7f7f3";
-// const background = "#306c90";
-
-// function Node({ node }) {
-//   const isRoot = node.depth === 0;
-//   const isParent = !!node.children;
-//   const width = node.data.name.length * 4.5 + 10;
-//   const height = 20;
-//   const centerX = -width / 2;
-//   const centerY = -height / 2;
-//   if (isRoot) return <RootNode node={node} />;
-//   console.log("name", node.data.name.length);
-//   return (
-//     <Group top={node.y} left={node.x}>
-//       {node.depth !== 0 && (
-//         <rect
-//           width={width}
-//           height={height}
-//           x={-width / 2}
-//           y={-height / 2}
-//           fill={background}
-//           stroke={isParent ? white : citrus}
-//           onClick={() => {
-//             alert(`clicked: ${JSON.stringify(node.data.name)}`);
-//           }}
-//         />
-//       )}
-//       <text
-//         dy=".33em"
-//         fontSize={9}
-//         fontFamily="Arial"
-//         textAnchor="middle"
-//         style={{ pointerEvents: "none" }}
-//         fill={isParent ? white : citrus}
-//       >
-//         {node.data.name}
-//       </text>
-//     </Group>
-//   );
-// }
-
-// function RootNode({ node }) {
-//   const width = 50;
-//   const height = 20;
-//   const centerX = -width / 2;
-//   const centerY = -height / 2;
-
-//   return (
-//     <Group top={node.y} left={node.x}>
-//       <rect
-//         width={width}
-//         height={height}
-//         y={centerY}
-//         x={centerX}
-//         fill="url('#top')"
-//       />
-//       <text
-//         dy=".33em"
-//         fontSize={9}
-//         fontFamily="Arial"
-//         textAnchor="middle"
-//         style={{ pointerEvents: "none" }}
-//         fill={background}
-//       >
-//         {node.data.name}
-//       </text>
-//     </Group>
-//   );
-// }
-
-// const defaultMargin = { top: 40, left: 10, right: 10, bottom: 40 };
-
-// function Example({ width, height, margin = defaultMargin }) {
-//   const [orgChart, setOrgChart] = useState({ name: "App", children: [] });
-
-//   const port = chrome.runtime.connect({ name: "React Fetch Tree" });
-
-//   // establishes a connection between devtools and background page
-//   port.postMessage({
-//     name: "connect",
-//     tabId: chrome.devtools.inspectedWindow.tabId,
-//   });
-
-//   // Listens for posts sent in specific ports and redraws tree
-//   port.onMessage.addListener((message) => {
-//     // if (!message.data) return; // abort if data not present, or if not of type object
-//     // if (typeof msg !== 'object') return;
-//     // curData = msg; // assign global data object
-//     // throttledDraw();
-//     console.log("in tree viz", message);
-//     setOrgChart(message.payload);
-//   });
-
-//   // console.log(orgChart);
-
-//   //USING useMemo
-//   const data = useMemo(() => {
-//     console.log("orgChart", orgChart);
-//     return hierarchy(orgChart);
-//   }, [orgChart]);
-
-//   //Using useEffect
-//   // var data = hierarchy(orgChart);
-//   // useEffect(() => {
-//   //   console.log("useEffect fired", orgChart);
-//   //   data = hierarchy(orgChart);
-//   // }, [orgChart]);
-
-//   const xMax = width - margin.left - margin.right - 20;
-//   const yMax = height - margin.top - margin.bottom;
-
-//   return width < 10 ? null : (
-//     <svg width={width} height={height}>
-//       <LinearGradient id="top" from={green} to={aqua} />
-//       <rect width={width} height={height} rx={14} fill={background} />
-//       <Cluster root={data} size={[xMax, yMax]}>
-//         {(cluster) => (
-//           <Group top={margin.top} left={margin.left}>
-//             {cluster.links().map((link, i) => (
-//               <LinkVertical
-//                 key={`cluster-link-${i}`}
-//                 data={link}
-//                 stroke={merlinsbeard}
-//                 strokeWidth="1"
-//                 strokeOpacity={0.2}
-//                 fill="none"
-//               />
-//             ))}
-//             {cluster.descendants().map((node, i) => (
-//               <Node key={`cluster-node-${i}`} node={node} />
-//             ))}
-//           </Group>
-//         )}
-//       </Cluster>
-//     </svg>
-//   );
-// }
-
-// export default function Viz() {
-//   return (
-//     <div className="Viz" style={{ display: "flex" }}>
-//       <Example
-//         width={500}
-//         height={400}
-//         style={{ width: "500px", height: "300px" }}
-//       />
-//     </div>
-//   );
-// }
-
 import React, { useDebugValue, useState, useMemo } from "react";
 import { Group } from "@visx/group";
 import { hierarchy, Tree } from "@visx/hierarchy";
@@ -180,48 +20,6 @@ interface DataRequest {
   dataRequest: string;
 }
 
-//const data: TreeNode = orgChart;
-// {
-//   name: "T",
-//   children: [
-//     {
-//       name: "App",
-//       dataRequest: "fetch",
-//       children: [
-//         { name: "Component 1" },
-//         { name: "Component 2" },
-//         { name: "This is a very long name component 3" },
-//         {
-//           name: "Im outraged",
-//           children: [
-//             {
-//               name: "C1",
-//             },
-//             {
-//               name: "D",
-//               children: [
-//                 {
-//                   name: "D1",
-//                 },
-//                 {
-//                   name: "D2",
-//                 },
-//                 {
-//                   name: "D3",
-//                 },
-//               ],
-//             },
-//           ],
-//         },
-//       ],
-//     },
-//     { name: "Z" },
-//     {
-//       name: "B",
-//       children: [{ name: "B1" }, { name: "B2" }, { name: "B3" }],
-//     },
-//   ],
-// };
 
 const defaultMargin = { top: 30, left: 30, right: 30, bottom: 70 };
 
@@ -242,26 +40,27 @@ export default function Viz({
   const [stepPercent, setStepPercent] = useState<number>(0.5);
   const forceUpdate = useForceUpdate();
   const [displayFetch, setDisplayFetch] = useState<boolean>(false);
-  const [fetchComponent, setFetchComponent] = useState<DataRequest>({name: "", dataRequest: ""})
-  const [orgChart, setOrgChart] = useState<TreeNode>({name:"App"});
+  const [fetchComponent, setFetchComponent] = useState<DataRequest>({ name: "", dataRequest: "" })
+  const [orgChart, setOrgChart] = useState<TreeNode>({ name: "App" });
 
-const port = chrome.runtime.connect({ name: "React Fetch Tree" });
+  //THIS PORT WILL NOW LIVE IN PANEL
+  // const port = chrome.runtime.connect({ name: "Tree Viz" });
 
-    // establishes a connection between devtools and background page
-    port.postMessage({
-      name: "connect",
-      tabId: chrome.devtools.inspectedWindow.tabId,
-    });
+  // // establishes a connection between devtools and background page
+  // port.postMessage({
+  //   name: "connect",
+  //   tabId: chrome.devtools.inspectedWindow.tabId,
+  // });
 
-    // Listens for posts sent in specific ports and redraws tree
-    port.onMessage.addListener((message) => {
-      // if (!message.data) return; // abort if data not present, or if not of type object
-      // if (typeof msg !== 'object') return;
-      // curData = msg; // assign global data object
-      // throttledDraw();
-      console.log("in tree vis", message);
-      setOrgChart(message.payload);
-    });
+  // // Listens for posts sent in specific ports and redraws tree
+  // port.onMessage.addListener((message) => {
+  //   // if (!message.data) return; // abort if data not present, or if not of type object
+  //   // if (typeof msg !== 'object') return;
+  //   // curData = msg; // assign global data object
+  //   // throttledDraw();
+  //   console.log("in tree vis", message);
+  //   if (message.name === 'orgChart') setOrgChart(message.payload);
+  // });
   const innerWidth = totalWidth - margin.left - margin.right;
   const innerHeight = totalHeight - margin.top - margin.bottom;
 
@@ -297,12 +96,12 @@ const port = chrome.runtime.connect({ name: "React Fetch Tree" });
   return totalWidth < 10 ? null : (
     <div>
       <div className="fetchBox">
-      {displayFetch? <p>{`Name: ${fetchComponent.name}, Data Request: ${fetchComponent.dataRequest}`}</p>:<p></p>}
-       <LinkControls
-        orientation={orientation}
-        setOrientation={setOrientation}
-      />
-</div>
+        {displayFetch ? <p>{`Name: ${fetchComponent.name}, Data Request: ${fetchComponent.dataRequest}`}</p> : <p></p>}
+        <LinkControls
+          orientation={orientation}
+          setOrientation={setOrientation}
+        />
+      </div>
       <Zoom
         width={totalWidth - 20}
         height={totalHeight}
@@ -317,7 +116,7 @@ const port = chrome.runtime.connect({ name: "React Fetch Tree" });
             <svg
               width={totalWidth}
               height={totalHeight}
-              //style={{ cursor: zoom.isDragging ? "grabbing" : "grab" }}
+            //style={{ cursor: zoom.isDragging ? "grabbing" : "grab" }}
             >
               <LinearGradient id="links-gradient" from="#fd9b93" to="#fe6e9e" />
               <rect
@@ -331,7 +130,7 @@ const port = chrome.runtime.connect({ name: "React Fetch Tree" });
                 left={margin.left}
                 transform={zoom.toString()}
               >
-                 <rect
+                <rect
                   width={totalWidth}
                   height={totalHeight}
                   rx={14}
@@ -352,7 +151,7 @@ const port = chrome.runtime.connect({ name: "React Fetch Tree" });
                 />
 
                 <Tree
-                  root ={hierarchy(orgChart, (d) =>
+                  root={hierarchy(orgChart, (d) =>
                     d.isExpanded ? null : d.children
                   )}
                   size={[sizeWidth, sizeHeight]}
@@ -403,12 +202,12 @@ const port = chrome.runtime.connect({ name: "React Fetch Tree" });
                             {node.depth !== 0 && (
 
                               <rect
-                              height={30}
-                              width={node.data.name.length<4 ? 30 : node.data.name.length>15 ? node.data.name.length*4.5 : node.data.name.length * 6}
-                              
-                              y={-height / 2}
-                              x={node.data.name.length<4 ? -15 : node.data.name.length>15 ? -node.data.name.length*2.25 : -node.data.name.length * 3}
-                              fill={
+                                height={30}
+                                width={node.data.name.length < 4 ? 30 : node.data.name.length > 15 ? node.data.name.length * 4.5 : node.data.name.length * 6}
+
+                                y={-height / 2}
+                                x={node.data.name.length < 4 ? -15 : node.data.name.length > 15 ? -node.data.name.length * 2.25 : -node.data.name.length * 3}
+                                fill={
                                   node.data.dataRequest ? "yellow" : "#272b4d"
                                 }
                                 stroke={
@@ -425,7 +224,7 @@ const port = chrome.runtime.connect({ name: "React Fetch Tree" });
                                   console.log("clicked");
                                   if (node.data.dataRequest) {
                                     setDisplayFetch(true);
-                                    setFetchComponent({name: node.data.name, dataRequest: node.data.dataRequest})
+                                    setFetchComponent({ name: node.data.name, dataRequest: node.data.dataRequest })
                                   } else {
                                     setDisplayFetch(false)
                                   }
@@ -449,8 +248,8 @@ const port = chrome.runtime.connect({ name: "React Fetch Tree" });
                                 node.depth === 0
                                   ? "#71248e"
                                   : node.data.dataRequest
-                                  ? "black"
-                                  : "#26deb0"
+                                    ? "black"
+                                    : "#26deb0"
                               }
                             >
                               {node.data.name}
