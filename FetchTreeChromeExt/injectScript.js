@@ -86,7 +86,7 @@ const fiberwalker = (
             : `, ${number} ${temp} request${number > 1 ? "s" : ""}`;
         }
       }
-      currentNode.label = str;
+      currentNode.dataRequest = str;
     }
     treedata.children.push(currentNode);
 
@@ -108,7 +108,7 @@ let __ReactFiberDOM;
 const devTools = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 let orgChart;
 
-console.log('devtools', devTools);
+
 
 devTools.onCommitFiberRoot = (function (original) {
   return function (...args) {
