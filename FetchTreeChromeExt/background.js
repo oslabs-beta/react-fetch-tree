@@ -22,40 +22,30 @@ chrome.runtime.onConnect.addListener((port) => {
           payload: message.payload,
         });
       }
-      // console.log("portID", portID);
-      // connections[port] = "contentScript";
-      // connections[message.tabId].postMessage({
-      //   name: message.name,
-      //   payload: message.payload,
-      // });
-      console.log(
-        "message",
-        message,
-        "sender.sender",
-        sender.sender.tab.id,
-        "sender",
-        sender,
-        //sender.tab.id,
-        "sendResponse",
-        sendResponse
-      );
+    }
+
+    if (message.name === 'componentObj') {
+      const portID = sender.sender.tab.id;
+      if (connections[portID]) {
+        connections[portID].postMessage({
+          name: message.name,
+          payload: message.payload,
+        });
+      }
     }
     // may not be necessary, this is an attempt to keep the port alive
     return true;
   };
 
-  //creates contentScript listener
-  // const contentScriptListener = (message, sender, sendResponse) => {
-
-  // }
-
-  if (port.name === "React Fetch Tree")
-    port.onMessage.addListener(devToolsListener);
-  console.log("connections in background.js", connections);
 
   if (port.name === "contentScript") {
     port.onMessage.addListener(devToolsListener);
     console.log("contentScript port connected");
+  }
+
+  if (port.name === "Panel") {
+    port.onMessage.addListener(devToolsListener);
+    console.log("panel connected");
   }
 });
 
