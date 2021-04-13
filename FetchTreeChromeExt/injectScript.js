@@ -1,31 +1,10 @@
-console.log("<----- Injected script started running ----->");
 //declare object to be consumed by fiberwalker
 let componentObj = {};
-
-//send message to client side notifying that inject script has been initialized
-//do we need this?
-window.postMessage(
-  { type: "message", payload: "InjectScriptInitialized" },
-  "*"
-);
 
 //set up listener for messages coming from client side
 window.addEventListener(
   "message",
   function (event) {
-    console.log("event received in injectScript", event.data);
-    // only accept messages from the current tab
-    if (event.source != window) return;
-
-    // //receiving essential info from page
-    // if (
-    //   event.data.type &&
-    //   event.data.type == "FROM_PAGE" &&
-    //   typeof chrome.app.isInstalled !== "undefined"
-    // ) {
-    //   chrome.runtime.sendMessage({ essential: event.data.essential });
-    // }
-
     //conditional check to see if componentObj has been received from client side FetchTreeHook
     if (event.data.type && event.data.type === "componentObj") {
       console.log("componentObj received in injectScript", event.data);
@@ -127,19 +106,14 @@ const fiberwalker = (
 let __ReactFiberDOM;
 const devTools = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 let orgChart;
-//= {
-//   name: "Component",
-//   children: [{ name: "div", children: null }],
-// };
+
+console.log('devtools', devTools);
 
 devTools.onCommitFiberRoot = (function (original) {
   return function (...args) {
     __ReactFiberDOM = args[1];
-    //console.log("domElements", __ReactFiberDOM);
-    console.log("dom: ", __ReactFiberDOM.current);
-    //console.log("componentObj in onCommitFiberRoot", componentObj);
     orgChart = fiberwalker(__ReactFiberDOM.current, componentObj);
-    console.log("orgChart in onCommit FiberRoot: ", orgChart);
+    console.log('componentObj', componentObj);
     window.postMessage({
       type: "orgChart",
       payload: orgChart,
@@ -147,5 +121,3 @@ devTools.onCommitFiberRoot = (function (original) {
     return original(...args);
   };
 })(devTools.onCommitFiberRoot);
-
-export default orgChart;
