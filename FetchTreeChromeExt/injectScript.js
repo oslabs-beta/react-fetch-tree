@@ -1,30 +1,21 @@
-//declare object to be consumed by fiberwalker
+//Declare object to be consumed by fiberwalker
 let componentObj = {};
 
-//set up listener for messages coming from client side
+//Set up listener for messages coming from client side
 window.addEventListener(
   "message",
   function (event) {
-    //conditional check to see if componentObj has been received from client side FetchTreeHook
-    if (event.data.type && event.data.type === "componentObj") {
-      console.log("componentObj received in injectScript", event.data);
-      componentObj = event.data.payload;
-      //window.postMessage({ type: "componentObj", payload: componentObj });
-    }
+    // Only accept messages from the current tab
+    if (event.source != window) return;
+
+    // Conditional check to see if componentObj has been received from client side FetchTreeHook
+    if (event.data.type && event.data.type === "componentObj") componentObj = event.data.payload;
   },
   false
 );
 
-//is this necessary?
-// function parseEssentialDetails() {
-//   let main = {};
 
-//   main.performance = JSON.parse(JSON.stringify(window.performance)) || null;
-
-//   return main;
-// }
-
-//fiberwalker function
+//Fiberwalker function
 const fiberwalker = (
   node,
   componentStore,
@@ -65,9 +56,8 @@ const fiberwalker = (
       let requests = [];
       let str = "";
       if (componentStore[name]) {
-        //iterate through every entry and check request type
+        //Iterate through every entry and check request type
         const dataRequest = Object.values(componentStore[name]);
-        //console.log("dataRequest", dataRequest);
         dataRequest.forEach((el) => {
           if (dataReqArr.includes(el.reqType)) {
             requests.push(`${el.reqType}`);
@@ -103,18 +93,17 @@ const fiberwalker = (
   return treedata;
 };
 
-//declaring variables needed for onCommitFiberRoot function
+//Declare variables needed for onCommitFiberRoot function
 let __ReactFiberDOM;
 const devTools = window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
 let orgChart;
 
-
-
+//Add custom functionality to devTools onCommitFiberRoot function 
 devTools.onCommitFiberRoot = (function (original) {
   return function (...args) {
     __ReactFiberDOM = args[1];
     orgChart = fiberwalker(__ReactFiberDOM.current, componentObj);
-    console.log('componentObj', componentObj);
+    // Pass orgChart through window to contentScript
     window.postMessage({
       type: "orgChart",
       payload: orgChart,

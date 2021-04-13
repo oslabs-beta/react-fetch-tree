@@ -1,5 +1,6 @@
 const path = require("path");
 const testPath = path.join(__dirname, "../testData/index.js");
+//THIS NEEDS TO BE REFACTORED, we need mock parser file, not grabbing from npm directly
 const {
   dependenciesGraph,
   componentGraph,

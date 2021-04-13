@@ -1,2 +1,0 @@
-const componentObj = {"App":{},"null":{},"Nav":{"line: 6, column: 4":{"reqType":"axios","parentName":"Nav"}},"Body":{"line: 7, column: 4":{"reqType":"fetch","parentName":"Body"},"line: 1, column: 26":{"reqType":"fetch","parentName":"testVarExp"}},"Footer":{"line: 11, column: 2":{"reqType":"fetch","parentName":"Footer"},"line: 21, column: 9":{"reqType":"fetch","parentName":"testArrowExp"}}}
-module.exports = componentObj;

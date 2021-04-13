@@ -6,9 +6,9 @@ const path = require("path");
 let ID: number = 0;
 
 type CacheStore = { [key: string]: number } | {};
-type InvocationStore = { [key: string]:  [] | string[] } | {};
-type NodeStore = { [key: string]:  {reqType: string, parentName: string, filename: string } } | {};
-type ComponentStore = { [key: string]:  {reqType: string, parentName: string } } | {};
+type InvocationStore = { [key: string]: [] | string[] } | {};
+type NodeStore = { [key: string]: { reqType: string, parentName: string, filename: string } } | {};
+type ComponentStore = { [key: string]: { reqType: string, parentName: string } } | {};
 
 const [cache, invocationStore, nodeStore, componentStore]: [CacheStore, InvocationStore, NodeStore, ComponentStore] = [{}, {}, {}, {}];
 
@@ -35,14 +35,14 @@ const nodeExistence = (
   return;
 };
 
-//Obtain  target file's dependencies
+//Obtain target file's dependencies
 const getDependencies = (filename: string) => {
   const dependencies: string[] = [];
   let [reqType, parentName]: [string | null, string | null] = [null, null];
-  let parserConfig: {sourceType: string, plugins: string[]} = {
+  let parserConfig: { sourceType: string, plugins: string[] } = {
     sourceType: "module",
     plugins: ["jsx"],
-  } 
+  }
 
   const content: string = fs.readFileSync(filename, "utf8");
   const raw_ast: {} = babelParser.parse(content, parserConfig);
@@ -53,7 +53,7 @@ const getDependencies = (filename: string) => {
       reqType = node.callee.name;
       if (node.callee.name) {
         nodeExistence(node.loc.start, reqType, parentName, filename);
-      }[]
+      } []
       if (invocationStore[parentName]) {
         invocationStore[parentName].push(reqType);
       }
@@ -156,13 +156,13 @@ const getDependencies = (filename: string) => {
   };
 };
 
-// Helper function to complete componentStore
+//Helper function to complete componentStore
 const componentGraph = (invocationStore: {}, nodeStore: {}, componentStore: {}) => {
   const dataTypeCheck: {}[] = [invocationStore, nodeStore, componentStore];
   if (dataTypeCheck.some(arg => Array.isArray(arg) || !arg || typeof arg !== "object")) {
     throw new TypeError("Arguments passed in must be of an object data type");
   };
-  
+
   for (let node in nodeStore) {
     let { parentName, reqType, fileName }: { parentName: string, reqType: string, fileName: string } = nodeStore[node];
     if (
@@ -249,7 +249,6 @@ fs.writeFileSync(
   componentObj,
   (err) => {
     if (err) throw err;
-    console.log("The file has been saved");
   }
 );
 
