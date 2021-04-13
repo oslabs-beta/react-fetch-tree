@@ -151,7 +151,7 @@ const port = chrome.runtime.connect({ name: "React Fetch Tree" });
                   )}
                   size={[sizeWidth, sizeHeight]}
                   separation={(a, b) =>
-                    (a.parent === b.parent ? 1 : 0.5) / a.depth
+                    (a.parent === b.parent ? 5 : 5)
                   }
                 >
                   {(tree) => (
