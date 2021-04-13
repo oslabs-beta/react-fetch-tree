@@ -3,7 +3,7 @@ const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-// const ExtensionReloader = require("webpack-extension-reloader");
+const ExtensionReloader = require("webpack-extension-reloader");
 const destination = path.resolve(__dirname, "build");
 
 module.exports = {
@@ -63,7 +63,7 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin(),
-    // new ExtensionReloader(),
+    new ExtensionReloader(),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
