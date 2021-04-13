@@ -7,14 +7,27 @@ const Panel = () => {
   const [displayStore, setDisplayStore] = useState(false);
   const [componentArr, setComponentArr] = useState([['App', {}]]);
 
-  window.addEventListener('message', (event) => {
-    if (event.data) {
-      if (event.data.type === 'componentObj') {
-        console.log(event.data.payload)
-        setComponentArr(Object.entries(event.data.payload));
-      }
+  //orgChart logic needs to be implemented here 
+
+  const port = chrome.runtime.connect({ name: "Panel" });
+
+  // establishes a connection between devtools and background page
+  port.postMessage({
+    name: "connect",
+    tabId: chrome.devtools.inspectedWindow.tabId,
+  });
+
+  // Listens for posts sent in specific ports and redraws tree
+  port.onMessage.addListener((message) => {
+    if (message.name === 'componentObj') {
+      console.log("componentObj in panel", message);
+      setComponentArr(Object.entries(message.payload));
     }
-  }) 
+    if (message.name === 'orgChart') {
+      console.log("orgChart in panel", message);
+      // setOrgChart(message.payload);
+    }
+  });
 
   const toggle = (e) => {
     e.target.value === 'component store' ? setDisplayStore(true) : setDisplayStore(false);
@@ -29,7 +42,7 @@ const Panel = () => {
             name="choices"
             id="b1"
             value="component store"
-            onClick={toggle}     
+            onClick={toggle}
           />
           <label htmlFor="b1">View Component Store</label>
           <input
@@ -45,9 +58,9 @@ const Panel = () => {
       </div>
       <div id="visualization-box">
         {displayStore === false ? (
-            <ParentSize>{({ width, height }) => <Viz width={width} height={height * 0.9} />}</ParentSize>
+          <ParentSize>{({ width, height }) => <Viz width={width} height={height * 0.9} />}</ParentSize>
         ) : (
-            <ComponentStorePanel componentArr = { componentArr }/>
+            <ComponentStorePanel componentArr={componentArr} />
           )}
       </div>
     </div >
