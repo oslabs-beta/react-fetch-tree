@@ -1,8 +1,7 @@
 {
   "name": "@reactfetchtree/rft",
-  "version": "3.0.0",
+  "version": "3.2.0",
   "scripts": {
-    "create-component-store": "node parser.js",
     "test": "jest",
     "parser": "ts-node parser.ts"
   },
