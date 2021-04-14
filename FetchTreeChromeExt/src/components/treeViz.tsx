@@ -47,7 +47,6 @@ export default function Viz({
   const innerHeight = totalHeight - margin.top - margin.bottom;
 
   const data: TreeNode = useMemo(() => {
-    console.log("orgChart", orgChart);
     return orgChart;
   }, [orgChart]);
 
@@ -174,7 +173,6 @@ export default function Viz({
                                 r={12}
                                 fill="url('#links-gradient')"
                                 onClick={() => {
-                                  console.log(node, node.data.isExpanded);
                                   node.data.isExpanded = !node.data.isExpanded;
                                   forceUpdate();
                                 }}
@@ -202,7 +200,6 @@ export default function Viz({
                                 rx={node.data.children ? 0 : 10}
 
                                 onClick={() => {
-                                  console.log("clicked");
                                   if (node.data.dataRequest) {
                                     setDisplayFetch(true);
                                     setFetchComponent({ name: node.data.name, dataRequest: node.data.dataRequest })

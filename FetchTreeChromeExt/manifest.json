@@ -3,14 +3,36 @@
   "name": "React Fetch Tree",
   "description": "Interface to present data compiled from client codebase in development mode, using react devtool functions and babel parser",
   "version": "1.0",
+  "browser_action": {
+    "default_icon": "Logo.png"
+  },
+  "icons": {
+    "128": "Logo.png",
+    "16": "Logo.png"
+  },
   "background": {
-    "scripts": ["background.js"],
+    "scripts": [
+      "background.js"
+    ],
     "persistent": false
   },
   "content_scripts": [
-    { "matches": ["http://localhost/*"], "js": ["contentScript.js"] }
+    {
+      "matches": [
+        "http://localhost/*"
+      ],
+      "js": [
+        "contentScript.js"
+      ]
+    }
   ],
-  "web_accessible_resources": ["injectScript.js", "images/*"],
-  "permissions": ["tabs", "activeTab"],
+  "web_accessible_resources": [
+    "injectScript.js",
+    "images/*"
+  ],
+  "permissions": [
+    "tabs",
+    "activeTab"
+  ],
   "devtools_page": "devtools.html"
 }

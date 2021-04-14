@@ -1,6 +1,7 @@
 import React from 'react';
 
-const controlStyles = { fontSize: 14, fontWeight: 500, color: '#282828'};
+//Orientation settings for visualization
+const controlStyles = { fontSize: 14, fontWeight: 500, color: '#282828' };
 
 type Props = {
   orientation: string;

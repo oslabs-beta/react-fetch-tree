@@ -1,6 +1,4 @@
-console.log("<----- Content script started running ----->");
-
-//declare function used to injectScript to dom
+//Declare function used to injectScript to dom
 function injectScript(file_path, tag) {
   const node = document.getElementsByTagName(tag)[0];
   const script = document.createElement("script");
@@ -9,13 +7,15 @@ function injectScript(file_path, tag) {
   node.appendChild(script);
 }
 
-//call function with injectScript.js as argument
+//Call function with injectScript.js as argument
 injectScript(chrome.runtime.getURL("injectScript.js"), "body");
 
-//set up port for communication between background.js and contentscript
+//HOW DO WE ENSURE THIS CODE IS CORRECT FOR RUNTIME.CONNECT
+//Set up port for communication between background.js and contentScript
 const port = chrome.runtime.connect("oijdgmmgbopfhcafnmdinpghklmjddhp", {
   name: "contentScript",
 });
+//Send test message
 port.postMessage({
   name: "contentScript test",
   payload: "this is coming from contentScript",
@@ -23,29 +23,20 @@ port.postMessage({
 
 let componentObj = {};
 
-//set up listener for messages coming from client side
+//Set up listener for messages coming from client side
 window.addEventListener(
   "message",
   function (event) {
-    console.log("event received in contentScript", event.data);
-    // only accept messages from the current tab
+    // Only accept messages from the current tab
     if (event.source != window) return;
 
-    //receiving essential info from page
-    if (
-      event.data.type &&
-      event.data.type == "FROM_PAGE" &&
-      typeof chrome.app.isInstalled !== "undefined"
-    ) {
-      chrome.runtime.sendMessage({ essential: event.data.essential });
-    }
-
+    // If componentObj is received through window from injectScript, pass to panel through port
     if (event.data.type === 'componentObj') {
-      console.log('componentObj received from FetchTreeHook');
       componentObj = event.data.payload;
       port.postMessage({ name: 'componentObj', payload: componentObj })
     }
 
+    // If orgChart is received through window from injectScript, pass to panel through port
     if (event.data.type && event.data.type === "orgChart") {
       port.postMessage({
         name: "orgChart",
@@ -53,7 +44,6 @@ window.addEventListener(
       });
     }
   },
-  //check to see why this is set to false
   false
 );
 

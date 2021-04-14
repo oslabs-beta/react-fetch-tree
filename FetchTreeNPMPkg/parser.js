@@ -7,29 +7,6 @@ let ID = 0;
 const [cache, invocationStore, nodeStore, componentStore] = [{}, {}, {}, {}]
 
 //Helper function to check node existence
-// const nodeExistence = (
-//   nodePosition,
-//   reqType,
-//   parentName,
-//   filename,
-//   exists = false
-// ) => {
-//   let nodePos = `line: ${nodePosition["line"]}, column: ${nodePosition["column"]}`;
-//   if (parentName === null) parentName = "Anonymous";
-//   if (nodeStore[nodePos]) exists = true;
-//   if (!exists) {
-//     let nodeFileName = filename.split("/");
-//     nodeFileName = nodeFileName[nodeFileName.length - 1].split(".")[0];
-//     nodeStore[nodePos] = {
-//       reqType,
-//       parentName,
-//       fileName: nodeFileName,
-//     };
-//   }
-//   return;
-// };
-
-//Helper function to check node existence
 const nodeExistence = (
   nodePosition,
   reqName,
@@ -52,7 +29,7 @@ const nodeExistence = (
   return;
 };
 
-//Obtain  target file's dependencies
+//Obtain target file's dependencies
 const getDependencies = (filename) => {
   const dependencies = [];
   let [reqType, parentName] = [null, null];
@@ -172,7 +149,7 @@ const getDependencies = (filename) => {
   };
 };
 
-// Helper function to complete componentStore
+//Helper function to complete componentStore
 const componentGraph = (invocationStore, nodeStore, componentStore) => {
   const dataTypeCheck = [invocationStore, nodeStore, componentStore];
   if (dataTypeCheck.some(arg => Array.isArray(arg) || !arg || typeof arg !== "object")) {
@@ -209,7 +186,6 @@ const componentGraph = (invocationStore, nodeStore, componentStore) => {
       }
     }
   }
-  // console.log("componentStore", componentStore);
   return componentStore;
 };
 
@@ -250,9 +226,16 @@ const dependenciesGraph = (entryFile) => {
 Please enter the path for entry file as the argument in dependenciesGraph. 
 Must be a .js/.jsx file or parser will not run.
 */
+
+//Enter path to entry file
 const resultObj = JSON.stringify(
-  dependenciesGraph(path.join(__dirname, "../testFolder/testData/index.js"))
+  dependenciesGraph(path.join(__dirname, "../../../ENTER PATH HERE"))
 );
+
+// currently set up like this for testing -- needs to be changed
+// const resultObj = JSON.stringify(
+//   dependenciesGraph(path.join(__dirname, "../testFolder/testData/index.js"))
+// );
 
 const componentObj = `const componentObj = ${resultObj}
 module.exports = componentObj;`;
@@ -262,7 +245,6 @@ fs.writeFileSync(
   componentObj,
   (err) => {
     if (err) throw err;
-    console.log("The file has been saved");
   }
 );
 

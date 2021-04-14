@@ -4,36 +4,35 @@ import Viz from "./treeViz";
 import ComponentStorePanel from "./ComponentStorePanel";
 
 const Panel = () => {
+  //Set default state for panel
   const [displayStore, setDisplayStore] = useState(true);
   const [componentArr, setComponentArr] = useState([["App", {}]]);
   const [orgChart, setOrgChart] = useState({ name: "App" });
+  //Set flag for receiving componentObj from port
   let componentObjReceived = false;
 
-  //orgChart logic needs to be implemented here 
 
+  //Create a port and establish a connection between panel and background.js
   const port = chrome.runtime.connect({ name: "Panel" });
-
-  // establishes a connection between devtools and background page
   port.postMessage({
     name: "connect",
     tabId: chrome.devtools.inspectedWindow.tabId,
   });
 
-  // Listens for posts sent in specific ports and redraws tree
+  //Listen for messages sent in the port and set state for components
   port.onMessage.addListener((message) => {
     if (message.name === 'componentObj') {
-      console.log("componentObj in panel", message);
       if (!componentObjReceived) {
         setComponentArr(Object.entries(message.payload));
         componentObjReceived = true;
       }
     }
     if (message.name === 'orgChart') {
-      console.log("orgChart in panel", message);
       setOrgChart(message.payload);
     }
   });
 
+  //Toggle function to change views in panel 
   const toggle = (e) => {
     e.target.value === "Component Store"
       ? setDisplayStore(true)
@@ -61,7 +60,6 @@ const Panel = () => {
           >
             Component Store
           </button>
-          {/* <label htmlFor="b1">View Component Store</label> */}
           <button
             name="choices"
             id="b2"
@@ -79,7 +77,6 @@ const Panel = () => {
           >
             View Tree
           </button>
-          {/* <label htmlFor="b2">View Tree</label> */}
         </div>
       </div>
       <div id="visualization-box">
