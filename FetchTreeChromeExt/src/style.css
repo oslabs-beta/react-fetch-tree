@@ -209,7 +209,7 @@ body {
 .fetchBox {
   display: flex;
   align-items: center;
-  justify-content: left;
+  justify-content: flex-end;
   text-align: center;
   padding-left: 5px;
   padding-bottom: 5px;
@@ -278,5 +278,11 @@ body {
 
 .details {
   color: #26deb0;
+}
+
+.slider {
+  width: 100px;
+  height: 20px;
+  background: #26deb0;
 }
 
