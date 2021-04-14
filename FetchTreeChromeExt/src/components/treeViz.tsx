@@ -37,7 +37,7 @@ export default function Viz({
   const [orientation, setOrientation] = useState<string>("vertical");
   const [linkType, setLinkType] = useState<string>("diagonal");
   const [stepPercent, setStepPercent] = useState<number>(0.5);
-  const [slider, setSlider] = useState<number>(5);
+  // const [slider, setSlider] = useState<number>(5);
   const forceUpdate = useForceUpdate();
   const [displayFetch, setDisplayFetch] = useState<boolean>(false);
   const [fetchComponent, setFetchComponent] = useState<DataRequest>({ name: "", dataRequest: "" })
@@ -78,10 +78,10 @@ export default function Viz({
   return totalWidth < 10 ? null : (
     <div>
       <div className="fetchBox">
-        {displayFetch ? <p>{`Name: ${fetchComponent.name}, Data Request: ${fetchComponent.dataRequest}`}</p> : <p></p>}
+        {displayFetch ? <p id="requestDisplay">{`Name: ${fetchComponent.name}, Data Request: ${fetchComponent.dataRequest}`}</p> : <p></p>}
         <LinkControls
-          slider={slider}
-          setSlider={setSlider}
+          // slider={slider}
+          // setSlider={setSlider}
           orientation={orientation}
           setOrientation={setOrientation}
         />
@@ -139,7 +139,7 @@ export default function Viz({
                   )}
                   size={[sizeWidth, sizeHeight]}
                   separation={(a, b) =>
-                    (a.parent === b.parent ? slider : slider)
+                    (a.parent === b.parent ? 5 : 5)
                   }
                 >
                   {(tree) => (
