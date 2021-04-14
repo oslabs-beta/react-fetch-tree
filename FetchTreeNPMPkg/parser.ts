@@ -246,13 +246,18 @@ const resultObj: string = JSON.stringify(
 const componentObj: string = `const componentObj = ${resultObj}
 module.exports = componentObj;`;
 
-fs.writeFileSync(
-  path.join(__dirname, "./componentStore.js"),
-  componentObj,
-  (err) => {
-    if (err) throw err;
-  }
-);
+try {
+  fs.writeFileSync(
+    path.join(__dirname, "./componentStore.js"),
+    componentObj,
+    (err) => {
+      if (err) throw err;
+    }
+  );
+  console.log('parser completed successfully');
+} catch (err) {
+  console.log(err);
+}
 
 module.exports = {
   dependenciesGraph,
