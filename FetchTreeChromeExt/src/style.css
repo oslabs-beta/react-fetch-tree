@@ -216,6 +216,10 @@ body {
   background-color: #f3f3f3;
 }
 
+#requestDisplay {
+  margin-right: auto;
+}
+
 .panelNav {
   background-color: #f3f3f3;
   color: #282828;
@@ -280,9 +284,9 @@ body {
   color: #26deb0;
 }
 
-.slider {
+/* .slider {
   width: 100px;
   height: 20px;
   background: #26deb0;
-}
+} */
 
