@@ -237,8 +237,10 @@ const dependenciesGraph = (entryFile: string) => {
 Please enter the path for entry file as the argument in dependenciesGraph. 
 Must be a .js/.jsx file or parser will not run.
 */
+
+//Enter path to entry file
 const resultObj: string = JSON.stringify(
-  dependenciesGraph(path.join(__dirname, "../testFolder/testData/index.js"))
+  dependenciesGraph(path.join(__dirname, "../../../ENTER PATH HERE"))
 );
 
 const componentObj: string = `const componentObj = ${resultObj}
