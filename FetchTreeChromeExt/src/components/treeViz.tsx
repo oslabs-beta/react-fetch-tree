@@ -209,7 +209,7 @@ export default function Viz({
                                   } else {
                                     setDisplayFetch(false)
                                   }
-                                  node.data.isExpanded = !node.data.isExpanded;
+                                  // node.data.isExpanded = !node.data.isExpanded;
                                   forceUpdate();
                                 }}
                               />
