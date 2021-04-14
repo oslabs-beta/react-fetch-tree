@@ -9,7 +9,6 @@
   --main-bg: white;
   --secondary-bg-hover: #a487de61;
   --secondary-bg: #2c2240;
-  /* --text-color: #f0edee; */
   --text-color: black;
   --light-border: #90ddf0;
   --dark-border: #08637a;
@@ -21,11 +20,6 @@ body {
   background-color: var(--main-bg);
   color: var(--text-color);
 }
-
-/* div:nth-of-type(1) {
-  background:limegreen;
-  margin-bottom:10px;
-} */
 
 .info-container,
 .history-view,
