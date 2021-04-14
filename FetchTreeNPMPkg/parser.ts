@@ -257,7 +257,7 @@ try {
   console.log('parser completed successfully');
 } catch (err) {
   console.log(err);
-}
+};
 
 module.exports = {
   dependenciesGraph,
