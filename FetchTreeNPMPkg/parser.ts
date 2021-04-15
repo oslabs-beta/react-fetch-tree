@@ -237,20 +237,27 @@ const dependenciesGraph = (entryFile: string) => {
 Please enter the path for entry file as the argument in dependenciesGraph. 
 Must be a .js/.jsx file or parser will not run.
 */
+
+//Enter path to entry file
 const resultObj: string = JSON.stringify(
-  dependenciesGraph(path.join(__dirname, "../testFolder/testData/index.js"))
+  dependenciesGraph(path.join(__dirname, "../../../ENTER PATH HERE"))
 );
 
 const componentObj: string = `const componentObj = ${resultObj}
 module.exports = componentObj;`;
 
-fs.writeFileSync(
-  path.join(__dirname, "./componentStore.js"),
-  componentObj,
-  (err) => {
-    if (err) throw err;
-  }
-);
+try {
+  fs.writeFileSync(
+    path.join(__dirname, "./componentStore.js"),
+    componentObj,
+    (err) => {
+      if (err) throw err;
+    }
+  );
+  console.log('parser completed successfully');
+} catch (err) {
+  console.log(err);
+};
 
 module.exports = {
   dependenciesGraph,
