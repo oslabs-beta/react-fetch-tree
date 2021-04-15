@@ -8,11 +8,15 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "typeRoots": [
-      "./node_modules/@types"
+      "../node_modules/@types"
     ],
-    "types": ["chrome", "jest", "node"],
+    "types": [
+      "chrome",
+      "jest",
+      "node"
+    ],
   },
   "include": [
-    "./node_modules/@visx"
+    "../node_modules/@visx"
   ]
 }
