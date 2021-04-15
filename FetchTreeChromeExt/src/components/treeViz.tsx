@@ -37,7 +37,7 @@ export default function Viz({
   const [orientation, setOrientation] = useState<string>("vertical");
   const [linkType, setLinkType] = useState<string>("diagonal");
   const [stepPercent, setStepPercent] = useState<number>(0.5);
-  // const [slider, setSlider] = useState<number>(5);
+  let [spread, setSpread] = useState<number>(1);
   const forceUpdate = useForceUpdate();
   const [displayFetch, setDisplayFetch] = useState<boolean>(false);
   const [fetchComponent, setFetchComponent] = useState<DataRequest>({ name: "", dataRequest: "" })
@@ -75,13 +75,19 @@ export default function Viz({
     skewY: 0,
   };
 
+  const changeSpread = (e) => {
+    if (e.target.id === 'buttonMinus') {
+      if (spread > 0 && spread !== 1) setSpread(spread -= 1)
+    } else {
+      if (spread < 10 && spread !== 10) setSpread(spread += 1)
+    }
+  }
+
   return totalWidth < 10 ? null : (
     <div>
       <div className="fetchBox">
         {displayFetch ? <p id="requestDisplay">{`Name: ${fetchComponent.name}, Data Request: ${fetchComponent.dataRequest}`}</p> : <p></p>}
         <LinkControls
-          // slider={slider}
-          // setSlider={setSlider}
           orientation={orientation}
           setOrientation={setOrientation}
         />
@@ -139,7 +145,7 @@ export default function Viz({
                   )}
                   size={[sizeWidth, sizeHeight]}
                   separation={(a, b) =>
-                    (a.parent === b.parent ? 5 : 5)
+                    (a.parent === b.parent ? spread : 1)
                   }
                 >
                   {(tree) => (
@@ -173,7 +179,7 @@ export default function Viz({
                           <Group top={top} left={left} key={key}>
                             {node.depth === 0 && (
                               <circle
-                                r={12}
+                                r={21}
                                 fill="url('#links-gradient')"
                                 onClick={() => {
                                   node.data.isExpanded = !node.data.isExpanded;
@@ -285,6 +291,16 @@ export default function Viz({
               >
                 Reset
               </button>
+              <div className="spreadContainer">
+                <span>
+                  <p style={{color: '#f3f3f3', paddingTop: '5px'}}>Node Spread:</p>
+                  <div style={{display: 'flex', width: '80px', justifyContent: 'space-between'}}>
+                    <button id='buttonMinus' className="btn btn-zoom btn-bottom" onClick={changeSpread} style={{border: '1px solid grey'}}> - </button>
+                    <p style={{color: '#f3f3f3'}}>{spread}</p>
+                    <button id='buttonAdd' className="btn btn-zoom btn-bottom" onClick={changeSpread} style={{border: '1px solid grey'}}> + </button>
+                  </div>
+                </span>
+              </div>
             </div>
           </div>
         )}

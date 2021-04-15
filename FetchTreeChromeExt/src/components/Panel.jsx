@@ -7,7 +7,7 @@ const Panel = () => {
   //Set default state for panel
   const [displayStore, setDisplayStore] = useState(true);
   const [componentArr, setComponentArr] = useState([["App", {}]]);
-  const [orgChart, setOrgChart] = useState({ name: "App" });
+  const [orgChart, setOrgChart] = useState({ name: "Fiber Root" });
   //Set flag for receiving componentObj from port
   let componentObjReceived = false;
 
