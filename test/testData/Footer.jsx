@@ -1,20 +1,19 @@
 import React, { useEffect } from 'react';
-import { testFuncExp, testArrowExp } from './mockDataReq.js'
-
+import { testFuncExp, testArrowExp } from './mockDataReq.js';
 
 const Footer = () => {
   let fetchResult;
   useEffect(() => {
     fetchResult = testArrowExp();
-  })
+  });
 
-  fetch('/')
+  fetch('/');
 
   return (
     <div>
       <h2>I am the footer {fetchResult}</h2>
     </div>
-  )
-}
+  );
+};
 
 export default Footer;

@@ -10,63 +10,63 @@ const fiberTree = {
               sibling: {
                 child: null,
                 sibling: null,
-                elementType: { name: "Recommendations" },
+                elementType: { name: 'Recommendations' },
               },
-              elementType: { name: "Favorites" },
+              elementType: { name: 'Favorites' },
             },
             sibling: {
               child: null,
               sibling: null,
-              elementType: { name: "Footer" },
+              elementType: { name: 'Footer' },
             },
-            elementType: { name: "Body" },
+            elementType: { name: 'Body' },
           },
-          elementType: { name: "NavBar" },
+          elementType: { name: 'NavBar' },
         },
         sibling: null,
-        elementType: { name: "App" },
+        elementType: { name: 'App' },
       },
     sibling: null,
-    elementType: { $$typeof: "Symbol(react.provider)" },
+    elementType: { $$typeof: 'Symbol(react.provider)' },
     },
     sibling: null,
-    elementType: { name: "Provider" },
+    elementType: { name: 'Provider' },
   },
 };
 
 const componentStore = {
   NavBar: {
-    "line: 27, column: 2": { reqType: "fetch", parentName: null },
-    "line: 52, column: 2": { reqType: "axios", parentName: "Profile" },
+    'line: 27, column: 2': { reqType: 'fetch', parentName: null },
+    'line: 52, column: 2': { reqType: 'axios', parentName: 'Profile' },
   },
   Body: {
-    "line: 27, column: 2": { reqType: "fetch", parentName: "null" },
-    "line: 52, column: 2": { reqType: "axios", parentName: "testVarExp" },
+    'line: 27, column: 2': { reqType: 'fetch', parentName: 'null' },
+    'line: 52, column: 2': { reqType: 'axios', parentName: 'testVarExp' },
   },
   Footer: {
-    "line: 27, column: 2": { reqType: "fetch", parentName: "testFuncExp" },
+    'line: 27, column: 2': { reqType: 'fetch', parentName: 'testFuncExp' },
   },
 };
 
 const fiberwalker = (
   node,
   componentStore,
-  treedata = { name: "Fiber Root", children: [] }
+  treedata = { name: 'Fiber Root', children: [] }
 ) => {
 
   const dataTypeCheck = [node, componentStore, treedata];
-  if (dataTypeCheck.some(arg => Array.isArray(arg) || !arg || typeof arg !== "object")) {
-    throw new TypeError("Arguments passed in must be of an object data type");
+  if (dataTypeCheck.some(arg => Array.isArray(arg) || !arg || typeof arg !== 'object')) {
+    throw new TypeError('Arguments passed in must be of an object data type');
   };
 
   const dataReqArr = [
-    "fetch",
-    "axios",
-    "http",
-    "https",
-    "qwest",
-    "superagent",
-    "XMLHttpRequest",
+    'fetch',
+    'axios',
+    'http',
+    'https',
+    'qwest',
+    'superagent',
+    'XMLHttpRequest',
   ];
 
   function Node(name) {
@@ -79,15 +79,15 @@ const fiberwalker = (
   while (node) {
     let name;
     if (node.elementType) {
-      if (typeof node.elementType == "string") {
+      if (typeof node.elementType == 'string') {
         name = node.elementType;
       } else if (node.elementType.name !== undefined) {
         name = node.elementType.name;
       } else {
-        name = "anon.";
+        name = 'anon.';
       }
     } else {
-      name = "anon.";
+      name = 'anon.';
     }
     const currentNode = { name, children: [] };
     if (componentStore !== undefined) {

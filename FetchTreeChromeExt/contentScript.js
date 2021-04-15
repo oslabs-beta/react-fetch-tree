@@ -1,30 +1,30 @@
 //Declare function used to injectScript to dom
 function injectScript(file_path, tag) {
   const node = document.getElementsByTagName(tag)[0];
-  const script = document.createElement("script");
-  script.setAttribute("type", "text/javascript");
-  script.setAttribute("src", file_path);
+  const script = document.createElement('script');
+  script.setAttribute('type', 'text/javascript');
+  script.setAttribute('src', file_path);
   node.appendChild(script);
 }
 
 //Call function with injectScript.js as argument
-injectScript(chrome.runtime.getURL("injectScript.js"), "body");
+injectScript(chrome.runtime.getURL('injectScript.js'), 'body');
 
 //Set up port for communication between background.js and contentScript
-const port = chrome.runtime.connect("cklijjmibdbkmmaclebdlfabgcpgegdk", {
-  name: "contentScript",
+const port = chrome.runtime.connect('kebhpmjopgjickdmjbeeioeolnommhdh', {
+  name: 'contentScript',
 });
 //Send test message
 port.postMessage({
-  name: "contentScript test",
-  payload: "this is coming from contentScript",
+  name: 'contentScript test',
+  payload: 'this is coming from contentScript',
 });
 
 let componentObj = {};
 
 //Set up listener for messages coming from client side
 window.addEventListener(
-  "message",
+  'message',
   function (event) {
     // Only accept messages from the current tab
     if (event.source != window) return;
@@ -36,9 +36,9 @@ window.addEventListener(
     }
 
     // If orgChart is received through window from injectScript, pass to panel through port
-    if (event.data.type && event.data.type === "orgChart") {
+    if (event.data.type && event.data.type === 'orgChart') {
       port.postMessage({
-        name: "orgChart",
+        name: 'orgChart',
         payload: event.data.payload,
       });
     }
