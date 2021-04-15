@@ -23,8 +23,8 @@ export default function LinkControls({
         onChange={e => setOrientation(e.target.value)}
         value={orientation}
       >
-        <option value="vertical">Vertical</option>
-        <option value="horizontal">Horizontal</option>
+        <option value='vertical'>Vertical</option>
+        <option value='horizontal'>Horizontal</option>
       </select>
       &nbsp;&nbsp;
     </div>

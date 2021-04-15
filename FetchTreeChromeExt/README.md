@@ -1,4 +1,4 @@
-<img src="./src/assets/Logo.png" width="200" height="200" align="center" />
+<img src='./src/assets/Logo.png' width='200' height='200' align='center' />
 
 # React Fetch Tree
 
@@ -26,25 +26,31 @@ npm i @rft/reactfetchtree
 React Fetch Tree uses an abstract syntax parser to find data requests within your React app and maps these to the component tree visualization in the browser. In order for the parser to run correctly and access all of your components, you will need to pass in the root file path to the parser directly
 
 To do this:
+
 1. Open your node_modules folder, and navigate to the @reactfetchtree/rft folder.
 2. Go to the parser.ts file and enter the path for the entry file. Your entry file is the place where you are hanging your app(The path is already set up with ../../../ which should bring you to your root folder).
-The place to add your entry file will look like this:
+   The place to add your entry file will look like this:
+
 ```javascript
 const resultObj: string = JSON.stringify(
   dependenciesGraph(path.join(__dirname, "../../../ENTER PATH HERE"))
 );
 ```
+
 3. Save this file. Now in your terminal within your app directory, run the following command:
+
 ```javascript
 npm explore @reactfetchtree/rft -- npm run parser
 ```
-4. Your component table has now been generated! If you want to see this data you can find it at node_modules/@reactfetchtree/rft/componentStore.js. 
 
+4. Your component table has now been generated! If you want to see this data you can find it at node_modules/@reactfetchtree/rft/componentStore.js.
 
 **Import the Fetch Tree Hook to your React application:**
 
 1. Inside your top level component (for example, your App.js file), import the Fetch Tree Hook and add the hook component inside the return statement within the outer enclosing div's or fragment.
+
 ```javascript
 import FetchTreeHook from "@reactfetchtree/rft/FetchTreeHook";
 ```
+
 2. You can now start your local server and run the Fetch Tree Chrome Extension in your browser.

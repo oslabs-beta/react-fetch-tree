@@ -3,4 +3,3 @@ node_js: "stable"
 before_install: npm install request
 script:
   - npm run test
-
