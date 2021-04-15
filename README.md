@@ -1,4 +1,4 @@
-<img src='./FetchTreeChromeExt/src/assets/Logo.png' width='200' height='200' style='text-align: center' />
+<img align='right' img src='./FetchTreeChromeExt/src/assets/Logo.png' width='200' height='200' />
 
 # React Fetch Tree
 
@@ -70,7 +70,7 @@ If you can't see your component tree at all, there could be a couple of things t
 ## Project contributors
 
 Trevor Carr 
-  - [linkedin](https://www.linkedin.com/in/carr-trevor/)
+  - [Linkedin](https://www.linkedin.com/in/carr-trevor/)
   - [Github](https://github.com/trevcarr95)
 
 Cara Dibdin
