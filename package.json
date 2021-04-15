@@ -2,5 +2,9 @@
   "name": "reactfetchtree",
   "scripts": {
     "test": "jest --coverage"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^7.24.0"
   }
 }
