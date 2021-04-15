@@ -4,7 +4,7 @@
   "description": "React Fetch Tree Google Chrome DevTools Extension",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/oslabs-beta/react-fetch-tree",
+    "url": "git+https://github.com/oslabs-beta/react-fetch-tree"
   },
   "author": "React Fetch Tree",
   "scripts": {
