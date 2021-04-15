@@ -3,15 +3,15 @@ const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-// const ExtensionReloader = require("webpack-extension-reloader");
 const destination = path.resolve(__dirname, "build");
+const chromeExt = path.resolve(__dirname, 'FetchTreeChromeExt');
 
 module.exports = {
   mode: "development",
   entry: {
-    app: "./src/components/index.tsx",
-    injectScript: "./injectScript.js",
-    contentScript: "./contentScript.js",
+    app: `${chromeExt}/src/components/index.tsx`,
+    injectScript: `${chromeExt}/injectScript.js`,
+    contentScript: `${chromeExt}/contentScript.js`,
   },
   output: {
     path: path.resolve("./build/"),
@@ -63,17 +63,16 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin(),
-    // new ExtensionReloader(),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
-        { from: `./manifest.json`, to: destination },
-        { from: `./src/devtools/devtools.html`, to: destination },
-        { from: `./src/devtools/devtools.js`, to: destination },
-        { from: `./src/index.html`, to: destination },
-        { from: `./background.js`, to: destination },
-        { from: `./src/style.css`, to: destination },
-        { from: `./src/assets/Logo.png`, to: destination },
+        { from: `${chromeExt}/manifest.json`, to: destination },
+        { from: `${chromeExt}/src/devtools/devtools.html`, to: destination },
+        { from: `${chromeExt}/src/devtools/devtools.js`, to: destination },
+        { from: `${chromeExt}/src/index.html`, to: destination },
+        { from: `${chromeExt}/background.js`, to: destination },
+        { from: `${chromeExt}/src/style.css`, to: destination },
+        { from: `${chromeExt}/src/assets/Logo.png`, to: destination },
       ],
     }),
   ],
