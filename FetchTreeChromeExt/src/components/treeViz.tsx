@@ -41,8 +41,6 @@ export default function Viz({
   const forceUpdate = useForceUpdate();
   const [displayFetch, setDisplayFetch] = useState<boolean>(false);
   const [fetchComponent, setFetchComponent] = useState<DataRequest>({ name: "", dataRequest: "" })
-  // const [orgChart, setOrgChart] = useState<TreeNode>({ name: "App" });
-
 
   const innerWidth = totalWidth - margin.left - margin.right;
   const innerHeight = totalHeight - margin.top - margin.bottom;
@@ -145,7 +143,7 @@ export default function Viz({
                   )}
                   size={[sizeWidth, sizeHeight]}
                   separation={(a, b) =>
-                    (a.parent === b.parent ? 5 : spread)
+                    (a.parent === b.parent ? 1 : spread)
                   }
                 >
                   {(tree) => (
@@ -270,7 +268,6 @@ export default function Viz({
                 className="btn btn-lg"
                 onClick={zoom.center}
                 style={{
-                  width: "50px",
                   marginBottom: "2px",
                 }}
               >
@@ -281,7 +278,6 @@ export default function Viz({
                 className="btn btn-lg"
                 onClick={zoom.reset}
                 style={{
-                  width: "50px",
                   marginTop: "2px",
                 }}
               >

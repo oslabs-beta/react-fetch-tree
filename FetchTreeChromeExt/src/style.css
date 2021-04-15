@@ -6,10 +6,10 @@
 }
 
 :root {
-  --main-bg: white;
+  --main-bg: #f3f3f3;
   --secondary-bg-hover: #a487de61;
   --secondary-bg: #2c2240;
-  --text-color: black;
+  --text-color: #282828;
   --light-border: #90ddf0;
   --dark-border: #08637a;
   --nav-buttons: #20909f;
@@ -17,6 +17,7 @@
 }
 
 body {
+  height: 100%;
   background-color: var(--main-bg);
   color: var(--text-color);
 }
@@ -60,15 +61,9 @@ body {
 .containers-wrapper {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  /* grid-template-rows: 3em 30em; */
   grid-template-areas: "history-view info-container";
   width: 100vw;
 }
-
-/* .containers {
-  display: flex;
-  width: 100vw;
-} */
 
 .history-view {
   display: flex;
@@ -181,6 +176,7 @@ body {
 }
 .btn-lg {
   font-size: 12px;
+  width: 50px;
   line-height: 1;
   padding: 4px;
 }
@@ -213,7 +209,7 @@ body {
   text-align: center;
   padding-left: 5px;
   padding-bottom: 5px;
-  background-color: #f3f3f3;
+  background-color: var(--main-bg);
 }
 
 #requestDisplay {
@@ -221,8 +217,8 @@ body {
 }
 
 .panelNav {
-  background-color: #f3f3f3;
-  color: #282828;
+  background-color: var(--main-bg);
+  color: var(--text-color);
   height: 40px;
   display: flex;
   align-items: center;
@@ -240,7 +236,7 @@ body {
   align-self: center;
   display: inline-block;
   padding: 0.35em 1.2em;
-  border: 0.1em solid #282828;
+  border: 0.1em solid var(--text-color);
   margin: 0 0.3em 0.3em 0;
   border-radius: 0.12em;
   box-sizing: border-box;
@@ -252,9 +248,9 @@ body {
 }
 
 .allOptions button:hover {
-  color: #282828 !important;
+  color: var(--text-color) !important;
   background-color: #b998f4 !important;
-  border: 1px solid #282828 !important;
+  border: 1px solid var(--text-color) !important;
 }
 
 .allOptions button:focus {
@@ -262,7 +258,8 @@ body {
 }
 
 #componentStore {
-  height: 1000px;
+  height: 92vh;
+  max-height: 100%;
   padding: 10px;
   background-color: #272b4d;
 }
