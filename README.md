@@ -1,4 +1,4 @@
-<img src='./FetchTreeChromeExt/src/assets/Logo.png' width='200' height='200' style='text-align: center' />
+<img align='right' img src='./FetchTreeChromeExt/src/assets/Logo.png' width='200' height='200' />
 
 # React Fetch Tree
 
