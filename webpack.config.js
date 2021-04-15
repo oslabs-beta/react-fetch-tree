@@ -1,33 +1,33 @@
-const path = require("path");
+const path = require('path');
 
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const destination = path.resolve(__dirname, "build");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const destination = path.resolve(__dirname, 'build');
 const chromeExt = path.resolve(__dirname, 'FetchTreeChromeExt');
 
 module.exports = {
-  mode: "development",
+  mode: 'development',
   entry: {
     app: `${chromeExt}/src/components/index.tsx`,
     injectScript: `${chromeExt}/injectScript.js`,
     contentScript: `${chromeExt}/contentScript.js`,
   },
   output: {
-    path: path.resolve("./build/"),
-    filename: "[name].js",
-    publicPath: ".",
+    path: path.resolve('./build/'),
+    filename: '[name].js',
+    publicPath: '.',
   },
-  devtool: "cheap-module-source-map",
+  devtool: 'cheap-module-source-map',
   module: {
     rules: [
       {
         test: /\.(svg|png|jpg|gif|jpeg)$/,
         use: {
-          loader: "file-loader",
+          loader: 'file-loader',
           options: {
-            name: "[name].[hash].[ext]",
-            outputPath: "imgs",
+            name: '[name].[hash].[ext]',
+            outputPath: 'imgs',
           },
         },
       },
@@ -35,31 +35,31 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /(node_modules)/,
         use: {
-          loader: "babel-loader",
-          options: { presets: ["@babel/preset-env", "@babel/preset-react"] },
+          loader: 'babel-loader',
+          options: { presets: ['@babel/preset-env', '@babel/preset-react'] },
         },
       },
       {
         test: /\.tsx?$/,
-        use: "ts-loader",
+        use: 'ts-loader',
         exclude: /node_modules/,
       },
-      { test: /\.(css)$/, use: ["style-loader", "css-loader"] },
+      { test: /\.(css)$/, use: ['style-loader', 'css-loader'] },
       {
         test: /\.s[ac]ss$/i,
         use: [
           // Creates `style` nodes from JS strings
           MiniCssExtractPlugin.loader,
           // Translates CSS into CommonJS
-          "css-loader",
+          'css-loader',
           // Compiles Sass to CSS
-          "sass-loader",
+          'sass-loader',
         ],
       },
     ],
   },
   resolve: {
-    extensions: [".js", ".jsx", ".scss", ".css", ".ts", ".tsx", ".jpg", ".png"],
+    extensions: ['.js', '.jsx', '.scss', '.css', '.ts', '.tsx', '.jpg', '.png'],
   },
   plugins: [
     new MiniCssExtractPlugin(),

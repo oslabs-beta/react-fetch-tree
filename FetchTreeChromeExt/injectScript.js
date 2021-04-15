@@ -3,13 +3,13 @@ let componentObj = {};
 
 //Set up listener for messages coming from client side
 window.addEventListener(
-  "message",
+  'message',
   function (event) {
     // Only accept messages from the current tab
     if (event.source != window) return;
 
     // Conditional check to see if componentObj has been received from client side FetchTreeHook
-    if (event.data.type && event.data.type === "componentObj") componentObj = event.data.payload;
+    if (event.data.type && event.data.type === 'componentObj') componentObj = event.data.payload;
   },
   false
 );
@@ -19,16 +19,16 @@ window.addEventListener(
 const fiberwalker = (
   node,
   componentStore,
-  treedata = { name: "Fiber Root", children: [] }
+  treedata = { name: 'Fiber Root', children: [] }
 ) => {
   const dataReqArr = [
-    "fetch",
-    "axios",
-    "http",
-    "https",
-    "qwest",
-    "superagent",
-    "XMLHttpRequest",
+    'fetch',
+    'axios',
+    'http',
+    'https',
+    'qwest',
+    'superagent',
+    'XMLHttpRequest',
   ];
 
   function Node(name) {
@@ -41,20 +41,20 @@ const fiberwalker = (
   while (node) {
     let name;
     if (node.elementType) {
-      if (typeof node.elementType == "string") {
+      if (typeof node.elementType == 'string') {
         name = node.elementType;
       } else if (node.elementType.name !== undefined) {
         name = node.elementType.name;
       } else {
-        name = "anon.";
+        name = 'anon.';
       }
     } else {
-      name = "anon.";
+      name = 'anon.';
     }
     const currentNode = { name, children: [] };
     if (componentStore !== undefined) {
       let requests = [];
-      let str = "";
+      let str = '';
       if (componentStore[name]) {
         //Iterate through every entry and check request type
         const dataRequest = Object.values(componentStore[name]);
@@ -65,15 +65,15 @@ const fiberwalker = (
         });
 
         while (requests.length) {
-          let temp = requests.splice(0, 1);
-          let number = requests.reduce((acc, cur) => {
+          const temp = requests.splice(0, 1);
+          const number = requests.reduce((acc, cur) => {
             if (cur == temp) acc += 1;
             return acc;
           }, 1);
           requests = requests.filter((el) => el != temp);
           str += !str.length
-            ? `${number} ${temp} request${number > 1 ? "s" : ""}`
-            : `, ${number} ${temp} request${number > 1 ? "s" : ""}`;
+            ? `${number} ${temp} request${number > 1 ? 's' : ''}`
+            : `, ${number} ${temp} request${number > 1 ? 's' : ''}`;
         }
       }
       currentNode.dataRequest = str;
@@ -105,7 +105,7 @@ devTools.onCommitFiberRoot = (function (original) {
     orgChart = fiberwalker(__ReactFiberDOM.current, componentObj);
     // Pass orgChart through window to contentScript
     window.postMessage({
-      type: "orgChart",
+      type: 'orgChart',
       payload: orgChart,
     });
     return original(...args);

@@ -1,7 +1,7 @@
-const babelParser = require("@babel/parser");
-const traverse = require("@babel/traverse").default;
-const fs = require("fs");
-const path = require("path");
+const babelParser = require('@babel/parser');
+const traverse = require('@babel/traverse').default;
+const fs = require('fs');
+const path = require('path');
 
 let ID: number = 0;
 
@@ -20,12 +20,12 @@ const nodeExistence = (
   filename: string,
   exists: boolean = false
 ) => {
-  let nodePos: string = `line: ${nodePosition["line"]}, column: ${nodePosition["column"]}`;
-  if (parentName === null) parentName = "Anonymous";
+  let nodePos: string = `line: ${nodePosition['line']}, column: ${nodePosition['column']}`;
+  if (parentName === null) parentName = 'Anonymous';
   if (nodeStore[nodePos]) exists = true;
   if (!exists) {
-    let nodeFileName: string[] | string = filename.split("/");
-    nodeFileName = nodeFileName[nodeFileName.length - 1].split(".")[0];
+    let nodeFileName: string[] | string = filename.split('/');
+    nodeFileName = nodeFileName[nodeFileName.length - 1].split('.')[0];
     nodeStore[nodePos] = {
       reqType,
       parentName,
@@ -40,11 +40,11 @@ const getDependencies = (filename: string) => {
   const dependencies: string[] = [];
   let [reqType, parentName]: [string | null, string | null] = [null, null];
   let parserConfig: { sourceType: string, plugins: string[] } = {
-    sourceType: "module",
-    plugins: ["jsx"],
+    sourceType: 'module',
+    plugins: ['jsx'],
   }
 
-  const content: string = fs.readFileSync(filename, "utf8");
+  const content: string = fs.readFileSync(filename, 'utf8');
   const raw_ast: {} = babelParser.parse(content, parserConfig);
 
   //Node types and conditionals
@@ -61,30 +61,30 @@ const getDependencies = (filename: string) => {
     MemberExpression: ({ node }) => {
       reqType = node.object.name;
       if (
-        reqType === "axios" ||
-        reqType === "http" ||
-        reqType === "https" ||
-        reqType === "qwest" ||
-        reqType === "superagent"
+        reqType === 'axios' ||
+        reqType === 'http' ||
+        reqType === 'https' ||
+        reqType === 'qwest' ||
+        reqType === 'superagent'
       ) {
         nodeExistence(node.loc.start, reqType, parentName, filename);
       }
-      if (node.property.name === "ajax") {
+      if (node.property.name === 'ajax') {
         reqType = node.property.name;
         nodeExistence(node.loc.start, reqType, parentName, filename);
       }
     },
     NewExpression: ({ node }) => {
       reqType = node.callee.name;
-      if (reqType === "XMLHttpRequest") {
+      if (reqType === 'XMLHttpRequest') {
         nodeExistence(node.loc.start, reqType, parentName, filename);
       }
     },
     ReturnStatement: ({ node }) => {
       if (node.argument) {
         if (
-          node.argument.type === "JSXElement" ||
-          (node.argument.type === "JSXFragment" &&
+          node.argument.type === 'JSXElement' ||
+          (node.argument.type === 'JSXFragment' &&
             parentName &&
             !componentStore.hasOwnProperty(parentName))
         ) {
@@ -105,7 +105,7 @@ const getDependencies = (filename: string) => {
   //Traverse AST using babeltraverse to identify imported nodes
   traverse(raw_ast, {
     ImportDeclaration: ({ node }) => {
-      if (node.source.value.indexOf("./") !== -1) {
+      if (node.source.value.indexOf('./') !== -1) {
         if (node.specifiers.length !== 0) {
           dependencies.push(node.source.value);
         }
@@ -159,21 +159,21 @@ const getDependencies = (filename: string) => {
 //Helper function to complete componentStore
 const componentGraph = (invocationStore: {}, nodeStore: {}, componentStore: {}) => {
   const dataTypeCheck: {}[] = [invocationStore, nodeStore, componentStore];
-  if (dataTypeCheck.some(arg => Array.isArray(arg) || !arg || typeof arg !== "object")) {
-    throw new TypeError("Arguments passed in must be of an object data type");
+  if (dataTypeCheck.some(arg => Array.isArray(arg) || !arg || typeof arg !== 'object')) {
+    throw new TypeError('Arguments passed in must be of an object data type');
   };
 
   for (let node in nodeStore) {
     let { parentName, reqType, fileName }: { parentName: string, reqType: string, fileName: string } = nodeStore[node];
     if (
-      reqType === "fetch" ||
-      reqType === "axios" ||
-      reqType === "http" ||
-      reqType === "https" ||
-      reqType === "qwest" ||
-      reqType === "superagent" ||
-      reqType === "ajax" ||
-      reqType === "XMLHttpRequest"
+      reqType === 'fetch' ||
+      reqType === 'axios' ||
+      reqType === 'http' ||
+      reqType === 'https' ||
+      reqType === 'qwest' ||
+      reqType === 'superagent' ||
+      reqType === 'ajax' ||
+      reqType === 'XMLHttpRequest'
     ) {
       if (componentStore[parentName]) {
         componentStore[parentName][node] = { reqType, parentName };
@@ -199,7 +199,7 @@ const componentGraph = (invocationStore: {}, nodeStore: {}, componentStore: {}) 
 const dependenciesGraph = (entryFile: string) => {
   const extension: string = entryFile.match(/\.[0-9a-z]+$/i)[0];
 
-  if (extension === ".js" || extension === ".jsx") {
+  if (extension === '.js' || extension === '.jsx') {
     const entry: { id: number; filename: any; dependencies: any[]; } = getDependencies(entryFile);
     const queue: {
       id: number;
@@ -216,9 +216,9 @@ const dependenciesGraph = (entryFile: string) => {
         let child;
 
         if (!fileCheck) {
-          absolutePath = path.resolve(dirname, relativePath + ".js");
+          absolutePath = path.resolve(dirname, relativePath + '.js');
           fileCheck = fs.existsSync(absolutePath);
-          if (!fileCheck) absolutePath = absolutePath + "x";
+          if (!fileCheck) absolutePath = absolutePath + 'x';
         }
 
         if (!cache[absolutePath]) {
@@ -229,7 +229,7 @@ const dependenciesGraph = (entryFile: string) => {
     }
     return componentGraph(invocationStore, nodeStore, componentStore);
   } else {
-    throw new Error("Entry file must be .js or .jsx")
+    throw new Error('Entry file must be .js or .jsx')
   }
 };
 
@@ -241,7 +241,7 @@ Must be a .js/.jsx file or parser will not run.
 if (process.env.NODE_ENV !== 'test') {
   //Enter path to entry file
   const resultObj: string = JSON.stringify(
-    dependenciesGraph(path.join(__dirname, "../../../ENTER PATH HERE"))
+    dependenciesGraph(path.join(__dirname, '../../../ENTER PATH HERE'))
   );
 
   const componentObj: string = `const componentObj = ${resultObj}
@@ -249,7 +249,7 @@ if (process.env.NODE_ENV !== 'test') {
 
   try {
     fs.writeFileSync(
-      path.join(__dirname, "./componentStore.js"),
+      path.join(__dirname, './componentStore.js'),
       componentObj,
       (err) => {
         if (err) throw err;

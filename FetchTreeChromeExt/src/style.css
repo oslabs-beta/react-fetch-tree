@@ -61,7 +61,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 2fr;
   /* grid-template-rows: 3em 30em; */
-  grid-template-areas: "history-view info-container";
+  grid-template-areas: 'history-view info-container';
   width: 100vw;
 }
 
@@ -164,8 +164,8 @@ body {
   .containers-wrapper {
     grid-template-columns: 1fr;
     grid-template-areas:
-      "history-view"
-      "info-container";
+      'history-view'
+      'info-container';
     width: 100vw;
   }
 }
