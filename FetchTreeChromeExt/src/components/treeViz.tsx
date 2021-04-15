@@ -178,7 +178,7 @@ export default function Viz({
                             {node.depth === 0 && (
                               <circle
                                 r={21}
-                                fill="url('#links-gradient')"
+                                fill='url("#links-gradient")'
                                 onClick={() => {
                                   node.data.isExpanded = !node.data.isExpanded;
                                   forceUpdate();
