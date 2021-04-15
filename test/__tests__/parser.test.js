@@ -5,7 +5,7 @@ const {
   dependenciesGraph,
   componentGraph,
   getDependencies,
-} = require("../../FetchTreeNPMPkg/parser.js");
+} = require("../../FetchTreeNPMPkg/parser.ts");
 const {
   invocationStore,
   nodeStore,
