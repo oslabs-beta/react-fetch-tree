@@ -8,7 +8,7 @@ const ComponentStorePanel = (props) => {
         <div key={`component${i}`} className='component'>
           <span className='componentName'> {key[0] !== 'null' && key[0]} </span>
           <div className='componentDetails'>
-            <span className='details'>{key[0] !== 'null' && Object.entries(key[1]).length === 0 && ''No data requests''}</span>
+            <span className='details'>{key[0] !== 'null' && Object.entries(key[1]).length === 0 && 'No data requests'}</span>
           </div>
 
           {Object.values(key[1]).map(key =>

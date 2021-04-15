@@ -70,7 +70,7 @@ If you can't see your component tree at all, there could be a couple of things t
 ## Project contributors
 
 Trevor Carr 
-  - [linkedin](https://www.linkedin.com/in/trevor-carr-220481203/)
+  - [linkedin](https://www.linkedin.com/in/carr-trevor/)
   - [Github](https://github.com/trevcarr95)
 
 Cara Dibdin

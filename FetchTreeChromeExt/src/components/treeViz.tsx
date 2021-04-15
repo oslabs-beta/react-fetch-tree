@@ -143,7 +143,7 @@ export default function Viz({
                   )}
                   size={[sizeWidth, sizeHeight]}
                   separation={(a, b) =>
-                    (a.parent === b.parent ? 1 : spread)
+                    (a.parent === b.parent ? spread : 1)
                   }
                 >
                   {(tree) => (
@@ -285,10 +285,10 @@ export default function Viz({
               </button>
               <div className='spreadContainer'>
                 <span>
-                  <p style={{color: '#f3f3f3', paddingTop: '5px'}}>Node Spread:</p>
-                  <div style={{display: 'flex', width: '80px', justifyContent: 'space-between'}}>
+                  <p style={{ color: '#f3f3f3', paddingTop: '5px' }}>Node Spread:</p>
+                  <div style={{ display: 'flex', width: '80px', justifyContent: 'space-between' }}>
                     <button id='buttonMinus' className="btn btn-zoom btn-bottom" onClick={changeSpread}> - </button>
-                    <p style={{color: '#f3f3f3'}}>{spread}</p>
+                    <p style={{ color: '#f3f3f3' }}>{spread}</p>
                     <button id='buttonAdd' className="btn btn-zoom btn-bottom" onClick={changeSpread}> + </button>
                   </div>
                 </span>

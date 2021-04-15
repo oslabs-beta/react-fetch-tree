@@ -27,12 +27,7 @@
     }
   ],
   "web_accessible_resources": [
-    "injectScript.js",
-    "images/*"
-  ],
-  "permissions": [
-    "tabs",
-    "activeTab"
+    "injectScript.js"
   ],
   "devtools_page": "devtools.html"
 }
