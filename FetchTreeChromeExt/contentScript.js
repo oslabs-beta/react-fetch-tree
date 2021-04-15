@@ -10,7 +10,6 @@ function injectScript(file_path, tag) {
 //Call function with injectScript.js as argument
 injectScript(chrome.runtime.getURL("injectScript.js"), "body");
 
-//HOW DO WE ENSURE THIS CODE IS CORRECT FOR RUNTIME.CONNECT
 //Set up port for communication between background.js and contentScript
 const port = chrome.runtime.connect("kebhpmjopgjickdmjbeeioeolnommhdh", {
   name: "contentScript",
