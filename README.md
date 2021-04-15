@@ -66,3 +66,25 @@ Now when you inspect your browser window to open the console, React Fetch Tree w
 ## My component tree isn't rendering
 
 If you can't see your component tree at all, there could be a couple of things that need to change. First, try triggering a state change in your app as this will call the function on the FiberDOM that generates the visualization object.
+
+## Project contributors
+
+Trevor Carr 
+  - [linkedin](https://www.linkedin.com/in/trevor-carr-220481203/)
+  - [Github](https://github.com/trevcarr95)
+
+Cara Dibdin
+  - [Linkedin](https://www.linkedin.com/in/cara-dibdin/)
+  - [Github](https://github.com/caradubdub)
+
+James Ferrell
+  - [Linkedin](https://www.linkedin.com/in/james-d-ferrell/)
+  - [Github](https://github.com/jdferrell009)
+
+Chris Lung
+  - [Linkedin](https://www.linkedin.com/in/chris-lung-cpa-5b69b2ba/)
+  - [Github](https://github.com/chrisl-13)
+
+Anika Mustafiz
+  - [Linkedin](https://www.linkedin.com/in/anikamustafiz-lillies/)
+  - [Github](https://github.com/amustafiz)
