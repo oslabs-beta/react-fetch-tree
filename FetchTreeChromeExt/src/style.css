@@ -177,7 +177,7 @@ body {
   background: #2f2f2f;
   color: #888;
   padding: 0 4px;
-  border-top: 1px solid #0a0a0a;
+  border: 1px solid grey;
 }
 .btn-lg {
   font-size: 12px;
@@ -283,10 +283,3 @@ body {
 .details {
   color: #26deb0;
 }
-
-/* .slider {
-  width: 100px;
-  height: 20px;
-  background: #26deb0;
-} */
-

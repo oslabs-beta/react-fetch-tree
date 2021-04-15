@@ -145,7 +145,7 @@ export default function Viz({
                   )}
                   size={[sizeWidth, sizeHeight]}
                   separation={(a, b) =>
-                    (a.parent === b.parent ? spread : 1)
+                    (a.parent === b.parent ? 5 : spread)
                   }
                 >
                   {(tree) => (
@@ -255,7 +255,6 @@ export default function Viz({
                 type="button"
                 className="btn btn-zoom"
                 onClick={() => zoom.scale({ scaleX: 1.2, scaleY: 1.2 })}
-                style={{ border: "1px solid grey" }}
               >
                 +
               </button>
@@ -263,7 +262,6 @@ export default function Viz({
                 type="button"
                 className="btn btn-zoom btn-bottom"
                 onClick={() => zoom.scale({ scaleX: 0.8, scaleY: 0.8 })}
-                style={{ border: "1px solid grey" }}
               >
                 -
               </button>
@@ -274,7 +272,6 @@ export default function Viz({
                 style={{
                   width: "50px",
                   marginBottom: "2px",
-                  border: "1px solid grey",
                 }}
               >
                 Center
@@ -286,7 +283,6 @@ export default function Viz({
                 style={{
                   width: "50px",
                   marginTop: "2px",
-                  border: "1px solid grey",
                 }}
               >
                 Reset
@@ -295,9 +291,9 @@ export default function Viz({
                 <span>
                   <p style={{color: '#f3f3f3', paddingTop: '5px'}}>Node Spread:</p>
                   <div style={{display: 'flex', width: '80px', justifyContent: 'space-between'}}>
-                    <button id='buttonMinus' className="btn btn-zoom btn-bottom" onClick={changeSpread} style={{border: '1px solid grey'}}> - </button>
+                    <button id='buttonMinus' className="btn btn-zoom btn-bottom" onClick={changeSpread}> - </button>
                     <p style={{color: '#f3f3f3'}}>{spread}</p>
-                    <button id='buttonAdd' className="btn btn-zoom btn-bottom" onClick={changeSpread} style={{border: '1px solid grey'}}> + </button>
+                    <button id='buttonAdd' className="btn btn-zoom btn-bottom" onClick={changeSpread}> + </button>
                   </div>
                 </span>
               </div>
