@@ -1,8 +1,8 @@
 <img align='right' img src='./FetchTreeChromeExt/src/assets/Logo.png' width='200' height='200' />
 
-# React Fetch Tree
+# React Fetch Tree - reactfetchtree.com
 
-React Fetch Tree is a tool for visualizing the location of data requests in a React app. React Fetch Tree can be used to get a bird’s eye view of your React application, show you at a glance where data requests are within your components, and show you a schema of components and their corresponding data requests.
+React Fetch Tree is an open source developer tool for visualizing the location of data requests in a React app. React Fetch Tree can be used to get a bird’s eye view of your React application, show you at a glance where data requests are within your components, and show you a schema of components and their corresponding data requests.
 
 # Setting up React Fetch Tree
 
@@ -42,6 +42,8 @@ const resultObj: string = JSON.stringify(
 ```javascript
 npm explore @reactfetchtree/rft -- npm run parser
 ```
+  Upon success you will see the message: 
+      `parser completed successfully`
 
 4. Your component table has now been generated! If you want to see this data you can find it at node_modules/@reactfetchtree/rft/componentStore.js.
 
@@ -51,6 +53,17 @@ npm explore @reactfetchtree/rft -- npm run parser
 
 ```javascript
 import FetchTreeHook from "@reactfetchtree/rft/FetchTreeHook";
+const App = () => {
+  return ( 
+    <div>
+      <FetchTreeHook/>
+      <Header/>
+      <Main/>
+    </div>
+  );
+};
+
+export default App;
 ```
 
 2. You can now start your local server and run the Fetch Tree Chrome Extension in your browser.
